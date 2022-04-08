@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include <string>
 #include "BaseComponent.h"
+#include"Structs.h"
 namespace dae
 {
 	class Animation;
@@ -20,15 +21,19 @@ namespace dae
 		virtual void Update(float deltaTime) override;
 		virtual void Render() const;
 
-		void SetActiveAnimation(std::shared_ptr<Animation> animation);
+		void SetActiveAnimation(const std::string& name);
 		Animation& GetAnimation() const { return *m_pActiveAnimation; }
+		std::string GetAnimationName() const { return m_pActiveAnimationName; }
 
-		void AddAnimation(std::shared_ptr<Animation> animation);
+		void AddAnimation(std::shared_ptr<Animation> animation, const std::string& name);
+
+		void SetPositions(Float2 pos);
 
 	private:
 		//Just one animation per spritecomponent for now
-		std::vector<std::shared_ptr<Animation>> m_pAnimation;
+		std::map<std::string, std::shared_ptr<Animation>> m_pAnimations;
 		std::shared_ptr<Animation> m_pActiveAnimation;
+		std::string m_pActiveAnimationName;
 	};
 }
 

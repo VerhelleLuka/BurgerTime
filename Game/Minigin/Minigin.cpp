@@ -105,9 +105,15 @@ void dae::Minigin::CreatePeterPepperAndHUD(int playerNr) const
 
 	auto peterPAnimation = std::make_shared<Animation>(3, 3,"leftRight");
 	peterPAnimation->SetTexture("PeterPepper/LeftRightSprite.png");
+	peterPSprite->AddAnimation(peterPAnimation, "Run");
 	peterPAnimation->SetScale(2.f);
+	//auto peterPAnimation2 = std::make_shared<Animation>(1, 1,"Idle");
+	//peterPSprite->AddAnimation(peterPAnimation2, "Idle");
+
+	//peterPAnimation2->SetTexture("PeterPepper/IdleSprite.png");
+	//peterPAnimation2->SetScale(2.f);
+
 	auto peterPepperGo = std::make_shared<GameObject>();
-	peterPSprite->SetAnimation(peterPAnimation);
 	peterPepperGo->AddComponent(peterPSprite, "Sprite");
 	peterPepperGo->AddComponent(peterPepper, "PeterPepper");
 	peterPepper->SetGameObject(peterPepperGo.get());
@@ -137,6 +143,7 @@ void dae::Minigin::CreatePeterPepperAndHUD(int playerNr) const
 	input.AddCommand(ControllerButton::ButtonA, new Damage, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::ButtonB, new GainPoints, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::DPadRight, new MoveRight, peterPepperGo.get(), playerNr);
+	//input.AddCommand(ControllerButton::Nothing, new Idle, peterPepperGo.get(), playerNr);
 }
 
 void dae::Minigin::Cleanup()
@@ -166,7 +173,7 @@ void dae::Minigin::Run()
 		bool doContinue = true;
 		auto lastTime = std::chrono::high_resolution_clock::now();
 		float lag = 0.0f;
-		int nrOfPlayers = 2;
+		int nrOfPlayers = 1;
 		//float fixedTimeStep = 0.02f;
 		while (doContinue)
 		{
@@ -185,7 +192,9 @@ void dae::Minigin::Run()
 			{
 				input.HandleCommand(ControllerButton::ButtonA, KeyState::DOWN, i);
 				input.HandleCommand(ControllerButton::ButtonB, KeyState::DOWN, i);
+				//input.HandleCommand(ControllerButton::Nothing, KeyState::NOTHING, i);
 				input.HandleCommand(ControllerButton::DPadRight, KeyState::PRESSED, i);
+
 			}
 
 

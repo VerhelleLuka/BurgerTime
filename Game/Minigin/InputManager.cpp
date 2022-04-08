@@ -92,9 +92,7 @@ bool dae::InputManager::ProcessInput()
 
 bool dae::InputManager::IsDown(ControllerButton button, int playerIdx) const
 {
-
 	return pImpl->IsDown(button, playerIdx);
-
 }
 
 bool dae::InputManager::IsReleased(ControllerButton button, int playerIdx) const
@@ -130,7 +128,12 @@ void dae::InputManager::HandleCommand(ControllerButton button, KeyState keyState
 	case KeyState::PRESSED:
 		if (IsPressed(button, playerIdx))
 		{
-
+			pImpl->GetButtonCommands(playerIdx)[button]->Execute();
+		}
+		break;
+	case KeyState::NOTHING:
+		if (button == ControllerButton::Nothing)
+		{
 			pImpl->GetButtonCommands(playerIdx)[button]->Execute();
 		}
 		break;
