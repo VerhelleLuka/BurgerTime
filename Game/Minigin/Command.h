@@ -2,6 +2,8 @@
 #include <iostream>
 #include "GameObject.h"
 #include "PeterPepper.h"
+#include "SpriteComponent.h"
+#include "Animation.h"
 namespace dae
 {
 
@@ -30,6 +32,16 @@ namespace dae
 		void Execute() override
 		{
 			m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->AddPoints(100);
+		}
+	};
+
+	class MoveRight final : public Command
+	{
+	public:
+		void Execute() override
+		{
+			m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimation().SetPos(Float2(250, 0.f));
+			m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimation().SetReversed(true);
 		}
 	};
 }

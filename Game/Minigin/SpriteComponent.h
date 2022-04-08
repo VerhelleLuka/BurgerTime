@@ -12,19 +12,23 @@ namespace dae
 		~SpriteComponent() = default;
 
 		SpriteComponent(const SpriteComponent& rhs) = delete;
-		SpriteComponent(SpriteComponent&& rhs) noexcept;
+		SpriteComponent(SpriteComponent&& rhs) noexcept = delete;
 
-		SpriteComponent& operator=(SpriteComponent&& rhs) noexcept;
+		SpriteComponent& operator=(SpriteComponent&& rhs) noexcept = delete;
 		SpriteComponent operator=(const SpriteComponent& rhs) = delete;
 
 		virtual void Update(float deltaTime) override;
 		virtual void Render() const;
 
-		virtual void SetAnimation(std::shared_ptr<Animation> animation);
+		void SetActiveAnimation(std::shared_ptr<Animation> animation);
+		Animation& GetAnimation() const { return *m_pActiveAnimation; }
+
+		void AddAnimation(std::shared_ptr<Animation> animation);
 
 	private:
 		//Just one animation per spritecomponent for now
-		std::shared_ptr<Animation> m_pAnimation;
+		std::vector<std::shared_ptr<Animation>> m_pAnimation;
+		std::shared_ptr<Animation> m_pActiveAnimation;
 	};
 }
 

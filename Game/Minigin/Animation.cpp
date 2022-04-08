@@ -12,6 +12,7 @@ dae::Animation::Animation(int rows, int nrFrames, std::string name)
 }
 void dae::Animation::Update(float elapsedSec)
 {
+	m_DeltaTime = elapsedSec;
 	int width, height;
 	SDL_QueryTexture(m_pTexture->GetSDLTexture(), NULL, NULL, &width, &height);
 	width /= m_NrFrames;
@@ -20,23 +21,33 @@ void dae::Animation::Update(float elapsedSec)
 		m_Position.x,
 		m_Position.y,
 		(float)width * m_Scale,
-		(float)height* m_Scale
-
+		(float)height * m_Scale
 	};
-
-	m_SrcRect = Float4
+	if (!m_IsReversed)
 	{
-		(m_DstRect.z / m_Scale) * m_CurrentFrame,
-		0,
-		(m_DstRect.z / m_Scale),
-		(m_DstRect.w / m_Scale)
-	};
+		m_SrcRect = Float4{
+			(m_DstRect.z / m_Scale) * m_CurrentFrame,
+			0,
+			(m_DstRect.z / m_Scale),
+			(m_DstRect.w / m_Scale)
+		};
+	}
+	else
+	{
+		m_SrcRect = Float4
+		{
+			(m_DstRect.z / m_Scale) * m_CurrentFrame,
+			0,
+			(m_DstRect.z / m_Scale),
+			(m_DstRect.w / m_Scale)
+		};
+	}
 
 	m_FrameChangeCounter += elapsedSec;
 	if (m_FrameChangeCounter >= m_FramesSec)
 	{
 		m_FrameChangeCounter = 0.f;
-		if (m_CurrentFrame < m_NrFrames -1 )
+		if (m_CurrentFrame < m_NrFrames - 1)
 		{
 			m_CurrentFrame++;
 		}
@@ -54,4 +65,10 @@ void dae::Animation::SetTexture(const std::string& fileName)
 {
 	m_pTexture = ResourceManager::GetInstance().LoadTexture(fileName);
 
+}
+
+void dae::Animation::SetPos(Float2 pos)
+{
+	m_Position.x += pos.x * m_DeltaTime;
+	m_Position.y += pos.y * m_DeltaTime;
 }
