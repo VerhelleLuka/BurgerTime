@@ -100,14 +100,37 @@ void dae::Minigin::CreatePeterPepperAndHUD(int playerNr) const
 	}
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 
+	//Create gameobject and components
+	auto peterPepperGo = std::make_shared<GameObject>();
 	auto peterPepper = std::make_shared<PeterPepperComponent>(3, m_SteamApi);
 	auto peterPSprite = std::make_shared<SpriteComponent>();
 
-	auto peterPAnimation = std::make_shared<Animation>(3, 3,"leftRight");
-	peterPAnimation->SetTexture("PeterPepper/LeftRightSprite.png");
-	peterPAnimation->SetScale(2.f);
-	auto peterPepperGo = std::make_shared<GameObject>();
-	peterPSprite->SetAnimation(peterPAnimation);
+	//Create animations 
+	//Right
+	auto peterPAnimationRight = std::make_shared<Animation>(3, 3);
+	peterPAnimationRight->SetTexture("PeterPepper/LeftRightSprite.png");
+	peterPAnimationRight->SetScale(2.f);
+	//Left
+	auto peterPAnimationLeft = std::make_shared<Animation>(3, 3);
+	peterPAnimationLeft->SetTexture("PeterPepper/LeftRightSprite.png");
+	peterPAnimationLeft->SetScale(2.f);
+	//Up
+	auto peterPAnimationUp = std::make_shared<Animation>(3, 3);
+	peterPAnimationUp->SetTexture("PeterPepper/ClimbUpSprite.png");
+	peterPAnimationUp->SetScale(2.f);
+	//Down
+	auto peterPAnimationDown = std::make_shared<Animation>(3, 3);
+	peterPAnimationDown->SetTexture("PeterPepper/ClimbDownSprite.png");
+	peterPAnimationDown->SetScale(2.f);
+
+	//Add animation to sprite
+	peterPSprite->AddAnimation(peterPAnimationRight, "RunRight");
+	peterPSprite->AddAnimation(peterPAnimationLeft, "RunLeft");
+	peterPSprite->AddAnimation(peterPAnimationUp, "Climb");
+	peterPSprite->AddAnimation(peterPAnimationLeft, "Descend");
+
+	peterPSprite->SetActiveAnimation("RunRight");
+
 	peterPepperGo->AddComponent(peterPSprite, "Sprite");
 	peterPepperGo->AddComponent(peterPepper, "PeterPepper");
 	peterPepper->SetGameObject(peterPepperGo.get());
@@ -136,14 +159,11 @@ void dae::Minigin::CreatePeterPepperAndHUD(int playerNr) const
 	auto& input = InputManager::GetInstance();
 	input.AddCommand(ControllerButton::ButtonA, new Damage, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::ButtonB, new GainPoints, peterPepperGo.get(), playerNr);
-<<<<<<< HEAD
 	input.AddCommand(ControllerButton::DPadRight, new MoveRight, peterPepperGo.get(), playerNr);
-<<<<<<< HEAD
+	input.AddCommand(ControllerButton::DPadLeft, new MoveLeft, peterPepperGo.get(), playerNr);
+	input.AddCommand(ControllerButton::DPadDown, new MoveDown, peterPepperGo.get(), playerNr);
+	input.AddCommand(ControllerButton::DPadUp, new MoveUp, peterPepperGo.get(), playerNr);
 	//input.AddCommand(ControllerButton::Nothing, new Idle, peterPepperGo.get(), playerNr);
-=======
->>>>>>> parent of 29938e7 (Added animations/sprites)
-=======
->>>>>>> parent of 7237c31 (Broke my sprite component)
 }
 
 void dae::Minigin::Cleanup()
@@ -192,16 +212,12 @@ void dae::Minigin::Run()
 			{
 				input.HandleCommand(ControllerButton::ButtonA, KeyState::DOWN, i);
 				input.HandleCommand(ControllerButton::ButtonB, KeyState::DOWN, i);
-<<<<<<< HEAD
-<<<<<<< HEAD
 				//input.HandleCommand(ControllerButton::Nothing, KeyState::NOTHING, i);
 				input.HandleCommand(ControllerButton::DPadRight, KeyState::PRESSED, i);
+				input.HandleCommand(ControllerButton::DPadLeft, KeyState::PRESSED, i);
+				input.HandleCommand(ControllerButton::DPadUp, KeyState::PRESSED, i);
+				input.HandleCommand(ControllerButton::DPadDown, KeyState::PRESSED, i);
 
-=======
->>>>>>> parent of 29938e7 (Added animations/sprites)
-=======
-				input.HandleCommand(ControllerButton::DPadRight, KeyState::PRESSED, i);
->>>>>>> parent of 7237c31 (Broke my sprite component)
 			}
 
 

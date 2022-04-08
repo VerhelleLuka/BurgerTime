@@ -2,6 +2,7 @@
 #include <iostream>
 #include "GameObject.h"
 #include "PeterPepper.h"
+#include "SpriteComponent.h"
 namespace dae
 {
 
@@ -14,7 +15,7 @@ namespace dae
 	protected:
 		GameObject* m_pGameObject;
 	};
-	
+
 	class Damage final : public Command
 	{
 	public:
@@ -38,10 +39,56 @@ namespace dae
 	public:
 		void Execute() override
 		{
-			m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimation().SetPos(Float2(250, 0.f));
-			m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimation().SetReversed(true);
+			m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetPositions(Float2(250.f, 0.f));
+			if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() != "RunRight")
+				m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("RunRight");
+
 		}
 	};
-=======
->>>>>>> parent of 29938e7 (Added animations/sprites)
+	class MoveLeft final : public Command
+	{
+	public:
+		void Execute() override
+		{
+			m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetPositions(Float2(-250.f, 0.f));
+			if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() != "RunLeft")
+				m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("RunLeft");
+
+		}
+	};
+
+	class MoveUp final : public Command
+	{
+	public:
+		void Execute() override
+		{
+			m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetPositions(Float2(0.f, 250.f));
+			if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() != "Climb")
+				m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Climb");
+
+		}
+	};
+
+	class MoveDown final : public Command
+	{
+	public:
+		void Execute() override
+		{
+			m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetPositions(Float2(0.f, -250.f));
+			if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() != "Descend")
+				m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Descend");
+
+		}
+	};
+	class Idle final : public Command
+	{
+	public:
+		void Execute() override
+		{
+			if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() != "Idle")
+
+			m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Idle");
+		}
+	};
+
 }

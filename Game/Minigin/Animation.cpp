@@ -3,15 +3,16 @@
 #include "Structs.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
-dae::Animation::Animation(int rows, int nrFrames, std::string name)
+dae::Animation::Animation(int rows, int nrFrames)
 	:m_Rows(rows),
 	m_NrFrames(nrFrames),
-	m_Name(name),
-	m_CurrentFrame(0)
+	m_CurrentFrame(0),
+	m_DeltaTime(0.f)
 {
 }
 void dae::Animation::Update(float elapsedSec)
 {
+	m_DeltaTime = elapsedSec;
 	int width, height;
 	SDL_QueryTexture(m_pTexture->GetSDLTexture(), NULL, NULL, &width, &height);
 	width /= m_NrFrames;
@@ -54,4 +55,10 @@ void dae::Animation::SetTexture(const std::string& fileName)
 {
 	m_pTexture = ResourceManager::GetInstance().LoadTexture(fileName);
 
+}
+
+void dae::Animation::SetPos(Float2 pos)
+{
+	m_Position.x += pos.x * m_DeltaTime;
+	m_Position.y += pos.y * m_DeltaTime;
 }
