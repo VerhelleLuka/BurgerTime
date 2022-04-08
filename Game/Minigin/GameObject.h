@@ -33,7 +33,9 @@ namespace dae
 		void RemoveChild(std::shared_ptr<GameObject> objToDelete);
 		void AddChild(std::shared_ptr<GameObject> go);
 
-
+		Transform& GetTransform() { return m_Transform; }
+		void SetTransform(Transform transform);
+		void SetTransform(float x, float y, float z);
 		GameObject() = default;
 		virtual ~GameObject();
 		GameObject(const GameObject& other) = delete;
@@ -45,5 +47,7 @@ namespace dae
 		std::map<std::string, std::shared_ptr<BaseComponent>> m_pComponents;
 		std::vector<std::shared_ptr<GameObject>> m_pGameObjects;
 		std::weak_ptr<GameObject> m_pParent;
+
+		Transform m_Transform;
 	};
 }

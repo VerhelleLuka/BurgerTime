@@ -34,6 +34,10 @@ namespace dae
 		std::map<std::string, std::shared_ptr<Animation>> m_pAnimations;
 		std::shared_ptr<Animation> m_pActiveAnimation;
 		std::string m_pActiveAnimationName;
+
+		//Texutre data
+		SDL_Rect m_DstRect, m_SrcRect;
+	
 	};
 }
 

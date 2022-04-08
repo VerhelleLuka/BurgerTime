@@ -39,3 +39,4 @@ void dae::PeterPepperComponent::ReduceLife()
 		Notify(EventType::LOSTLIFE, emptyArgs);
 	}
 }
+

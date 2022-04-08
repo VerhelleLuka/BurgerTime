@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "PeterPepper.h"
 #include "SpriteComponent.h"
+#include "RigidBodyComponent.h"
 namespace dae
 {
 
@@ -39,7 +40,8 @@ namespace dae
 	public:
 		void Execute() override
 		{
-			m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetPositions(Float2(250.f, 0.f));
+			
+			m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(250.f, 0.f));
 			if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() != "RunRight")
 				m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("RunRight");
 
@@ -50,7 +52,8 @@ namespace dae
 	public:
 		void Execute() override
 		{
-			m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetPositions(Float2(-250.f, 0.f));
+			m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(-250.f, 0.f));
+
 			if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() != "RunLeft")
 				m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("RunLeft");
 
@@ -62,7 +65,8 @@ namespace dae
 	public:
 		void Execute() override
 		{
-			m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetPositions(Float2(0.f, 250.f));
+			m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(0.f, -250.f));
+
 			if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() != "Climb")
 				m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Climb");
 
@@ -74,7 +78,8 @@ namespace dae
 	public:
 		void Execute() override
 		{
-			m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetPositions(Float2(0.f, -250.f));
+			m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(0.f, 250.f));
+
 			if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() != "Descend")
 				m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Descend");
 

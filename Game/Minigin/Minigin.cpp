@@ -18,6 +18,7 @@
 #include "PointsDisplayComponent.h"
 #include "SpriteComponent.h"
 #include "Animation.h"
+#include "RigidBodyComponent.h"
 using namespace std;
 
 void PrintSDLVersion()
@@ -102,6 +103,9 @@ void dae::Minigin::CreatePeterPepperAndHUD(int playerNr) const
 
 	//Create gameobject and components
 	auto peterPepperGo = std::make_shared<GameObject>();
+	Transform transform{};
+	transform.SetPosition(50.f, 50.f, 0.f);
+	peterPepperGo->SetTransform(transform);
 	auto peterPepper = std::make_shared<PeterPepperComponent>(3, m_SteamApi);
 	auto peterPSprite = std::make_shared<SpriteComponent>();
 
@@ -122,17 +126,27 @@ void dae::Minigin::CreatePeterPepperAndHUD(int playerNr) const
 	auto peterPAnimationDown = std::make_shared<Animation>(3, 3);
 	peterPAnimationDown->SetTexture("PeterPepper/ClimbDownSprite.png");
 	peterPAnimationDown->SetScale(2.f);
-
+	//Idle
+	auto peterPAnimationIdle = std::make_shared<Animation>(1, 1);
+	peterPAnimationDown->SetTexture("PeterPepper/IdleSprite.png");
+	peterPAnimationDown->SetScale(2.f);
 	//Add animation to sprite
 	peterPSprite->AddAnimation(peterPAnimationRight, "RunRight");
 	peterPSprite->AddAnimation(peterPAnimationLeft, "RunLeft");
 	peterPSprite->AddAnimation(peterPAnimationUp, "Climb");
 	peterPSprite->AddAnimation(peterPAnimationLeft, "Descend");
+	//peterPSprite->AddAnimation(peterPAnimationIdle, "Idle");
 
 	peterPSprite->SetActiveAnimation("RunRight");
 
+	//RigidbodyComponent
+	auto pRigidBody = std::make_shared<RigidBodyComponent>();
+	pRigidBody->SetGameObject(peterPepperGo.get());
+
 	peterPepperGo->AddComponent(peterPSprite, "Sprite");
 	peterPepperGo->AddComponent(peterPepper, "PeterPepper");
+	peterPepperGo->AddComponent(pRigidBody, "RigidBody");
+
 	peterPepper->SetGameObject(peterPepperGo.get());
 	scene.Add(peterPepperGo);
 
@@ -193,7 +207,7 @@ void dae::Minigin::Run()
 		bool doContinue = true;
 		auto lastTime = std::chrono::high_resolution_clock::now();
 		float lag = 0.0f;
-		int nrOfPlayers = 2;
+		int nrOfPlayers = 1;
 		//float fixedTimeStep = 0.02f;
 		while (doContinue)
 		{
@@ -215,8 +229,8 @@ void dae::Minigin::Run()
 				//input.HandleCommand(ControllerButton::Nothing, KeyState::NOTHING, i);
 				input.HandleCommand(ControllerButton::DPadRight, KeyState::PRESSED, i);
 				input.HandleCommand(ControllerButton::DPadLeft, KeyState::PRESSED, i);
-				input.HandleCommand(ControllerButton::DPadUp, KeyState::PRESSED, i);
 				input.HandleCommand(ControllerButton::DPadDown, KeyState::PRESSED, i);
+				input.HandleCommand(ControllerButton::DPadUp, KeyState::PRESSED, i);
 
 			}
 

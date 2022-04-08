@@ -14,6 +14,9 @@ void dae::SpriteComponent::SetActiveAnimation(const std::string& name)
 
 void dae::SpriteComponent::Update(float elapsedSec)
 {
+	//ZOEK DIRTY/ISDIRTY FLAG OP
+	//DAARMEE KON GE ZIEN WANNEER DATA MOET VERANDERD WORDEN DIE TIJDELIJK NIET GEBRUIKT WORDT
+
 	if (m_pActiveAnimation != nullptr)
 		m_pActiveAnimation->Update(elapsedSec);
 }

@@ -15,11 +15,12 @@ void dae::Animation::Update(float elapsedSec)
 	m_DeltaTime = elapsedSec;
 	int width, height;
 	SDL_QueryTexture(m_pTexture->GetSDLTexture(), NULL, NULL, &width, &height);
+	SDL_RenderCopy()
 	width /= m_NrFrames;
 	m_DstRect = Float4
 	{
-		m_Position.x,
-		m_Position.y,
+		m_pParent,
+		,
 		(float)width * m_Scale,
 		(float)height* m_Scale
 

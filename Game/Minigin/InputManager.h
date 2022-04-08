@@ -11,11 +11,12 @@ namespace dae
 	{
 		DOWN,
 		PRESSED,
-		RELEASED
+		RELEASED,
+		NOTHING
 	};
 	enum class ControllerButton
 	{
-
+		Nothing = 0x0000,
 		ButtonA = 0x1000,
 		ButtonB = 0x2000,
 		ButtonX = 0x4000,

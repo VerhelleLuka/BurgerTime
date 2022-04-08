@@ -162,6 +162,9 @@
     <ClInclude Include="Structs.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="RigidBodyComponent.h">
+      <Filter>Source Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MiniginPCH.cpp">
@@ -265,6 +268,9 @@
     </ClCompile>
     <ClCompile Include="SpriteComponent.cpp">
       <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="RigidBodyComponent.cpp">
+      <Filter>Header Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

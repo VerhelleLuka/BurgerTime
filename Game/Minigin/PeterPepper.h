@@ -5,6 +5,7 @@
 #include "Subject.h"
 #include "EventStructs.h"
 #include "Achievements.h"
+#include "Structs.h"
 namespace dae
 {
 
@@ -27,6 +28,7 @@ namespace dae
 		int GetLives() { return m_Lives; }
 		void AddPoints(int points);
 		int GetPoints(){return m_Points;}
+	
 	protected:
 		GameObject* m_pParent{};
 

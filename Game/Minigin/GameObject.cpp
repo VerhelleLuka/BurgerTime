@@ -11,6 +11,7 @@ void dae::GameObject::Update(float deltaTime)
 	for (auto& component : m_pComponents)
 	{
 		component.second->Update(deltaTime);
+		
 	}
 	for (auto& child : m_pGameObjects)
 	{
@@ -77,6 +78,15 @@ void dae::GameObject::AddChild(std::shared_ptr<GameObject> go)
 	m_pGameObjects.push_back(go);
 }
 
+void dae::GameObject::SetTransform(Transform transform)
+{
+	m_Transform.SetPosition(transform.GetPosition().x, transform.GetPosition().y, transform.GetPosition().z);
+}
+void dae::GameObject::SetTransform(float x, float y, float z)
+{
+	m_Transform.SetPosition(x,y,z);
+
+}
 
 dae::GameObject::~GameObject()
 {

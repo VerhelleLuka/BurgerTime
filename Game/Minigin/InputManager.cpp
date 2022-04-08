@@ -133,6 +133,12 @@ void dae::InputManager::HandleCommand(ControllerButton button, KeyState keyState
 
 			pImpl->GetButtonCommands(playerIdx)[button]->Execute();
 		}
+	case KeyState::NOTHING:
+		if (button == ControllerButton::Nothing)
+		{
+			pImpl->GetButtonCommands(playerIdx)[button]->Execute();
+
+		}
 		break;
 	}
 }
