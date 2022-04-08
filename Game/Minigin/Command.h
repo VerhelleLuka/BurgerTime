@@ -32,7 +32,6 @@ namespace dae
 			m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->AddPoints(100);
 		}
 	};
-<<<<<<< HEAD
 
 	class MoveRight final : public Command
 	{
