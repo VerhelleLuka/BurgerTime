@@ -142,8 +142,11 @@ void dae::Minigin::CreatePeterPepperAndHUD(int playerNr) const
 	auto& input = InputManager::GetInstance();
 	input.AddCommand(ControllerButton::ButtonA, new Damage, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::ButtonB, new GainPoints, peterPepperGo.get(), playerNr);
+<<<<<<< HEAD
 	input.AddCommand(ControllerButton::DPadRight, new MoveRight, peterPepperGo.get(), playerNr);
 	//input.AddCommand(ControllerButton::Nothing, new Idle, peterPepperGo.get(), playerNr);
+=======
+>>>>>>> parent of 29938e7 (Added animations/sprites)
 }
 
 void dae::Minigin::Cleanup()
@@ -192,9 +195,12 @@ void dae::Minigin::Run()
 			{
 				input.HandleCommand(ControllerButton::ButtonA, KeyState::DOWN, i);
 				input.HandleCommand(ControllerButton::ButtonB, KeyState::DOWN, i);
+<<<<<<< HEAD
 				//input.HandleCommand(ControllerButton::Nothing, KeyState::NOTHING, i);
 				input.HandleCommand(ControllerButton::DPadRight, KeyState::PRESSED, i);
 
+=======
+>>>>>>> parent of 29938e7 (Added animations/sprites)
 			}
 
 

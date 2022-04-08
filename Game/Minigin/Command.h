@@ -2,8 +2,6 @@
 #include <iostream>
 #include "GameObject.h"
 #include "PeterPepper.h"
-#include "SpriteComponent.h"
-#include "Animation.h"
 namespace dae
 {
 
@@ -34,6 +32,7 @@ namespace dae
 			m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->AddPoints(100);
 		}
 	};
+<<<<<<< HEAD
 
 	class MoveRight final : public Command
 	{
@@ -57,4 +56,6 @@ namespace dae
 			m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Idle");
 		}
 	};
+=======
+>>>>>>> parent of 29938e7 (Added animations/sprites)
 }

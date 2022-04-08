@@ -9,13 +9,5 @@ namespace dae
 	struct Float2
 	{
 		float x{}, y{};
-
-		Float2 operator+=(const Float2& rhs)
-		{
-			this->x += rhs.x;
-			this->y += rhs.y;
-
-			return *this;
-		}
 	};
 }
