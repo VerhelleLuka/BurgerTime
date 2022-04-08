@@ -1,0 +1,23 @@
+#pragma once
+#include "GameObject.h"
+#include "Transform.h"
+#include "BaseComponent.h"
+#include "Observer.h"
+
+namespace dae
+{
+	//Had to do this because otherwise in the cpp i get an error for not referencing args
+	class LivesDisplayComponent final: public BaseComponent, public Observer
+	{
+	public:
+		virtual void Update(float deltaTime) override { deltaTime = 0; };
+		virtual void Render() const override {};
+		LivesDisplayComponent(std::shared_ptr<GameObject> pParent):m_Lives(3), m_pParent(pParent.get()) {};
+		virtual ~LivesDisplayComponent() {};
+		virtual void OnNotify(EventType event_, std::shared_ptr<EventArgs> args) override;
+
+	protected:
+		GameObject* m_pParent{};
+		int m_Lives;
+	};
+}
