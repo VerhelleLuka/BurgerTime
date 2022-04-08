@@ -17,6 +17,5 @@ namespace dae
 		void CreatePeterPepperAndHUD(int playerNr) const;
 		bool m_SteamApi;
 
-		bool m_SpriteTest = false;
 	};
 }

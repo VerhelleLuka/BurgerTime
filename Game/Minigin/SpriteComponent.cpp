@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "Animation.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 void dae::SpriteComponent::SetActiveAnimation(const std::string& name)
 {
 	m_pActiveAnimation.reset();
@@ -16,6 +17,12 @@ void dae::SpriteComponent::SetAnimation(std::shared_ptr<Animation> animation)
 	m_pAnimation.reset();
 	m_pAnimation = animation;
 >>>>>>> parent of 29938e7 (Added animations/sprites)
+=======
+void dae::SpriteComponent::SetActiveAnimation(std::shared_ptr<Animation> animation)
+{
+	m_pActiveAnimation.reset();
+	m_pActiveAnimation = animation;
+>>>>>>> parent of 7237c31 (Broke my sprite component)
 }
 
 void dae::SpriteComponent::Update(float elapsedSec)
@@ -31,13 +38,9 @@ void dae::SpriteComponent::Render() const
 		m_pActiveAnimation->Render();
 }
 
-void dae::SpriteComponent::AddAnimation(std::shared_ptr<Animation> animation, const std::string& name)
+void dae::SpriteComponent::AddAnimation(std::shared_ptr<Animation> animation)
 {
-	m_pAnimations[name] = animation;
-}
-
-void dae::SpriteComponent::SetPositions(Float2 pos)
-{
+<<<<<<< HEAD
 	for (const std::pair<std::string, std::shared_ptr<Animation>>& element : m_pAnimations) {
 		element.second->SetPos(pos);
 	}
@@ -45,4 +48,7 @@ void dae::SpriteComponent::SetPositions(Float2 pos)
 	if (m_pAnimation != nullptr)
 		m_pAnimation->Render();
 >>>>>>> parent of 29938e7 (Added animations/sprites)
+=======
+	m_pAnimations.push_back(animation);
+>>>>>>> parent of 7237c31 (Broke my sprite component)
 }

@@ -14,7 +14,7 @@ namespace dae
 	protected:
 		GameObject* m_pGameObject;
 	};
-
+	
 	class Damage final : public Command
 	{
 	public:
@@ -38,21 +38,8 @@ namespace dae
 	public:
 		void Execute() override
 		{
-			m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetPositions(Float2(250, 0.f));
+			m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimation().SetPos(Float2(250, 0.f));
 			m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimation().SetReversed(true);
-			if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() != "Run")
-				m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Run");
-
-		}
-	};
-	class Idle final : public Command
-	{
-	public:
-		void Execute() override
-		{
-			if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() != "Idle")
-
-			m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Idle");
 		}
 	};
 =======
