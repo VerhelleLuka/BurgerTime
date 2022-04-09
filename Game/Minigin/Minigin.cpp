@@ -181,6 +181,8 @@ void dae::Minigin::CreatePeterPepperAndHUD(int playerNr) const
 	input.AddCommand(ControllerButton::DPadDown, new MoveDown, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::DPadUp, new MoveUp, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::Nothing, new Idle, peterPepperGo.get(), playerNr);
+
+	peterPepperGo->SetTransform(0, 400, 0);
 }
 
 void dae::Minigin::Cleanup()

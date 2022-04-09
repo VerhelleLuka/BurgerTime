@@ -7,10 +7,7 @@ void dae::SpriteComponent::SetActiveAnimation(const std::string& name)
 {
 	m_pActiveAnimation.reset();
 	m_pActiveAnimation = m_pAnimations[name];
-	if (name == "Descend")
-	{
-		std::cout << "Ow yeah\n";
-	}
+
 	m_pActiveAnimationName = name;
 
 	//Update all animation positions to prevent weird teleporting

@@ -1,0 +1,12 @@
+#Peter Pepper level1
+#This file layout is base on the .obj file format.
+#List of platforms and their position (x and y) and width
+p 50.0 50.0 50
+p 110.0 50.0 50 
+#List of levels and their position (x and y) and height
+ld 100.0 50.0 50.0
+#List of player spawn positions in 1 and 2 player mode (co-op and versus)
+ps 55.0 50.0
+ps 155.0 50.0
+#List of enemy spawn positions
+ 
