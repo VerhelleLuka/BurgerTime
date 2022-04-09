@@ -110,10 +110,15 @@ void dae::Minigin::CreatePeterPepperAndHUD(int playerNr) const
 	auto peterPSprite = std::make_shared<SpriteComponent>();
 
 	//Create animations 
+	// 	//Down
+	auto peterPAnimationDown = std::make_shared<Animation>(3, 3);
+	peterPAnimationDown->SetTexture("PeterPepper/ClimbDownSprite.png");
+	peterPAnimationDown->SetScale(2.f);
 	//Right
 	auto peterPAnimationRight = std::make_shared<Animation>(3, 3);
 	peterPAnimationRight->SetTexture("PeterPepper/LeftRightSprite.png");
 	peterPAnimationRight->SetScale(2.f);
+
 	//Left
 	auto peterPAnimationLeft = std::make_shared<Animation>(3, 3);
 	peterPAnimationLeft->SetTexture("PeterPepper/LeftRightSprite.png");
@@ -122,21 +127,19 @@ void dae::Minigin::CreatePeterPepperAndHUD(int playerNr) const
 	auto peterPAnimationUp = std::make_shared<Animation>(3, 3);
 	peterPAnimationUp->SetTexture("PeterPepper/ClimbUpSprite.png");
 	peterPAnimationUp->SetScale(2.f);
-	//Down
-	auto peterPAnimationDown = std::make_shared<Animation>(3, 3);
-	peterPAnimationDown->SetTexture("PeterPepper/ClimbDownSprite.png");
-	peterPAnimationDown->SetScale(2.f);
 	//Idle
 	auto peterPAnimationIdle = std::make_shared<Animation>(1, 1);
-	peterPAnimationDown->SetTexture("PeterPepper/IdleSprite.png");
-	peterPAnimationDown->SetScale(2.f);
+	peterPAnimationIdle->SetTexture("PeterPepper/IdleSprite.png");
+	peterPAnimationIdle->SetScale(2.f);
 	//Add animation to sprite
 	peterPSprite->AddAnimation(peterPAnimationRight, "RunRight");
+	peterPAnimationRight->SetReversed(true);
 	peterPSprite->AddAnimation(peterPAnimationLeft, "RunLeft");
 	peterPSprite->AddAnimation(peterPAnimationUp, "Climb");
-	peterPSprite->AddAnimation(peterPAnimationLeft, "Descend");
-	//peterPSprite->AddAnimation(peterPAnimationIdle, "Idle");
+	peterPSprite->AddAnimation(peterPAnimationDown, "Descend");
+	peterPSprite->AddAnimation(peterPAnimationIdle, "Idle");
 
+	peterPSprite->SetGameObject(peterPepperGo.get());
 	peterPSprite->SetActiveAnimation("RunRight");
 
 	//RigidbodyComponent
@@ -177,7 +180,7 @@ void dae::Minigin::CreatePeterPepperAndHUD(int playerNr) const
 	input.AddCommand(ControllerButton::DPadLeft, new MoveLeft, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::DPadDown, new MoveDown, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::DPadUp, new MoveUp, peterPepperGo.get(), playerNr);
-	//input.AddCommand(ControllerButton::Nothing, new Idle, peterPepperGo.get(), playerNr);
+	input.AddCommand(ControllerButton::Nothing, new Idle, peterPepperGo.get(), playerNr);
 }
 
 void dae::Minigin::Cleanup()
@@ -226,7 +229,7 @@ void dae::Minigin::Run()
 			{
 				input.HandleCommand(ControllerButton::ButtonA, KeyState::DOWN, i);
 				input.HandleCommand(ControllerButton::ButtonB, KeyState::DOWN, i);
-				//input.HandleCommand(ControllerButton::Nothing, KeyState::NOTHING, i);
+				input.HandleCommand(ControllerButton::Nothing, KeyState::NOTHING, i);
 				input.HandleCommand(ControllerButton::DPadRight, KeyState::PRESSED, i);
 				input.HandleCommand(ControllerButton::DPadLeft, KeyState::PRESSED, i);
 				input.HandleCommand(ControllerButton::DPadDown, KeyState::PRESSED, i);

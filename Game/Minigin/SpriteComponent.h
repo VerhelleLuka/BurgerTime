@@ -27,7 +27,7 @@ namespace dae
 
 		void AddAnimation(std::shared_ptr<Animation> animation, const std::string& name);
 
-		void SetPositions(Float2 pos);
+		//void SetPositions(Float2 pos);
 
 	private:
 		//Just one animation per spritecomponent for now
@@ -36,7 +36,7 @@ namespace dae
 		std::string m_pActiveAnimationName;
 
 		//Texutre data
-		SDL_Rect m_DstRect, m_SrcRect;
+		Float2 m_Position;
 	
 	};
 }

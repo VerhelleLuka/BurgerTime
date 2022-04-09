@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-struct Transform
+struct Transform_
 {
 	float matrix[16] = {
 		1,0,0,0,
@@ -13,7 +13,7 @@ struct Transform
 class GameObject3D
 {
 public:
-	Transform transform;
+	Transform_ transform;
 	size_t ID = 10;
 };
 
@@ -21,7 +21,7 @@ class GameObject3DAlt
 {
 public:
 	size_t ID = 10;
-	Transform* transform;
+	Transform_* transform;
 };
 namespace dae
 {

@@ -7,18 +7,25 @@ void dae::SpriteComponent::SetActiveAnimation(const std::string& name)
 {
 	m_pActiveAnimation.reset();
 	m_pActiveAnimation = m_pAnimations[name];
-
+	if (name == "Descend")
+	{
+		std::cout << "Ow yeah\n";
+	}
 	m_pActiveAnimationName = name;
+
+	//Update all animation positions to prevent weird teleporting
+	for (auto& element : m_pAnimations)
+	{
+		element.second->Update(0.f, m_pParent->GetTransform());
+	}
+
 }
 
 
 void dae::SpriteComponent::Update(float elapsedSec)
 {
-	//ZOEK DIRTY/ISDIRTY FLAG OP
-	//DAARMEE KON GE ZIEN WANNEER DATA MOET VERANDERD WORDEN DIE TIJDELIJK NIET GEBRUIKT WORDT
-
 	if (m_pActiveAnimation != nullptr)
-		m_pActiveAnimation->Update(elapsedSec);
+		m_pActiveAnimation->Update(elapsedSec, m_pParent->GetTransform());
 }
 
 void dae::SpriteComponent::Render() const
@@ -29,14 +36,15 @@ void dae::SpriteComponent::Render() const
 
 void dae::SpriteComponent::AddAnimation(std::shared_ptr<Animation> animation,const std::string& name)
 {
-
 	m_pAnimations[name] = animation;
+
 }
 
-void dae::SpriteComponent::SetPositions(Float2 pos)
-{
-	m_pActiveAnimation->SetPos(pos);
-	for (const std::pair<std::string, std::shared_ptr<Animation>>& element : m_pAnimations) {
-		element.second->SetGlobalPos(m_pActiveAnimation->GetPos());
-	}
-}
+//void dae::SpriteComponent::SetPositions(Float2 pos)
+//{
+//	//m_pActiveAnimation->SetPos(pos);
+//	//for (auto& element : m_pAnimations)
+//	//{
+//	//	element.second->SetIsDirty(true);
+//	//}
+//}
