@@ -27,8 +27,8 @@ void dae::Animation::Update(float elapsedSec, Transform transform)
 
 	};
 
-	if (!m_IsReversed)
-	{
+	//if (!m_IsFlipped)
+	//{
 		m_SrcRect = Float4
 		{
 			(m_DstRect.z / m_Scale) * m_CurrentFrame,
@@ -36,17 +36,17 @@ void dae::Animation::Update(float elapsedSec, Transform transform)
 			(m_DstRect.z / m_Scale),
 			(m_DstRect.w / m_Scale)
 		};
-	}
-	else
-	{
-		m_SrcRect = Float4
-		{
-			(m_DstRect.z / m_Scale) * m_CurrentFrame + (m_DstRect.z / m_Scale) ,
-			0,
-			-(m_DstRect.z / m_Scale),
-			(m_DstRect.w / m_Scale)
-		};
-	}
+	//}
+	//else
+	//{
+	//	m_SrcRect = Float4
+	//	{
+	//		(m_DstRect.z / m_Scale) * m_CurrentFrame + (m_DstRect.z / m_Scale),
+	//		0,
+	//		(m_DstRect.z / m_Scale)* m_CurrentFrame,
+	//		(m_DstRect.w / m_Scale)
+	//	};
+	//}
 
 	m_FrameChangeCounter += elapsedSec;
 	if (m_FrameChangeCounter >= m_FramesSec)
@@ -63,7 +63,11 @@ void dae::Animation::Update(float elapsedSec, Transform transform)
 }
 void dae::Animation::Render()
 {
-	Renderer::GetInstance().RenderTexture(*m_pTexture, m_SrcRect, m_DstRect);
+	if (m_IsFlipped)
+	{
+		
+	}
+	Renderer::GetInstance().RenderTexture(*m_pTexture, m_SrcRect, m_DstRect, m_IsFlipped);
 }
 
 void dae::Animation::SetTexture(const std::string& fileName)

@@ -20,7 +20,7 @@ namespace dae
 		Float2 GetPos() const { return m_Position; }
 		//Set all positions to the position of the sprite that is in use right now
 		void SetGlobalPos(Float2 position) { m_Position = position; }
-		void SetReversed(bool reversed) { m_IsReversed = reversed; }
+		void SetReversed(bool flipped) { m_IsFlipped = flipped; }
 
 		//void SetIsDirty(bool isDirty) { m_IsDirty = isDirty; }
 		//bool GetIsDirty() { return m_IsDirty; }
@@ -36,7 +36,7 @@ namespace dae
 		Float2 m_Position;
 		Float4 m_DstRect, m_SrcRect;
 		float m_Scale {1.0f};
-		bool m_IsReversed = false;
+		bool m_IsFlipped = false;
 
 		//bool m_IsDirty;
 
