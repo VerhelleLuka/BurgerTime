@@ -13,11 +13,13 @@ namespace dae
 	class PointsDisplayComponent final : public BaseComponent, public Observer
 	{
 	public:
-		virtual void Update(float deltaTime) override { deltaTime = 0; };
+		virtual void Update(float /*deltaTime*/) override {  };
+		virtual void FixedUpdate(float /*deltaTime*/) override {}
+
 		virtual void Render() const override {};
 		PointsDisplayComponent(std::shared_ptr<GameObject> pParent) :m_Points(), m_pParent(pParent.get()) {};
 		virtual ~PointsDisplayComponent() {};
-		virtual void OnNotify(EventType event_,std::shared_ptr<EventArgs> eventArgs) override;
+		virtual void OnNotify(EventType event_, std::shared_ptr<EventArgs> eventArgs) override;
 
 	protected:
 		GameObject* m_pParent{};

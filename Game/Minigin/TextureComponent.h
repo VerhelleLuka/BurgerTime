@@ -10,6 +10,8 @@ namespace dae
 	public:
 		void SetTexture(const std::string& filename);
 		virtual void Update(float deltaTime) override;
+		virtual void FixedUpdate(float /*deltaTime*/) override {}
+
 		virtual void Render() const override;
 
 		void SetPosition(float x, float y);

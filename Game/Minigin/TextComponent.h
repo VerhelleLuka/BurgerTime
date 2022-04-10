@@ -11,6 +11,8 @@ namespace dae
 	{
 	public:
 		virtual void Update(float deltaTime) override;
+		virtual void FixedUpdate(float /*deltaTime*/) override {}
+
 		void Render() const override;
 
 		void SetText(const std::string& text);

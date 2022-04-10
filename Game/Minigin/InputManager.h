@@ -51,7 +51,7 @@ namespace dae
 		bool IsPressed(ControllerButton button, int playerIdx) const;
 		void AddCommand(ControllerButton button, Command* command, GameObject* pGameObject, int playerIdx);
 
-		void HandleCommand(ControllerButton button, KeyState keyState, int playerIdx);
+		void HandleCommand(ControllerButton button, KeyState keyState, int playerIdx, int inputDetected);
 	};
 
 

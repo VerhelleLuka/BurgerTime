@@ -3,10 +3,15 @@
 #include <string>
 #include "BaseComponent.h"
 #include"Structs.h"
+#include "Observer.h"
 namespace dae
 {
+	struct SpriteEventArgs : EventArgs
+	{
+		std::string name;
+	};
 	class Animation;
-	class SpriteComponent final : public BaseComponent
+	class SpriteComponent final : public BaseComponent, public Observer
 	{
 	public:
 		SpriteComponent() {};
@@ -19,6 +24,8 @@ namespace dae
 		SpriteComponent operator=(const SpriteComponent& rhs) = delete;
 
 		virtual void Update(float deltaTime) override;
+		virtual void FixedUpdate(float /*deltaTime*/) override {}
+
 		virtual void Render() const;
 
 		void SetActiveAnimation(const std::string& name);
@@ -27,7 +34,9 @@ namespace dae
 
 		void AddAnimation(std::shared_ptr<Animation> animation, const std::string& name);
 
-		//void SetPositions(Float2 pos);
+
+		//Observer stuff
+		virtual void OnNotify(EventType event_, std::shared_ptr<EventArgs> args) override;
 
 	private:
 		//Just one animation per spritecomponent for now

@@ -8,7 +8,13 @@
 #include "Structs.h"
 namespace dae
 {
-
+	enum class PeterPepperState
+	{
+		RunLeft = 1,
+		RunRight = 2,
+		Climb = 3,
+		Descend = 4
+	};
 	// Defining our achievements
 	enum EAchievements
 	{
@@ -19,6 +25,7 @@ namespace dae
 	{
 	public:
 		virtual void Update(float deltaTime) ;
+		virtual void FixedUpdate(float /*deltaTime*/) override {}
 		virtual void Render() const {};
 
 		PeterPepperComponent(int lives, bool steamApi) ;
@@ -28,10 +35,13 @@ namespace dae
 		int GetLives() { return m_Lives; }
 		void AddPoints(int points);
 		int GetPoints(){return m_Points;}
+		
+		void ChangeState(int state);
+
 	
 	protected:
 		GameObject* m_pParent{};
-
+		PeterPepperState m_State;
 	private:
 		int m_Lives;
 		int m_Points;
@@ -39,11 +49,11 @@ namespace dae
 
 
 		// Achievement array which will hold data about the achievements and their state
-		Achievement_t m_Achievements[1] =
-		{
-			_ACH_ID(ACH_WIN_ONE_GAME, "Winner"),
-		};
-		CSteamAchievements* m_pSteamAchievements = NULL;
+		//Achievement_t m_Achievements[1] =
+		//{
+		//	_ACH_ID(ACH_WIN_ONE_GAME, "Winner"),
+		//};
+		//CSteamAchievements* m_pSteamAchievements = NULL;
 
 	};
 }

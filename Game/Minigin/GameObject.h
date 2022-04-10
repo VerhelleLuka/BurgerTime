@@ -11,6 +11,7 @@ namespace dae
 	public:
 		
 		void Update(float deltaTime) override;
+		void FixedUpdate(float deltaTime) override;
 		void Render() const override;
 
 

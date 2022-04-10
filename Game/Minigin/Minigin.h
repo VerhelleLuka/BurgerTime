@@ -15,6 +15,7 @@ namespace dae
 		SDL_Window* m_Window{};
 
 		void CreatePeterPepperAndHUD(int playerNr) const;
+		void ParseLevel()const;
 		bool m_SteamApi;
 
 	};

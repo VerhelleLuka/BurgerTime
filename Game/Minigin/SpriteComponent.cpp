@@ -15,9 +15,7 @@ void dae::SpriteComponent::SetActiveAnimation(const std::string& name)
 	{
 		element.second->Update(0.f, m_pParent->GetTransform());
 	}
-
 }
-
 
 void dae::SpriteComponent::Update(float elapsedSec)
 {
@@ -37,11 +35,11 @@ void dae::SpriteComponent::AddAnimation(std::shared_ptr<Animation> animation,con
 
 }
 
-//void dae::SpriteComponent::SetPositions(Float2 pos)
-//{
-//	//m_pActiveAnimation->SetPos(pos);
-//	//for (auto& element : m_pAnimations)
-//	//{
-//	//	element.second->SetIsDirty(true);
-//	//}
-//}
+void dae::SpriteComponent::OnNotify(EventType event_, std::shared_ptr<EventArgs> args)
+{
+	if (event_ == EventType::STATECHANGED)
+	{
+		std::string name = std::static_pointer_cast<SpriteEventArgs>(args)->name;
+		SetActiveAnimation(name);
+	}
+}

@@ -19,6 +19,7 @@
 #include "SpriteComponent.h"
 #include "Animation.h"
 #include "RigidBodyComponent.h"
+#include "LevelParser.h"
 using namespace std;
 
 void PrintSDLVersion()
@@ -36,11 +37,11 @@ void PrintSDLVersion()
 
 void dae::Minigin::Initialize()
 {
-	m_SteamApi = SteamAPI_Init();
-	if (!m_SteamApi)
-	{
-		std::cerr << "Fatal error - steam must be running to play this game (SteamAPI_Init() failed)\n";
-	}
+	//m_SteamApi = SteamAPI_Init();
+	//if (!m_SteamApi)
+	//{
+	//	std::cerr << "Fatal error - steam must be running to play this game (SteamAPI_Init() failed)\n";
+	//}
 
 
 	PrintSDLVersion();
@@ -71,7 +72,7 @@ void dae::Minigin::Initialize()
  */
 void dae::Minigin::LoadGame() const
 {
-	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
+	auto& scene = SceneManager::GetInstance().CreateScene("Level1");
 
 	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 
@@ -84,8 +85,9 @@ void dae::Minigin::LoadGame() const
 	fpsCounter->SetGameObject(fpsCounterGo.get());
 	fpsText->SetGameObject(fpsCounterGo.get());
 
+	ParseLevel();
 	CreatePeterPepperAndHUD(0);
-	//CreatePeterPepperAndHUD(1);
+	CreatePeterPepperAndHUD(1);
 
 	scene.Add(fpsCounterGo);
 }
@@ -162,7 +164,8 @@ void dae::Minigin::CreatePeterPepperAndHUD(int playerNr) const
 	livesDisplay->AddComponent(textComp, "TextComponent");
 	textComp->SetPosition(hudX, hudY);
 	scene.Add(livesDisplay);
-	peterPepper->AddObserver(lifeComp.get());
+
+
 
 	auto pointsDisplay = std::make_shared<GameObject>();
 	auto pointComp = std::make_shared<PointsDisplayComponent>(pointsDisplay);
@@ -171,6 +174,10 @@ void dae::Minigin::CreatePeterPepperAndHUD(int playerNr) const
 	pointsDisplay->AddComponent(textCompPts, "TextComponent");
 	textCompPts->SetPosition(hudX, hudY + 20);
 	scene.Add(pointsDisplay);
+
+	//Observers
+	peterPepper->AddObserver(lifeComp.get());
+	peterPepper->AddObserver(peterPSprite.get());
 	peterPepper->AddObserver(pointComp.get());
 	
 	auto& input = InputManager::GetInstance();
@@ -185,12 +192,24 @@ void dae::Minigin::CreatePeterPepperAndHUD(int playerNr) const
 	peterPepperGo->SetTransform(0, 400, 0);
 }
 
+void dae::Minigin::ParseLevel() const
+{
+	std::vector<Platform> platforms;
+	std::vector<Ladder> ladders;
+	std::vector<Float2> spawnPositions;
+	ParseLevelFile("../Data/Level/Level1.txt", platforms, ladders, spawnPositions);
+
+	for (int i{}; i < platforms.size(); ++i)
+	{
+
+	}
+}
 void dae::Minigin::Cleanup()
 {
 	Renderer::GetInstance().Destroy();
 	SDL_DestroyWindow(m_Window);
 	m_Window = nullptr;
-	SteamAPI_Shutdown();
+	//SteamAPI_Shutdown();
 
 	SDL_Quit();
 }
@@ -208,12 +227,12 @@ void dae::Minigin::Run()
 		auto& renderer = Renderer::GetInstance();
 		auto& sceneManager = SceneManager::GetInstance();
 		auto& input = InputManager::GetInstance();
-		// todo: this update loop could use some work.
 		bool doContinue = true;
+
 		auto lastTime = std::chrono::high_resolution_clock::now();
 		float lag = 0.0f;
-		int nrOfPlayers = 1;
-		//float fixedTimeStep = 0.02f;
+		int nrOfPlayers = 2;
+		float fixedTimeStep = 0.02f;
 		while (doContinue)
 		{
 			SteamAPI_RunCallbacks();
@@ -229,23 +248,22 @@ void dae::Minigin::Run()
 
 			for (int i{}; i < nrOfPlayers; ++i)
 			{
-				input.HandleCommand(ControllerButton::ButtonA, KeyState::DOWN, i);
-				input.HandleCommand(ControllerButton::ButtonB, KeyState::DOWN, i);
-				input.HandleCommand(ControllerButton::Nothing, KeyState::NOTHING, i);
-				input.HandleCommand(ControllerButton::DPadRight, KeyState::PRESSED, i);
-				input.HandleCommand(ControllerButton::DPadLeft, KeyState::PRESSED, i);
-				input.HandleCommand(ControllerButton::DPadDown, KeyState::PRESSED, i);
-				input.HandleCommand(ControllerButton::DPadUp, KeyState::PRESSED, i);
-
+				input.HandleCommand(ControllerButton::Nothing, KeyState::NOTHING, i, doContinue);
+				input.HandleCommand(ControllerButton::ButtonA, KeyState::DOWN, i, doContinue);
+				input.HandleCommand(ControllerButton::ButtonB, KeyState::DOWN, i, doContinue);
+				input.HandleCommand(ControllerButton::DPadRight, KeyState::PRESSED, i, doContinue);
+				input.HandleCommand(ControllerButton::DPadLeft, KeyState::PRESSED, i, doContinue);
+				input.HandleCommand(ControllerButton::DPadDown, KeyState::PRESSED, i, doContinue);
+				input.HandleCommand(ControllerButton::DPadUp, KeyState::PRESSED, i, doContinue);
 			}
 
 
 			//I will implement this once I actually need the fixedUpdate
-			//while (lag >= fixedTimeStep)
-			//{
-			//	sceneManager.FixedUpdate(fixedTimeStep);
-			//	lag -= fixedTimeStep;
-			//}
+			while (lag >= fixedTimeStep)
+			{
+				sceneManager.FixedUpdate(fixedTimeStep);
+				lag -= fixedTimeStep;
+			}
 			renderer.Render();
 		}
 	}

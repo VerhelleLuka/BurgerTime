@@ -12,6 +12,8 @@ namespace dae
 	{
 	public:
 		virtual void Update(float deltaTime) override;
+		virtual void FixedUpdate(float /*deltaTime*/) override {}
+
 		virtual void Render() const {};
 		explicit FpsComponent() = default;
 		virtual ~FpsComponent() = default;

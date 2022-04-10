@@ -42,8 +42,7 @@ namespace dae
 		{
 			
 			m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(250.f, 0.f));
-			if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() != "RunRight")
-				m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("RunRight");
+			m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(2);
 
 		}
 	};
@@ -53,9 +52,8 @@ namespace dae
 		void Execute() override
 		{
 			m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(-250.f, 0.f));
+			m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(1);
 
-			if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() != "RunLeft")
-				m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("RunLeft");
 
 		}
 	};
@@ -66,9 +64,8 @@ namespace dae
 		void Execute() override
 		{
 			m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(0.f, -250.f));
+			m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(3);
 
-			if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() != "Climb")
-				m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Climb");
 
 		}
 	};
@@ -80,8 +77,8 @@ namespace dae
 		{
 			m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(0.f, 250.f));
 
-			if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() != "Descend")
-				m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Descend");
+			m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(4);
+
 
 		}
 	};
@@ -90,10 +87,8 @@ namespace dae
 	public:
 		void Execute() override
 		{
-			m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(0.f, 0.f));
+			m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(0);
 
-			if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() != "Idle")
-			m_pGameObject->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Idle");
 		}
 	};
 

@@ -10,7 +10,8 @@ namespace dae
 	class LivesDisplayComponent final: public BaseComponent, public Observer
 	{
 	public:
-		virtual void Update(float deltaTime) override { deltaTime = 0; };
+		virtual void Update(float /*deltaTime*/) override {};
+		virtual void FixedUpdate(float /*deltaTime*/) override{}
 		virtual void Render() const override {};
 		LivesDisplayComponent(std::shared_ptr<GameObject> pParent):m_Lives(3), m_pParent(pParent.get()) {};
 		virtual ~LivesDisplayComponent() {};

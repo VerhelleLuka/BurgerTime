@@ -16,6 +16,8 @@ class dae::InputManager::Impl
 	XINPUT_STATE m_CurrentState[NrOfPlayers]{};
 	XINPUT_STATE m_PreviousState[NrOfPlayers]{};
 
+
+
 	std::map<ControllerButton, std::unique_ptr<Command>> m_ButtonCommands[NrOfPlayers];
 
 public:
@@ -38,9 +40,6 @@ public:
 			}
 			ImGui_ImplSDL2_ProcessEvent(&e);
 		}
-
-
-
 		for (int i{}; i < NrOfPlayers; ++i)
 		{
 			CopyMemory(&m_PreviousState[i], &m_CurrentState[i], sizeof(XINPUT_STATE));
@@ -111,7 +110,7 @@ void dae::InputManager::AddCommand(ControllerButton button, Command* commandButt
 	pImpl->GetButtonCommands(playerIdx)[button]->SetGameObject(gameObject);
 }
 
-void dae::InputManager::HandleCommand(ControllerButton button, KeyState keyState, int playerIdx)
+void dae::InputManager::HandleCommand(ControllerButton button, KeyState keyState, int playerIdx, int /*inputDetected*/)
 {
 	switch (keyState)
 	{
@@ -130,14 +129,12 @@ void dae::InputManager::HandleCommand(ControllerButton button, KeyState keyState
 	case KeyState::PRESSED:
 		if (IsPressed(button, playerIdx))
 		{
-
 			pImpl->GetButtonCommands(playerIdx)[button]->Execute();
 		}
 	case KeyState::NOTHING:
 		if (button == ControllerButton::Nothing)
 		{
 			pImpl->GetButtonCommands(playerIdx)[button]->Execute();
-
 		}
 		break;
 	}

@@ -9,6 +9,7 @@ namespace dae
 	{
 	public:
 		virtual void Update(float deltaTime) override;
+		virtual void FixedUpdate(float deltaTime) override;
 		virtual void Render() const {};
 
 		virtual void SetGameObject(GameObject* go) { m_pParent = go; };
@@ -20,6 +21,8 @@ namespace dae
 		GameObject* m_pParent{};
 		//This transform is a reference to the parent transform
 		Transform* m_pTransform;
+
+		//m_Direction is for non physics-related movement
 		Float2 m_Direction;
 	};
 }
