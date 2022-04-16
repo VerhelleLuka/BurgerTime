@@ -33,20 +33,13 @@ namespace dae
 		std::string GetAnimationName() const { return m_pActiveAnimationName; }
 
 		void AddAnimation(std::shared_ptr<Animation> animation, const std::string& name);
-
-
 		//Observer stuff
 		virtual void OnNotify(EventType event_, std::shared_ptr<EventArgs> args) override;
 
 	private:
-		//Just one animation per spritecomponent for now
 		std::map<std::string, std::shared_ptr<Animation>> m_pAnimations;
 		std::shared_ptr<Animation> m_pActiveAnimation;
-		std::string m_pActiveAnimationName;
-
-		//Texutre data
-		Float2 m_Position;
-	
+		std::string m_pActiveAnimationName;	
 	};
 }
 

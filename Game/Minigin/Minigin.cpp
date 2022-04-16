@@ -199,30 +199,88 @@ void dae::Minigin::ParseLevel(Scene& scene) const
 	std::vector<Float2> spawnPositions;
 	ParseLevelFile("../Data/Level/Level1.txt", platforms, ladders, spawnPositions);
 
+	//Every two platforms, the platfors get pushed 16 pixels further away because of the bug platform.
+	//This scalingIncrease goes +16 every 2 platforms
+	//And it gets reset when the rowNumber changes
+	//Same goes for the ladders
+
+	//int rowNumber = platforms[0].row;
+	//int columnNumber = platforms[0].column;
+	int levelScale = 2;
+	//Is half 
+	int scalingIncrease =  8 * levelScale ;
+	float platformWidth = 16.f * levelScale ;
+
 	for (int i{}; i < platforms.size(); ++i)
 	{
+		//if (rowNumber != platforms[i].row)
+		//{
+		//	rowNumber = platforms[i].row;
+		//	scalingIncrease = 0;
+		//}
 		auto platform = std::make_shared<GameObject>();
 		auto platformSprite = std::make_shared<SpriteComponent>();
 		auto platformAnimation = std::make_shared<Animation>(1, 1);
 
 		platformSprite->SetGameObject(platform.get());
+		Transform transform;
 		if (platforms[i].column % 2 == 0)
 		{
 			platformAnimation->SetTexture("Level/SmallPlatform.png");
+			transform.SetPosition((platforms[i].column ) * platformWidth + scalingIncrease * platforms[i].column, (platforms[i].row + 1) * platformWidth, 0.f);
 		}
 		else
 		{
 			platformAnimation->SetTexture("Level/BigPlatform.png");
+			transform.SetPosition((platforms[i].column) * platformWidth + scalingIncrease * (platforms[i].column -1), (platforms[i].row + 1) * platformWidth, 0.f);
 		}
 		platformSprite->AddAnimation(platformAnimation, "Platform");
 		platformSprite->SetActiveAnimation("Platform");
-		platformAnimation->SetScale(2.f);
-		Transform transform;
-		transform.SetPosition((platforms[i].column + 1) * 32.f, (platforms[i].row + 1) * 32.f, 0.f);
+		platformAnimation->SetScale((float)levelScale);
+
 		platform->SetTransform(transform);
 
 		platform->AddComponent(platformSprite, "Platform");
 		scene.Add(platform);
+	}
+
+	scalingIncrease;
+	//Depending on the column, the ladder will have to be shifted forwards or backward in order to center it
+	//In the files, this is a 2 pixel shift
+	int ladderShift = 2 * levelScale;
+	for (int i{}; i < ladders.size(); ++i)
+	{
+		auto ladder = std::make_shared<GameObject>();
+		std::vector<std::shared_ptr<SpriteComponent>>ladderSprites;
+
+		for (int length{}; length < ladders[i].length + 1; ++length)
+		{
+			auto ladderAnimation = std::make_shared<Animation>(1, 1);
+			ladderAnimation->SetTexture("Level/Ladder.png");
+			ladderAnimation->SetScale((float)levelScale);
+
+			ladderSprites.push_back(std::make_shared<SpriteComponent>());
+			ladderSprites[length]->SetGameObject(ladder.get());
+			std::string ladderName = "Ladder";
+			ladderName += std::to_string(length);
+			ladderSprites[length]->AddAnimation(ladderAnimation, ladderName);
+			ladderSprites[length]->SetActiveAnimation(ladderName);
+
+			Transform transform;
+			//+4 because the ladders are otherwise off center
+			int blabla = ladders[i].column % 2;
+			//blabla++;
+			transform.SetPosition(ladders[i].column * platformWidth + ((platformWidth * ladders[i].column / 2) ) + ladderShift, (ladders[i].row + 1) * platformWidth, 0.f);
+			ladder->SetTransform(transform);
+			blabla += 1;
+		}
+		for (int spriteCount{}; spriteCount < ladderSprites.size(); ++spriteCount)
+		{
+			std::string ladderName = "Ladder";
+			ladderName += std::to_string(spriteCount);
+			ladder->AddComponent(ladderSprites[spriteCount], ladderName);
+		}
+		scene.Add(ladder);
 	}
 }
 void dae::Minigin::Cleanup()

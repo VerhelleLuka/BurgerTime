@@ -1,7 +1,26 @@
 #Peter Pepper level1
 #This file layout is base on the .obj file format.
 #List of platforms and their row and column
+#The platforms have to be made in  ascending order
 p 0 0
+p 0 1
+p 0 2
+p 0 3
+p 0 9
 p 1 0
-#List of levels and their row, column and length (length 0 is the smallest possible ladder, length 11 the highest)
-ld 250.0 200.0 50.0
+p 1 1
+p 1 2
+p 1 3
+p 1 4
+p 1 5 
+p 1 6 
+p 1 7
+p 1 8
+p 2 2
+p 3 3
+p 4 4
+p 7 2
+p 10 5
+p 11 0
+#List of ladders and their row, column and length (length 0 is the smallest possible ladder, length 11 the highest)
+ld 0 2 1

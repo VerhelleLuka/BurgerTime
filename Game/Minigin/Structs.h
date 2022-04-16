@@ -25,9 +25,8 @@ namespace dae
 	};
 	struct Ladder
 	{
-		Float2 position;
-		float height;
-		const float width = 10.0f;
+		int row, column;
+		int length;
 	};
 	//enum class CharacterState
 	//{

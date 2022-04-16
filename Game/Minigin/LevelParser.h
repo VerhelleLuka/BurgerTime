@@ -45,11 +45,11 @@ namespace dae
 			}
 			else if (sCommand == "ld")
 			{
-				//Float2
-				float x, y;
-				float height;
-				file >> x >> y >> height;
-				ladders.push_back(Ladder(Float2(x, y), height));
+				int row, column;
+				int length;
+				file >> row >> column >> length;
+
+				ladders.push_back(Ladder(row,column,length));
 			}
 			else if (sCommand == "ps")
 			{
