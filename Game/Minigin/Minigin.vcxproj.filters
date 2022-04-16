@@ -52,6 +52,12 @@
     <Filter Include="Source Files\Scenes">
       <UniqueIdentifier>{93794584-d879-4a21-b262-fe25645184eb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Prefabs">
+      <UniqueIdentifier>{70224b39-0119-4a4c-8c30-ac383b1878bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Prefabs">
+      <UniqueIdentifier>{fd482872-3768-4392-8636-11dbf868f605}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MiniginPCH.h">

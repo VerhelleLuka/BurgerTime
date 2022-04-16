@@ -85,14 +85,14 @@ void dae::Minigin::LoadGame() const
 	fpsCounter->SetGameObject(fpsCounterGo.get());
 	fpsText->SetGameObject(fpsCounterGo.get());
 
-	ParseLevel();
-	CreatePeterPepperAndHUD(0);
-	CreatePeterPepperAndHUD(1);
+	ParseLevel(scene);
+	CreatePeterPepperAndHUD(scene, 0);
+	//CreatePeterPepperAndHUD(1);
 
 	scene.Add(fpsCounterGo);
 }
 
-void dae::Minigin::CreatePeterPepperAndHUD(int playerNr) const
+void dae::Minigin::CreatePeterPepperAndHUD(Scene& scene, int playerNr) const
 {
 	float hudX, hudY;
 	hudX =0;
@@ -101,8 +101,7 @@ void dae::Minigin::CreatePeterPepperAndHUD(int playerNr) const
 	{
 		hudX = 400;
 	}
-	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
-
+	
 	//Create gameobject and components
 	auto peterPepperGo = std::make_shared<GameObject>();
 	Transform transform{};
@@ -192,8 +191,9 @@ void dae::Minigin::CreatePeterPepperAndHUD(int playerNr) const
 	peterPepperGo->SetTransform(0, 400, 0);
 }
 
-void dae::Minigin::ParseLevel() const
+void dae::Minigin::ParseLevel(Scene& scene) const
 {
+
 	std::vector<Platform> platforms;
 	std::vector<Ladder> ladders;
 	std::vector<Float2> spawnPositions;
@@ -201,7 +201,26 @@ void dae::Minigin::ParseLevel() const
 
 	for (int i{}; i < platforms.size(); ++i)
 	{
+		auto platform = std::make_shared<GameObject>();
+		auto platformSprite = std::make_shared<SpriteComponent>();
+		auto platformAnimation = std::make_shared<Animation>(1, 1);
 
+		platformSprite->SetGameObject(platform.get());
+
+		platformAnimation->SetTexture("Level/Platform.png");
+		platformSprite->AddAnimation(platformAnimation, "Platform");
+		platformSprite->SetActiveAnimation("Platform");
+		//Formula to calculate Width scale = 
+		// Desired Width / Actual Width 
+		
+		platformAnimation->SetWidthScale(platforms[i].width / platformAnimation->GetWidth());
+
+		Transform transform;
+		transform.SetPosition(platforms[i].position.x, platforms[i].position.y, 0.f);
+		platform->SetTransform(transform);
+
+		platform->AddComponent(platformSprite, "Platform");
+		scene.Add(platform);
 	}
 }
 void dae::Minigin::Cleanup()
@@ -231,7 +250,7 @@ void dae::Minigin::Run()
 
 		auto lastTime = std::chrono::high_resolution_clock::now();
 		float lag = 0.0f;
-		int nrOfPlayers = 2;
+		int nrOfPlayers = 1;
 		float fixedTimeStep = 0.02f;
 		while (doContinue)
 		{

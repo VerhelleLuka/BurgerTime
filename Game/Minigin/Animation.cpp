@@ -6,24 +6,25 @@
 dae::Animation::Animation(int rows, int nrFrames)
 	:m_Rows(rows),
 	m_NrFrames(nrFrames),
-	m_CurrentFrame(0)//,
+	m_CurrentFrame(0)
 	//m_DeltaTime(0.f),
 	//m_IsDirty(false)
 {
+
 }
 void dae::Animation::Update(float elapsedSec, Transform transform)
 {
 	//m_DeltaTime = elapsedSec;
-	int width, height;
-	SDL_QueryTexture(m_pTexture->GetSDLTexture(), NULL, NULL, &width, &height);
+	SDL_QueryTexture(m_pTexture->GetSDLTexture(), NULL, NULL, &m_Width, &m_Height);
+
 	//SDL_RenderCopy(Renderer::GetInstance().GetSDLRenderer(), )
-	width /= m_NrFrames;
+	m_Width /= m_NrFrames;
 	m_DstRect = Float4
 	{
 		transform.GetPosition().x,
 		transform.GetPosition().y,
-		(float)width * m_Scale,
-		(float)height* m_Scale
+		(float)m_Width* m_Scale * m_WidthScale,
+		(float)m_Height* m_Scale
 
 	};
 
@@ -73,6 +74,9 @@ void dae::Animation::Render()
 void dae::Animation::SetTexture(const std::string& fileName)
 {
 	m_pTexture = ResourceManager::GetInstance().LoadTexture(fileName);
+	//Query it once to get width and height
+	SDL_QueryTexture(m_pTexture->GetSDLTexture(), NULL, NULL, &m_Width, &m_Height);
+
 }
 
 void dae::Animation::SetPos(Float2 pos)
