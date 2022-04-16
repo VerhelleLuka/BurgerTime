@@ -37,12 +37,11 @@ namespace dae
 			}
 			else if (sCommand == "p")
 			{
-				//Float2
-				float x, y;
-				float width;
-				file >> x >> y >> width;
 				
-				platforms.push_back(Platform(Float2(x,y), width));
+				int row, column;
+				file >> row >> column;
+				
+				platforms.push_back(Platform(row, column));
 			}
 			else if (sCommand == "ld")
 			{

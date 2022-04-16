@@ -15,7 +15,6 @@ namespace dae
 
 		void SetTexture(const std::string& fileName);
 		void SetScale(float scale) { m_Scale = scale; }
-		void SetWidthScale(float scale) { m_WidthScale = scale; }
 
 		void SetPos(Float2 position);
 		Float2 GetPos() const { return m_Position; }
@@ -37,7 +36,7 @@ namespace dae
 		float m_FrameChangeCounter = 0.f;
 		Float2 m_Position;
 		Float4 m_DstRect, m_SrcRect;
-		float m_Scale {1.0f}, m_WidthScale {1.0f};
+		float m_Scale{ 1.0f };
 		bool m_IsFlipped = false;
 
 		int m_Width{0}, m_Height{ 0 };

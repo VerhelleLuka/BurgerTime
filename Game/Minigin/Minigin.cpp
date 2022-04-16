@@ -95,13 +95,13 @@ void dae::Minigin::LoadGame() const
 void dae::Minigin::CreatePeterPepperAndHUD(Scene& scene, int playerNr) const
 {
 	float hudX, hudY;
-	hudX =0;
+	hudX = 0;
 	hudY = 420;
 	if (playerNr == 1)
 	{
 		hudX = 400;
 	}
-	
+
 	//Create gameobject and components
 	auto peterPepperGo = std::make_shared<GameObject>();
 	Transform transform{};
@@ -178,7 +178,7 @@ void dae::Minigin::CreatePeterPepperAndHUD(Scene& scene, int playerNr) const
 	peterPepper->AddObserver(lifeComp.get());
 	peterPepper->AddObserver(peterPSprite.get());
 	peterPepper->AddObserver(pointComp.get());
-	
+
 	auto& input = InputManager::GetInstance();
 	input.AddCommand(ControllerButton::ButtonA, new Damage, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::ButtonB, new GainPoints, peterPepperGo.get(), playerNr);
@@ -206,17 +206,19 @@ void dae::Minigin::ParseLevel(Scene& scene) const
 		auto platformAnimation = std::make_shared<Animation>(1, 1);
 
 		platformSprite->SetGameObject(platform.get());
-
-		platformAnimation->SetTexture("Level/Platform.png");
+		if (platforms[i].column % 2 == 0)
+		{
+			platformAnimation->SetTexture("Level/SmallPlatform.png");
+		}
+		else
+		{
+			platformAnimation->SetTexture("Level/BigPlatform.png");
+		}
 		platformSprite->AddAnimation(platformAnimation, "Platform");
 		platformSprite->SetActiveAnimation("Platform");
-		//Formula to calculate Width scale = 
-		// Desired Width / Actual Width 
-		
-		platformAnimation->SetWidthScale(platforms[i].width / platformAnimation->GetWidth());
-
+		platformAnimation->SetScale(2.f);
 		Transform transform;
-		transform.SetPosition(platforms[i].position.x, platforms[i].position.y, 0.f);
+		transform.SetPosition((platforms[i].column + 1) * 32.f, (platforms[i].row + 1) * 32.f, 0.f);
 		platform->SetTransform(transform);
 
 		platform->AddComponent(platformSprite, "Platform");

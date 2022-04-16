@@ -21,10 +21,7 @@ namespace dae
 
 	struct Platform
 	{
-		//Platform(Float2 pos, float w) :position{ pos }, width{ w } {}
-		Float2 position;
-		float width;
-		const float height{ 2.0f };
+		int row, column;
 	};
 	struct Ladder
 	{
