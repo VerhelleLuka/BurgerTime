@@ -5,7 +5,7 @@
 
 namespace dae
 {
-	class RigidBodyComponent final : public BaseComponent, public Subject
+	class RigidBodyComponent final : public BaseComponent
 	{
 	public:
 		virtual void Update(float deltaTime) override;
@@ -13,7 +13,8 @@ namespace dae
 		virtual void Render() const {};
 
 		virtual void SetGameObject(GameObject* go) { m_pParent = go; };
-		RigidBodyComponent() :m_pTransform(&m_pParent->GetTransform()) {};
+		RigidBodyComponent() {};
+		RigidBodyComponent(float width, float height);
 		virtual ~RigidBodyComponent() { m_pTransform = nullptr; delete m_pTransform; };
 
 		void SetDirection(Float2 velocity);
@@ -24,5 +25,7 @@ namespace dae
 
 		//m_Direction is for non physics-related movement
 		Float2 m_Direction;
+		float m_Width, m_Height;
+
 	};
 }

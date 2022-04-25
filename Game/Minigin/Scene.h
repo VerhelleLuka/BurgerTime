@@ -13,6 +13,7 @@ namespace dae
 		void Update(float deltaTime);
 		void FixedUpdate(float deltaTime);
 
+		std::vector<std::shared_ptr<SceneObject>>& GetSceneObjects() { return m_Objects; }
 		void Render() const;
 
 		~Scene();

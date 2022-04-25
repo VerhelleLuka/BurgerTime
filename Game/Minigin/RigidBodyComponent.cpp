@@ -1,7 +1,13 @@
 #include "MiniginPCH.h"
 #include "RigidBodyComponent.h"
 #include "Structs.h"
+dae::RigidBodyComponent::RigidBodyComponent(float width, float height)
+	:m_pTransform(&m_pParent->GetTransform()) ,
+	m_Width(width),
+	m_Height(height)
+{
 
+}
 //
 void dae::RigidBodyComponent::SetDirection(Float2 direction)
 {

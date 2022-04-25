@@ -19,6 +19,7 @@ namespace dae
 		void SetPos(Float2 position);
 		Float2 GetPos() const { return m_Position; }
 		float GetWidth() const { return (float)m_Width; }
+		float GetHeight() const { return (float)m_Height; }
 		//Set all positions to the position of the sprite that is in use right now
 		void SetGlobalPos(Float2 position) { m_Position = position; }
 		void SetReversed(bool flipped) { m_IsFlipped = flipped; }

@@ -49,9 +49,11 @@ namespace dae
 		bool IsDown(ControllerButton button, int playerIdx) const;
 		bool IsReleased(ControllerButton button, int playerIdx) const;
 		bool IsPressed(ControllerButton button, int playerIdx) const;
-		void AddCommand(ControllerButton button, Command* command, GameObject* pGameObject, int playerIdx);
+		void AddCommand(ControllerButton button, Command* command, KeyState keyState, GameObject* pGameObject, int playerIdx);
 
-		void HandleCommand(ControllerButton button, KeyState keyState, int playerIdx, int inputDetected);
+		void HandleCommand(ControllerButton button, KeyState keyState, int playerIdx);
+
+		void Update();
 	};
 
 

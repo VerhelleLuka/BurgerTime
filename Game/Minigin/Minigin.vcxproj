@@ -244,6 +244,7 @@ xcopy $(SolutionDir)steam_appid.txt $(OutputPath)  /Y</Command>
     <ClInclude Include="MiniginPCH.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="PeterPepper.h" />
+    <ClInclude Include="Physics.h" />
     <ClInclude Include="PointsDisplayComponent.h" />
     <ClInclude Include="RigidBodyComponent.h" />
     <ClInclude Include="SceneObject.h" />
@@ -352,6 +353,7 @@ xcopy $(SolutionDir)steam_appid.txt $(OutputPath)  /Y</Command>
     </ClCompile>
     <ClCompile Include="Observer.cpp" />
     <ClCompile Include="PeterPepper.cpp" />
+    <ClCompile Include="Physics.cpp" />
     <ClCompile Include="PointsDisplayComponent.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="ResourceManager.cpp" />

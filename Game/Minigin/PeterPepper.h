@@ -38,6 +38,8 @@ namespace dae
 		
 		void ChangeState(int state);
 
+		bool GetCanClimb() const { return m_CanClimb; }
+		bool GetCanWalk() const { return m_CanWalk; }
 	
 	protected:
 		GameObject* m_pParent{};
@@ -46,6 +48,9 @@ namespace dae
 		int m_Lives;
 		int m_Points;
 
+		//Terrain related
+		bool m_CanClimb;
+		bool m_CanWalk;
 
 
 		// Achievement array which will hold data about the achievements and their state

@@ -16,17 +16,19 @@ class dae::InputManager::Impl
 	XINPUT_STATE m_CurrentState[NrOfPlayers]{};
 	XINPUT_STATE m_PreviousState[NrOfPlayers]{};
 
+	//The assigned buttons for each player (it'd be better if it was an unordered_set but whatevs)
 
-
-	std::map<ControllerButton, std::unique_ptr<Command>> m_ButtonCommands[NrOfPlayers];
+	std::map<std::pair<ControllerButton, KeyState>, std::unique_ptr<Command>> m_ButtonCommands[NrOfPlayers];
 
 public:
 
 	Impl() {};
 	~Impl() = default;
-	std::map<ControllerButton, std::unique_ptr<Command>>& GetButtonCommands(int idx) { return m_ButtonCommands[idx]; }
+	std::map<std::pair<ControllerButton, KeyState>, std::unique_ptr<Command>>& GetButtonCommands(int idx) { return m_ButtonCommands[idx]; }
 	bool ProcessInput()
 	{
+
+
 		SDL_Event e;
 		while (SDL_PollEvent(&e)) {
 			if (e.type == SDL_QUIT) {
@@ -49,7 +51,7 @@ public:
 		}
 		return true;
 	};
-	bool IsDown(ControllerButton button, int playerIdx) const
+	bool IsPressed(ControllerButton button, int playerIdx) const
 	{
 		if (((m_PreviousState[playerIdx].Gamepad.wButtons & int(button)) == 0))
 		{
@@ -65,10 +67,11 @@ public:
 		}
 		return false;
 	};
-	bool IsPressed(ControllerButton button, int playerIdx) const
+	bool IsDown(ControllerButton button, int playerIdx) const
 	{
 		return((m_CurrentState[playerIdx].Gamepad.wButtons & int(button)) != 0);
 	}
+
 
 
 };
@@ -89,53 +92,94 @@ bool dae::InputManager::ProcessInput()
 	return pImpl->ProcessInput();
 }
 
-bool dae::InputManager::IsDown(ControllerButton button, int playerIdx) const
+bool dae::InputManager::IsPressed(ControllerButton button, int playerIdx) const
 {
-
-	return pImpl->IsDown(button, playerIdx);
-
+	return pImpl->IsPressed(button, playerIdx);
 }
 
 bool dae::InputManager::IsReleased(ControllerButton button, int playerIdx) const
 {
 	return pImpl->IsReleased(button, playerIdx);
 }
-bool dae::InputManager::IsPressed(ControllerButton button, int playerIdx) const
+bool dae::InputManager::IsDown(ControllerButton button, int playerIdx) const
 {
-	return pImpl->IsPressed(button, playerIdx);
+	return pImpl->IsDown(button, playerIdx);
 }
-void dae::InputManager::AddCommand(ControllerButton button, Command* commandButton, GameObject* gameObject, int playerIdx)
+void dae::InputManager::AddCommand(ControllerButton button, Command* commandButton, KeyState keyState, GameObject* gameObject, int playerIdx)
 {
-	pImpl->GetButtonCommands(playerIdx)[button].reset(commandButton);
-	pImpl->GetButtonCommands(playerIdx)[button]->SetGameObject(gameObject);
-}
+	std::pair<ControllerButton, KeyState> key;
+	key.first = button;
+	key.second = keyState;
 
-void dae::InputManager::HandleCommand(ControllerButton button, KeyState keyState, int playerIdx, int /*inputDetected*/)
+	pImpl->GetButtonCommands(playerIdx)[key].reset(commandButton);
+	pImpl->GetButtonCommands(playerIdx)[key]->SetGameObject(gameObject);
+
+}
+void dae::InputManager::Update()
 {
-	switch (keyState)
+	for (int i{}; i < NrOfPlayers; ++i)
 	{
-	case KeyState::DOWN:
-		if (IsDown(button, playerIdx))
+		for (const auto& p : pImpl->GetButtonCommands(i))
 		{
-			pImpl->GetButtonCommands(playerIdx)[button]->Execute();
+			//std::map<std::pair<ControllerButton, KeyState>, std::unique_ptr<Command>> m_ButtonCommands[NrOfPlayers];
+
+			switch (p.first.second)
+			{
+			case KeyState::PRESSED:
+				if (IsPressed(p.first.first, i))
+				{
+					pImpl->GetButtonCommands(i)[p.first]->Execute();
+				}
+				break;
+			case KeyState::RELEASED:
+				if (IsReleased(p.first.first, i))
+				{
+					pImpl->GetButtonCommands(i)[p.first]->Execute();
+				}
+				break;
+			case KeyState::DOWN:
+				if (IsDown(p.first.first, i))
+				{
+					pImpl->GetButtonCommands(i)[p.first]->Execute();
+				}
+			case KeyState::NOTHING:
+				if (p.first.first == ControllerButton::Nothing)
+				{
+					pImpl->GetButtonCommands(i)[p.first]->Execute();
+				}
+				break;
+			}
 		}
-		break;
-	case KeyState::RELEASED:
-		if (IsReleased(button, playerIdx))
-		{
-			pImpl->GetButtonCommands(playerIdx)[button]->Execute();
-		}
-		break;
-	case KeyState::PRESSED:
-		if (IsPressed(button, playerIdx))
-		{
-			pImpl->GetButtonCommands(playerIdx)[button]->Execute();
-		}
-	case KeyState::NOTHING:
-		if (button == ControllerButton::Nothing)
-		{
-			pImpl->GetButtonCommands(playerIdx)[button]->Execute();
-		}
-		break;
+
 	}
+
+}
+void dae::InputManager::HandleCommand(ControllerButton /*button*/, KeyState /*keyState*/, int /*playerIdx*/)
+{
+	//switch (keyState)
+	//{
+	//case KeyState::DOWN:
+	//	if (IsDown(button, playerIdx))
+	//	{
+	//		pImpl->GetButtonCommands(playerIdx)[button]->Execute();
+	//	}
+	//	break;
+	//case KeyState::RELEASED:
+	//	if (IsReleased(button, playerIdx))
+	//	{
+	//		pImpl->GetButtonCommands(playerIdx)[button]->Execute();
+	//	}
+	//	break;
+	//case KeyState::PRESSED:
+	//	if (IsPressed(button, playerIdx))
+	//	{
+	//		pImpl->GetButtonCommands(playerIdx)[button]->Execute();
+	//	}
+	//case KeyState::NOTHING:
+	//	if (button == ControllerButton::Nothing)
+	//	{
+	//		pImpl->GetButtonCommands(playerIdx)[button]->Execute();
+	//	}
+	//	break;
+	//}
 }

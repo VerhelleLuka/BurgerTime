@@ -76,23 +76,24 @@ void dae::Minigin::LoadGame() const
 
 	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 
-	auto fpsCounter = std::make_shared<FpsComponent>();
-	auto fpsText = std::make_shared<TextComponent>("Fps: ", font);
+	//FPS counter
+	//auto fpsCounter = std::make_shared<FpsComponent>();
+	//auto fpsText = std::make_shared<TextComponent>("Fps: ", font);
 
-	auto fpsCounterGo = std::make_shared<GameObject>();
-	fpsCounterGo->AddComponent(fpsCounter, "fpsCounter");
-	fpsCounterGo->AddComponent(fpsText, "text");
-	fpsCounter->SetGameObject(fpsCounterGo.get());
-	fpsText->SetGameObject(fpsCounterGo.get());
+	//auto fpsCounterGo = std::make_shared<GameObject>();
+	//fpsCounterGo->AddComponent(fpsCounter, "fpsCounter");
+	//fpsCounterGo->AddComponent(fpsText, "text");
+	//fpsCounter->SetGameObject(fpsCounterGo.get());
+	//fpsText->SetGameObject(fpsCounterGo.get());
+	//scene.Add(fpsCounterGo);
+	//===========
 
-	ParseLevel(scene);
-	CreatePeterPepperAndHUD(scene, 0);
-	//CreatePeterPepperAndHUD(1);
-
-	scene.Add(fpsCounterGo);
+	Transform peterPepperSpawnPos = ParseLevel(scene);
+	CreatePeterPepperAndHUD(peterPepperSpawnPos, scene, 0);
+	//CreatePeterPepperAndHUD(peterPepperSpawnPos, scene, 1);
 }
 
-void dae::Minigin::CreatePeterPepperAndHUD(Scene& scene, int playerNr) const
+void dae::Minigin::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int playerNr) const
 {
 	float hudX, hudY;
 	hudX = 0;
@@ -104,9 +105,9 @@ void dae::Minigin::CreatePeterPepperAndHUD(Scene& scene, int playerNr) const
 
 	//Create gameobject and components
 	auto peterPepperGo = std::make_shared<GameObject>();
-	Transform transform{};
-	transform.SetPosition(50.f, 50.f, 0.f);
-	peterPepperGo->SetTransform(transform);
+	//Transform transform{};
+	//transform.SetPosition(50.f, 50.f, 0.f);
+	peterPepperGo->SetTransform(spawnPos);
 	auto peterPepper = std::make_shared<PeterPepperComponent>(3, m_SteamApi);
 	auto peterPSprite = std::make_shared<SpriteComponent>();
 
@@ -139,6 +140,7 @@ void dae::Minigin::CreatePeterPepperAndHUD(Scene& scene, int playerNr) const
 	peterPSprite->AddAnimation(peterPAnimationUp, "Climb");
 	peterPSprite->AddAnimation(peterPAnimationDown, "Descend");
 	peterPSprite->AddAnimation(peterPAnimationIdle, "Idle");
+	
 
 	peterPSprite->SetGameObject(peterPepperGo.get());
 	peterPSprite->SetActiveAnimation("RunRight");
@@ -180,18 +182,18 @@ void dae::Minigin::CreatePeterPepperAndHUD(Scene& scene, int playerNr) const
 	peterPepper->AddObserver(pointComp.get());
 
 	auto& input = InputManager::GetInstance();
-	input.AddCommand(ControllerButton::ButtonA, new Damage, peterPepperGo.get(), playerNr);
-	input.AddCommand(ControllerButton::ButtonB, new GainPoints, peterPepperGo.get(), playerNr);
-	input.AddCommand(ControllerButton::DPadRight, new MoveRight, peterPepperGo.get(), playerNr);
-	input.AddCommand(ControllerButton::DPadLeft, new MoveLeft, peterPepperGo.get(), playerNr);
-	input.AddCommand(ControllerButton::DPadDown, new MoveDown, peterPepperGo.get(), playerNr);
-	input.AddCommand(ControllerButton::DPadUp, new MoveUp, peterPepperGo.get(), playerNr);
-	input.AddCommand(ControllerButton::Nothing, new Idle, peterPepperGo.get(), playerNr);
+	input.AddCommand(ControllerButton::ButtonA, new Damage,KeyState::PRESSED, peterPepperGo.get(), playerNr);
+	input.AddCommand(ControllerButton::ButtonB, new GainPoints, KeyState::PRESSED, peterPepperGo.get(), playerNr);
+	input.AddCommand(ControllerButton::DPadRight, new MoveRight, KeyState::DOWN, peterPepperGo.get(), playerNr);
+	input.AddCommand(ControllerButton::DPadLeft, new MoveLeft, KeyState::DOWN, peterPepperGo.get(), playerNr);
+	input.AddCommand(ControllerButton::DPadDown, new MoveDown, KeyState::DOWN, peterPepperGo.get(), playerNr);
+	input.AddCommand(ControllerButton::DPadUp, new MoveUp, KeyState::DOWN, peterPepperGo.get(), playerNr);
+	input.AddCommand(ControllerButton::Nothing, new Idle, KeyState::NOTHING, peterPepperGo.get(), playerNr);
 
-	peterPepperGo->SetTransform(0, 400, 0);
+	//peterPepperGo->SetTransform(0, 400, 0);
 }
 
-void dae::Minigin::ParseLevel(Scene& scene) const
+dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 {
 
 	std::vector<Platform> platforms;
@@ -268,11 +270,8 @@ void dae::Minigin::ParseLevel(Scene& scene) const
 
 			Transform transform;
 			//+4 because the ladders are otherwise off center
-			int blabla = ladders[i].column % 2;
-			//blabla++;
 			transform.SetPosition(ladders[i].column * platformWidth + ((platformWidth * ladders[i].column / 2) ) + ladderShift, (ladders[i].row + 1) * platformWidth, 0.f);
 			ladder->SetTransform(transform);
-			blabla += 1;
 		}
 		for (int spriteCount{}; spriteCount < ladderSprites.size(); ++spriteCount)
 		{
@@ -282,6 +281,10 @@ void dae::Minigin::ParseLevel(Scene& scene) const
 		}
 		scene.Add(ladder);
 	}
+	//for now just one spawn position
+	Transform transform;
+	transform.SetPosition((platforms[0].column) * platformWidth + scalingIncrease * platforms[0].column, (platforms[0].row + 1) * platformWidth, 0.f);
+	return transform;
 }
 void dae::Minigin::Cleanup()
 {
@@ -310,7 +313,6 @@ void dae::Minigin::Run()
 
 		auto lastTime = std::chrono::high_resolution_clock::now();
 		float lag = 0.0f;
-		int nrOfPlayers = 1;
 		float fixedTimeStep = 0.02f;
 		while (doContinue)
 		{
@@ -321,20 +323,21 @@ void dae::Minigin::Run()
 			lastTime = currentTime;
 			lag += deltaTime;
 			doContinue = input.ProcessInput();
+			input.Update();
 			sceneManager.Update(deltaTime);
 
 			//fpsCounter
 
-			for (int i{}; i < nrOfPlayers; ++i)
-			{
-				input.HandleCommand(ControllerButton::Nothing, KeyState::NOTHING, i, doContinue);
-				input.HandleCommand(ControllerButton::ButtonA, KeyState::DOWN, i, doContinue);
-				input.HandleCommand(ControllerButton::ButtonB, KeyState::DOWN, i, doContinue);
-				input.HandleCommand(ControllerButton::DPadRight, KeyState::PRESSED, i, doContinue);
-				input.HandleCommand(ControllerButton::DPadLeft, KeyState::PRESSED, i, doContinue);
-				input.HandleCommand(ControllerButton::DPadDown, KeyState::PRESSED, i, doContinue);
-				input.HandleCommand(ControllerButton::DPadUp, KeyState::PRESSED, i, doContinue);
-			}
+			//for (int i{}; i < nrOfPlayers; ++i)
+			//{
+			//	input.HandleCommand(ControllerButton::Nothing, KeyState::NOTHING, i);
+			//	input.HandleCommand(ControllerButton::ButtonA, KeyState::DOWN, i);
+			//	input.HandleCommand(ControllerButton::ButtonB, KeyState::DOWN, i);
+			//	input.HandleCommand(ControllerButton::DPadRight, KeyState::PRESSED, i);
+			//	input.HandleCommand(ControllerButton::DPadLeft, KeyState::PRESSED, i);
+			//	input.HandleCommand(ControllerButton::DPadDown, KeyState::PRESSED, i);
+			//	input.HandleCommand(ControllerButton::DPadUp, KeyState::PRESSED, i);
+			//}
 
 
 			//I will implement this once I actually need the fixedUpdate
