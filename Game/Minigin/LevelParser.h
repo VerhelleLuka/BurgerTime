@@ -46,10 +46,9 @@ namespace dae
 			else if (sCommand == "ld")
 			{
 				int row, column;
-				int length;
-				file >> row >> column >> length;
+				file >> row >> column;
 
-				ladders.push_back(Ladder(row,column,length));
+				ladders.push_back(Ladder(row,column));
 			}
 			else if (sCommand == "ps")
 			{

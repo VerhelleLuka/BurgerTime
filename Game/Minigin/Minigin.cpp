@@ -20,6 +20,8 @@
 #include "Animation.h"
 #include "RigidBodyComponent.h"
 #include "LevelParser.h"
+#include "MovementComponent.h"
+
 using namespace std;
 
 void PrintSDLVersion()
@@ -65,6 +67,8 @@ void dae::Minigin::Initialize()
 	}
 
 	Renderer::GetInstance().Init(m_Window);
+
+	m_pPhysics = new Physics();
 }
 
 /**
@@ -111,28 +115,29 @@ void dae::Minigin::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int
 	auto peterPepper = std::make_shared<PeterPepperComponent>(3, m_SteamApi);
 	auto peterPSprite = std::make_shared<SpriteComponent>();
 
+	float animationScale = 2.f;
 	//Create animations 
 	// 	//Down
 	auto peterPAnimationDown = std::make_shared<Animation>(3, 3);
 	peterPAnimationDown->SetTexture("PeterPepper/ClimbDownSprite.png");
-	peterPAnimationDown->SetScale(2.f);
+	peterPAnimationDown->SetScale(animationScale);
 	//Right
 	auto peterPAnimationRight = std::make_shared<Animation>(3, 3);
 	peterPAnimationRight->SetTexture("PeterPepper/LeftRightSprite.png");
-	peterPAnimationRight->SetScale(2.f);
+	peterPAnimationRight->SetScale(animationScale);
 
 	//Left
 	auto peterPAnimationLeft = std::make_shared<Animation>(3, 3);
 	peterPAnimationLeft->SetTexture("PeterPepper/LeftRightSprite.png");
-	peterPAnimationLeft->SetScale(2.f);
+	peterPAnimationLeft->SetScale(animationScale);
 	//Up
 	auto peterPAnimationUp = std::make_shared<Animation>(3, 3);
 	peterPAnimationUp->SetTexture("PeterPepper/ClimbUpSprite.png");
-	peterPAnimationUp->SetScale(2.f);
+	peterPAnimationUp->SetScale(animationScale);
 	//Idle
 	auto peterPAnimationIdle = std::make_shared<Animation>(1, 1);
 	peterPAnimationIdle->SetTexture("PeterPepper/IdleSprite.png");
-	peterPAnimationIdle->SetScale(2.f);
+	peterPAnimationIdle->SetScale(animationScale);
 	//Add animation to sprite
 	peterPSprite->AddAnimation(peterPAnimationRight, "RunRight");
 	peterPAnimationRight->SetReversed(true);
@@ -140,18 +145,27 @@ void dae::Minigin::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int
 	peterPSprite->AddAnimation(peterPAnimationUp, "Climb");
 	peterPSprite->AddAnimation(peterPAnimationDown, "Descend");
 	peterPSprite->AddAnimation(peterPAnimationIdle, "Idle");
-	
+
 
 	peterPSprite->SetGameObject(peterPepperGo.get());
 	peterPSprite->SetActiveAnimation("RunRight");
 
 	//RigidbodyComponent
-	auto pRigidBody = std::make_shared<RigidBodyComponent>();
+	auto pRigidBody = std::make_shared<RigidBodyComponent>(peterPSprite->GetAnimation().GetScaledWidth(),
+		peterPSprite->GetAnimation().GetScaledHeight(),
+		true);
 	pRigidBody->SetGameObject(peterPepperGo.get());
+	pRigidBody->SetTransform(&peterPepperGo->GetTransform());
+	m_pPhysics->AddRigidBodyComponent(pRigidBody);
 
+	//Movementcomponent
+	auto pMovement = std::make_shared<MovementComponent>();
+
+	//Add everything to scene
 	peterPepperGo->AddComponent(peterPSprite, "Sprite");
 	peterPepperGo->AddComponent(peterPepper, "PeterPepper");
 	peterPepperGo->AddComponent(pRigidBody, "RigidBody");
+	peterPepperGo->AddComponent(pMovement, "Movement");
 
 	peterPepper->SetGameObject(peterPepperGo.get());
 	scene.Add(peterPepperGo);
@@ -182,7 +196,7 @@ void dae::Minigin::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int
 	peterPepper->AddObserver(pointComp.get());
 
 	auto& input = InputManager::GetInstance();
-	input.AddCommand(ControllerButton::ButtonA, new Damage,KeyState::PRESSED, peterPepperGo.get(), playerNr);
+	input.AddCommand(ControllerButton::ButtonA, new Damage, KeyState::PRESSED, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::ButtonB, new GainPoints, KeyState::PRESSED, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::DPadRight, new MoveRight, KeyState::DOWN, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::DPadLeft, new MoveLeft, KeyState::DOWN, peterPepperGo.get(), playerNr);
@@ -210,8 +224,8 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 	//int columnNumber = platforms[0].column;
 	int levelScale = 2;
 	//Is half 
-	int scalingIncrease =  8 * levelScale ;
-	float platformWidth = 16.f * levelScale ;
+	int scalingIncrease = 8 * levelScale;
+	float platformWidth = 16.f * levelScale;
 
 	for (int i{}; i < platforms.size(); ++i)
 	{
@@ -229,12 +243,12 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 		if (platforms[i].column % 2 == 0)
 		{
 			platformAnimation->SetTexture("Level/SmallPlatform.png");
-			transform.SetPosition((platforms[i].column ) * platformWidth + scalingIncrease * platforms[i].column, (platforms[i].row + 1) * platformWidth, 0.f);
+			transform.SetPosition((platforms[i].column) * platformWidth + scalingIncrease * platforms[i].column, (platforms[i].row + 1) * platformWidth, 0.f);
 		}
 		else
 		{
 			platformAnimation->SetTexture("Level/BigPlatform.png");
-			transform.SetPosition((platforms[i].column) * platformWidth + scalingIncrease * (platforms[i].column -1), (platforms[i].row + 1) * platformWidth, 0.f);
+			transform.SetPosition((platforms[i].column) * platformWidth + scalingIncrease * (platforms[i].column - 1), (platforms[i].row + 1) * platformWidth, 0.f);
 		}
 		platformSprite->AddAnimation(platformAnimation, "Platform");
 		platformSprite->SetActiveAnimation("Platform");
@@ -242,7 +256,18 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 
 		platform->SetTransform(transform);
 
+		//RigidbodyComponent
+		auto pRigidBody = std::make_shared<RigidBodyComponent>(platformSprite->GetAnimation().GetScaledWidth(),
+			platformSprite->GetAnimation().GetScaledHeight(),
+			false);
+		pRigidBody->SetGameObject(platform.get());
+
 		platform->AddComponent(platformSprite, "Platform");
+		platform->AddComponent(pRigidBody, "PlatformRigidBody");
+		pRigidBody->SetTransform(&platform->GetTransform());
+
+		m_pPhysics->AddRigidBodyComponent(pRigidBody);
+
 		scene.Add(platform);
 	}
 
@@ -250,37 +275,44 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 	//Depending on the column, the ladder will have to be shifted forwards or backward in order to center it
 	//In the files, this is a 2 pixel shift
 	int ladderShift = 2 * levelScale;
+
+
+	 //New ladder position calculation
 	for (int i{}; i < ladders.size(); ++i)
 	{
 		auto ladder = std::make_shared<GameObject>();
-		std::vector<std::shared_ptr<SpriteComponent>>ladderSprites;
+		std::shared_ptr<SpriteComponent>ladderSprite = std::make_shared<SpriteComponent>();
 
-		for (int length{}; length < ladders[i].length + 1; ++length)
-		{
-			auto ladderAnimation = std::make_shared<Animation>(1, 1);
-			ladderAnimation->SetTexture("Level/Ladder.png");
-			ladderAnimation->SetScale((float)levelScale);
+		auto ladderAnimation = std::make_shared<Animation>(1, 1);
+		ladderAnimation->SetTexture("Level/Ladder.png");
+		ladderAnimation->SetScale((float)levelScale);
 
-			ladderSprites.push_back(std::make_shared<SpriteComponent>());
-			ladderSprites[length]->SetGameObject(ladder.get());
-			std::string ladderName = "Ladder";
-			ladderName += std::to_string(length);
-			ladderSprites[length]->AddAnimation(ladderAnimation, ladderName);
-			ladderSprites[length]->SetActiveAnimation(ladderName);
+		ladderSprite->SetGameObject(ladder.get());
 
-			Transform transform;
-			//+4 because the ladders are otherwise off center
-			transform.SetPosition(ladders[i].column * platformWidth + ((platformWidth * ladders[i].column / 2) ) + ladderShift, (ladders[i].row + 1) * platformWidth, 0.f);
-			ladder->SetTransform(transform);
-		}
-		for (int spriteCount{}; spriteCount < ladderSprites.size(); ++spriteCount)
-		{
-			std::string ladderName = "Ladder";
-			ladderName += std::to_string(spriteCount);
-			ladder->AddComponent(ladderSprites[spriteCount], ladderName);
-		}
+		ladderSprite->AddAnimation(ladderAnimation, "Ladder");
+		ladderSprite->SetActiveAnimation("Ladder");
+
+		Transform transform;
+		//+4 because the ladders are otherwise off center
+		transform.SetPosition(ladders[i].column * platformWidth + ((platformWidth * ladders[i].column / 2)) + ladderShift, (ladders[i].row + 1) * platformWidth, 0.f);
+		ladder->SetTransform(transform);
+		ladder->AddComponent(ladderSprite, "Ladder");
+
+		//RigidbodyComponent
+		auto pRigidBody = std::make_shared<RigidBodyComponent>(ladderSprite->GetAnimation().GetScaledWidth(),
+			ladderSprite->GetAnimation().GetScaledHeight(),
+			false);
+		pRigidBody->SetGameObject(ladder.get());
+
+		ladder->AddComponent(pRigidBody, "LadderRigidBody");
+		pRigidBody->SetTransform(&ladder->GetTransform());
+
+		m_pPhysics->AddRigidBodyComponent(pRigidBody);
+
 		scene.Add(ladder);
 	}
+
+
 	//for now just one spawn position
 	Transform transform;
 	transform.SetPosition((platforms[0].column) * platformWidth + scalingIncrease * platforms[0].column, (platforms[0].row + 1) * platformWidth, 0.f);
@@ -292,7 +324,8 @@ void dae::Minigin::Cleanup()
 	SDL_DestroyWindow(m_Window);
 	m_Window = nullptr;
 	//SteamAPI_Shutdown();
-
+	delete m_pPhysics;
+	m_pPhysics = nullptr;
 	SDL_Quit();
 }
 
@@ -326,24 +359,10 @@ void dae::Minigin::Run()
 			input.Update();
 			sceneManager.Update(deltaTime);
 
-			//fpsCounter
-
-			//for (int i{}; i < nrOfPlayers; ++i)
-			//{
-			//	input.HandleCommand(ControllerButton::Nothing, KeyState::NOTHING, i);
-			//	input.HandleCommand(ControllerButton::ButtonA, KeyState::DOWN, i);
-			//	input.HandleCommand(ControllerButton::ButtonB, KeyState::DOWN, i);
-			//	input.HandleCommand(ControllerButton::DPadRight, KeyState::PRESSED, i);
-			//	input.HandleCommand(ControllerButton::DPadLeft, KeyState::PRESSED, i);
-			//	input.HandleCommand(ControllerButton::DPadDown, KeyState::PRESSED, i);
-			//	input.HandleCommand(ControllerButton::DPadUp, KeyState::PRESSED, i);
-			//}
-
-
-			//I will implement this once I actually need the fixedUpdate
 			while (lag >= fixedTimeStep)
 			{
 				sceneManager.FixedUpdate(fixedTimeStep);
+				m_pPhysics->FixedUpdate(fixedTimeStep);
 				lag -= fixedTimeStep;
 			}
 			renderer.Render();

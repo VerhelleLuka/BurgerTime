@@ -13,6 +13,7 @@ namespace dae
 
 		virtual void Execute() = 0;
 		virtual void SetGameObject(GameObject* pGo) { m_pGameObject = pGo; }
+		virtual GameObject* GetGameObject() { return m_pGameObject; }
 	protected:
 		GameObject* m_pGameObject;
 	};
@@ -41,7 +42,7 @@ namespace dae
 		void Execute() override
 		{
 			
-			m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(250.f, 0.f));
+			m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(100.f, 0.f));
 			m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(2);
 
 		}
@@ -51,7 +52,7 @@ namespace dae
 	public:
 		void Execute() override
 		{
-			m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(-250.f, 0.f));
+			m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(-100.f, 0.f));
 			m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(1);
 
 
@@ -63,7 +64,7 @@ namespace dae
 	public:
 		void Execute() override
 		{
-			m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(0.f, -250.f));
+			m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(0.f, -100.f));
 			m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(3);
 
 
@@ -75,11 +76,9 @@ namespace dae
 	public:
 		void Execute() override
 		{
-			m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(0.f, 250.f));
+			m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(0.f, 100.f));
 
 			m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(4);
-
-
 		}
 	};
 	class Idle final : public Command

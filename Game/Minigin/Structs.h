@@ -26,10 +26,5 @@ namespace dae
 	struct Ladder
 	{
 		int row, column;
-		int length;
 	};
-	//enum class CharacterState
-	//{
-
-	//};
 }

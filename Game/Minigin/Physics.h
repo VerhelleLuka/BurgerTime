@@ -1,20 +1,24 @@
 #pragma once
-#include "Scene.h"
+#include "RigidBodyComponent.h"
 
 namespace dae
 {
-	class Physics
+	class Physics : public Subject
 	{
 	public:
-		Physics(Scene& scene);
-		~Physics();
+		Physics() {};
+		~Physics() = default;
 
 		Physics(const Physics& other) = delete;
 		Physics(Physics&& other) = delete;
 		Physics& operator=(const Physics& other) = delete;
 		Physics& operator=(Physics&& other) = delete;
 
+		void AddRigidBodyComponent(std::shared_ptr<RigidBodyComponent> rigidBody);
+
+		void FixedUpdate(float deltaTime);
+
 	private:
-		std::vector<SceneObject*> m_pSceneObjects;
+		std::vector<std::shared_ptr<RigidBodyComponent>> m_pRigidBodies;
 	};
 }

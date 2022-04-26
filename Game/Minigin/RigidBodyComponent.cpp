@@ -1,10 +1,11 @@
 #include "MiniginPCH.h"
 #include "RigidBodyComponent.h"
 #include "Structs.h"
-dae::RigidBodyComponent::RigidBodyComponent(float width, float height)
+dae::RigidBodyComponent::RigidBodyComponent(float width, float height, bool isTrigger)
 	:m_pTransform(&m_pParent->GetTransform()) ,
 	m_Width(width),
-	m_Height(height)
+	m_Height(height),
+	m_IsTrigger(isTrigger)
 {
 
 }

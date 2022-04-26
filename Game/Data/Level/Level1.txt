@@ -7,6 +7,8 @@ p 0 1
 p 0 2
 p 0 3
 p 0 9
+p 0 10
+p 0 11
 p 1 0
 p 1 1
 p 1 2
@@ -22,5 +24,5 @@ p 4 4
 p 7 2
 p 10 5
 p 11 0
-#List of ladders and their row, column and length (length 0 is the smallest possible ladder, length 11 the highest)
-ld 0 2 1
+#List of ladders and their row, column
+ld 0 2

@@ -122,7 +122,6 @@ void dae::InputManager::Update()
 		for (const auto& p : pImpl->GetButtonCommands(i))
 		{
 			//std::map<std::pair<ControllerButton, KeyState>, std::unique_ptr<Command>> m_ButtonCommands[NrOfPlayers];
-
 			switch (p.first.second)
 			{
 			case KeyState::PRESSED:

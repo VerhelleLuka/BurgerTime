@@ -1,6 +1,7 @@
 #pragma once
 struct SDL_Window;
 #include "Transform.h"
+#include "Physics.h"
 namespace dae
 {
 	class Scene;
@@ -19,6 +20,8 @@ namespace dae
 		void CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene,int playerNr ) const;
 		Transform ParseLevel(Scene& scene)const;
 		bool m_SteamApi;
+
+		Physics* m_pPhysics;
 
 	};
 }
