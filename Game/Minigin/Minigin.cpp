@@ -13,7 +13,7 @@
 #include <chrono>
 #include <ctime>
 #include <ratio>
-#include <steam_api.h>
+//#include <steam_api.h>
 #include "LivesDisplayComponent.h"
 #include "PointsDisplayComponent.h"
 #include "SpriteComponent.h"
@@ -21,6 +21,8 @@
 #include "RigidBodyComponent.h"
 #include "LevelParser.h"
 #include "MovementComponent.h"
+#include "Sound.h"
+#include "SDL_mixer.h"
 
 using namespace std;
 
@@ -45,12 +47,27 @@ void dae::Minigin::Initialize()
 	//	std::cerr << "Fatal error - steam must be running to play this game (SteamAPI_Init() failed)\n";
 	//}
 
-
 	PrintSDLVersion();
 
-	if (SDL_Init(SDL_INIT_VIDEO) != 0)
+	if (SDL_Init(SDL_INIT_VIDEO |SDL_INIT_AUDIO) != 0)
 	{
 		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
+	}
+	//AUDIO INITIALIZATION
+
+	// Set up the audio stream
+	int result = Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 512);
+	if (result < 0)
+	{
+		fprintf(stderr, "Unable to open audio: %s\n", SDL_GetError());
+		exit(-1);
+	}
+
+	result = Mix_AllocateChannels(4);
+	if (result < 0)
+	{
+		fprintf(stderr, "Unable to allocate mixing channels: %s\n", SDL_GetError());
+		exit(-1);
 	}
 
 	m_Window = SDL_CreateWindow(
@@ -159,13 +176,13 @@ void dae::Minigin::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int
 	m_pPhysics->AddRigidBodyComponent(pRigidBody);
 
 	//Movementcomponent
-	auto pMovement = std::make_shared<MovementComponent>();
+	//auto pMovement = std::make_shared<MovementComponent>();
 
 	//Add everything to scene
 	peterPepperGo->AddComponent(peterPSprite, "Sprite");
 	peterPepperGo->AddComponent(peterPepper, "PeterPepper");
 	peterPepperGo->AddComponent(pRigidBody, "RigidBody");
-	peterPepperGo->AddComponent(pMovement, "Movement");
+	//peterPepperGo->AddComponent(pMovement, "Movement");
 
 	peterPepper->SetGameObject(peterPepperGo.get());
 	scene.Add(peterPepperGo);
@@ -347,9 +364,12 @@ void dae::Minigin::Run()
 		auto lastTime = std::chrono::high_resolution_clock::now();
 		float lag = 0.0f;
 		float fixedTimeStep = 0.02f;
+
+		sdl_sound_system sound;
+		sound.play(0, 10);
 		while (doContinue)
 		{
-			SteamAPI_RunCallbacks();
+			//SteamAPI_RunCallbacks();
 
 			const auto currentTime = std::chrono::high_resolution_clock::now();
 			float deltaTime = std::chrono::duration<float>(currentTime - lastTime).count();
