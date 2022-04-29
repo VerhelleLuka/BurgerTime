@@ -365,8 +365,11 @@ void dae::Minigin::Run()
 		float lag = 0.0f;
 		float fixedTimeStep = 0.02f;
 
-		sdl_sound_system sound;
-		sound.play(0, 10);
+		ServiceLocator::RegisterSoundSystem(new logging_sound_system(new sdl_sound_system));
+
+		auto& ss = ServiceLocator::GetSoundSystem();
+		ss.Play(1, 100);
+		ss.Play(0, 100);
 		while (doContinue)
 		{
 			//SteamAPI_RunCallbacks();

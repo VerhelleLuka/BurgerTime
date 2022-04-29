@@ -52,6 +52,9 @@
     <Filter Include="Source Files\Scenes">
       <UniqueIdentifier>{93794584-d879-4a21-b262-fe25645184eb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Structs_DataTypes">
+      <UniqueIdentifier>{01bb7e49-2daf-467b-9a66-be3e82498e13}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MiniginPCH.h">
@@ -67,9 +70,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SceneObject.h">
@@ -159,9 +159,6 @@
     <ClInclude Include="Animation.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Structs.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="RigidBodyComponent.h">
       <Filter>Source Files\Components</Filter>
     </ClInclude>
@@ -188,6 +185,12 @@
     </ClInclude>
     <ClInclude Include="Sound.h">
       <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Structs.h">
+      <Filter>Header Files\Structs_DataTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Header Files\Structs_DataTypes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
