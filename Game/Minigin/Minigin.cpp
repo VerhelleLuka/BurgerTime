@@ -365,11 +365,11 @@ void dae::Minigin::Run()
 		float lag = 0.0f;
 		float fixedTimeStep = 0.02f;
 
-		ServiceLocator::RegisterSoundSystem(new logging_sound_system(new sdl_sound_system));
+		ServiceLocator::RegisterSoundSystem(new sound_system());
 
-		auto& ss = ServiceLocator::GetSoundSystem();
-		ss.Play(1, 100);
-		ss.Play(0, 100);
+		ServiceLocator::GetSoundSystem().Play(0,100);
+		//ss.Play(1, 100);
+		//ss.Play(0, 100);
 		while (doContinue)
 		{
 			//SteamAPI_RunCallbacks();
@@ -387,6 +387,7 @@ void dae::Minigin::Run()
 				sceneManager.FixedUpdate(fixedTimeStep);
 				m_pPhysics->FixedUpdate(fixedTimeStep);
 				lag -= fixedTimeStep;
+
 			}
 			renderer.Render();
 		}

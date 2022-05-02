@@ -34,7 +34,6 @@ void dae::Physics::FixedUpdate(float /*deltaTime*/)
 						//check heights for platforms, only needs to be the feet with a 4px offset
 						if (posA.y <= posB.y + 4.f && posA.y >= posB.y)
 						{
-							std::cout << "Dick\n";
 						}
 					}
 					//check if peter pepper component

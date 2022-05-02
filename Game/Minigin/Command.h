@@ -41,7 +41,6 @@ namespace dae
 	public:
 		void Execute() override
 		{
-			
 			m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(100.f, 0.f));
 			m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(2);
 

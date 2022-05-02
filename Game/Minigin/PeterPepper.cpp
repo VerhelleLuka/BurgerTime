@@ -2,6 +2,7 @@
 #include "PeterPepper.h"
 #include "PointsDisplayComponent.h"
 #include "SpriteComponent.h"
+#include "Sound.h"
 dae::PeterPepperComponent::PeterPepperComponent(int lives, bool /*steamApi*/)
 	:m_Lives(lives)
 	,m_Points(0)
@@ -18,9 +19,13 @@ void dae::PeterPepperComponent::Update(float /*elapsedSec*/)
 
 void dae::PeterPepperComponent::AddPoints(int points)
 {
+	
+	//ServiceLocator::GetSoundSystem();
+	
 	m_Points += points;
 	std::shared_ptr<PointsEventArgs> args = std::make_shared<PointsEventArgs>();
-	
+	ServiceLocator::GetSoundSystem().Play(0, 100);
+
 	args->points = m_Points;
 	Notify(EventType::GAINEDPOINTS, args);
 
@@ -33,6 +38,7 @@ void dae::PeterPepperComponent::AddPoints(int points)
 
 void dae::PeterPepperComponent::ReduceLife()
 {
+	ServiceLocator::GetSoundSystem().Play(1, 100);
 	if (m_Lives > 0)
 	{
 		std::shared_ptr<EventArgs> emptyArgs = std::make_shared<EventArgs>();
