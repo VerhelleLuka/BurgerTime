@@ -21,6 +21,15 @@ public:
 	{
 		m_thread = std::thread(&sound_systemImpl::Thread, this);
 		m_IsRunning = true;
+
+		if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) == -1)
+		{
+			exit(2);
+		}
+		if (Mix_AllocateChannels(16) < 0)
+		{
+			exit(-1);
+		}
 	};
 	~sound_systemImpl()
 	{
@@ -35,7 +44,7 @@ public:
 
 	void Play(const sound_id id, const float volume)
 	{
-		m_SoundsToPlay.push(id);
+		m_SoundsToPlay.push(std::make_pair(id, volume) );
 		m_Cv.notify_one();
 	}
 
@@ -43,27 +52,27 @@ public:
 private:
 	std::thread m_thread;
 	std::condition_variable m_Cv;
-	std::queue<unsigned short> m_SoundsToPlay;
+	std::queue<std::pair< unsigned short, float>> m_SoundsToPlay;
 	std::mutex m_Mutex;
 	bool m_IsRunning;
-	void Thread(const sound_id id, const float volume)
+	void Thread()
 	{
 		std::unique_lock lock(m_Mutex);
-
+		Mix_Chunk* _sample;
 		while (m_IsRunning)
 		{
 			m_Cv.wait(lock);
 			while (!m_SoundsToPlay.empty())
 			{
-				Mix_Chunk* _sample;
-				const char* audioClip = audioClips[m_SoundsToPlay.front()];
+				
+				const char* audioClip = audioClips[m_SoundsToPlay.front().first];
 				std::string clipName = "../Data/Sound/";
 				clipName.append(audioClip);
 				const char* clipNameChar = clipName.c_str();
 
 				lock.unlock();
 				_sample = Mix_LoadWAV(clipNameChar);
-				_sample->volume = (Uint8)volume;
+				_sample->volume = (Uint8)m_SoundsToPlay.front().second;
 
 				Mix_PlayChannel(-1, _sample, 0);
 

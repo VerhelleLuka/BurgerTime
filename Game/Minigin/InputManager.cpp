@@ -7,6 +7,7 @@
 #pragma comment(lib, "xinput.lib")
 #include <backends/imgui_impl_sdl.h>
 #include <backends/imgui_impl_opengl2.h>
+#include "Sound.h"
 
 #define NrOfPlayers 2
 //pImpl try
@@ -35,11 +36,16 @@ public:
 				return false;
 			}
 			if (e.type == SDL_KEYDOWN) {
+				if (e.key.keysym.sym == SDLK_a)
+					ServiceLocator::GetSoundSystem().Play(0, 100);
+				if(e.key.keysym.sym == SDLK_z)
+					ServiceLocator::GetSoundSystem().Play(1, 100);
 
 			}
 			if (e.type == SDL_MOUSEBUTTONDOWN) {
 
 			}
+
 			ImGui_ImplSDL2_ProcessEvent(&e);
 		}
 		for (int i{}; i < NrOfPlayers; ++i)
