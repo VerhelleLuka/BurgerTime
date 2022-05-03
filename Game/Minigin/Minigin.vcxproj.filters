@@ -55,6 +55,9 @@
     <Filter Include="Header Files\Structs_DataTypes">
       <UniqueIdentifier>{01bb7e49-2daf-467b-9a66-be3e82498e13}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Sound">
+      <UniqueIdentifier>{5ed5ecba-15a9-4490-af40-be918289f148}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MiniginPCH.h">
@@ -191,6 +194,9 @@
     </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>Header Files\Structs_DataTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundEffect.h">
+      <Filter>Header Files\Sound</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

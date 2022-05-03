@@ -256,6 +256,7 @@ xcopy $(SolutionDir)steam_appid.txt $(OutputPath)  /Y</Command>
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="Sound.h" />
+    <ClInclude Include="SoundEffect.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="Structs.h" />
     <ClInclude Include="Subject.h" />
