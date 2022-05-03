@@ -3,6 +3,7 @@
 #include "SDL_mixer.h"
 #include <queue>
 #include <thread>
+#include <condition_variable>
 
 const char* audioClips[] =
 {
@@ -16,8 +17,17 @@ class dae::sound_system::sound_systemImpl
 {
 
 public:
-	sound_systemImpl() {};
-	~sound_systemImpl() = default;
+	sound_systemImpl()
+	{
+		m_thread = std::thread(&sound_systemImpl::Thread, this);
+		m_IsRunning = true;
+	};
+	~sound_systemImpl()
+	{
+		m_IsRunning = false;
+		m_Cv.notify_one();
+		m_thread.join();
+	};
 	void RegisterSound(const sound_id id, const std::string& path)
 	{
 		audioClips[id] = path.c_str();
@@ -26,26 +36,43 @@ public:
 	void Play(const sound_id id, const float volume)
 	{
 		m_SoundsToPlay.push(id);
-		while (!m_SoundsToPlay.empty())
+		m_Cv.notify_one();
+	}
+
+
+private:
+	std::thread m_thread;
+	std::condition_variable m_Cv;
+	std::queue<unsigned short> m_SoundsToPlay;
+	std::mutex m_Mutex;
+	bool m_IsRunning;
+	void Thread(const sound_id id, const float volume)
+	{
+		std::unique_lock lock(m_Mutex);
+
+		while (m_IsRunning)
 		{
-			Mix_Chunk* _sample;
-			const char* audioClip = audioClips[m_SoundsToPlay.front()];
-			std::string clipName = "../Data/Sound/";
-			clipName.append(audioClip);
-			const char* clipNameChar = clipName.c_str();
+			m_Cv.wait(lock);
+			while (!m_SoundsToPlay.empty())
+			{
+				Mix_Chunk* _sample;
+				const char* audioClip = audioClips[m_SoundsToPlay.front()];
+				std::string clipName = "../Data/Sound/";
+				clipName.append(audioClip);
+				const char* clipNameChar = clipName.c_str();
 
-			_sample = Mix_LoadWAV(clipNameChar);
-			_sample->volume = (Uint8)volume;
+				lock.unlock();
+				_sample = Mix_LoadWAV(clipNameChar);
+				_sample->volume = (Uint8)volume;
 
-			Mix_PlayChannel(-1, _sample, 0);
-			m_SoundsToPlay.pop();
+				Mix_PlayChannel(-1, _sample, 0);
+
+				lock.lock();
+				m_SoundsToPlay.pop();
+			}
 		}
 
 	}
-private:
-	std::thread m_thread;
-
-	std::queue<unsigned short> m_SoundsToPlay;
 };
 
 dae::sound_system::sound_system()
