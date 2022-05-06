@@ -31,15 +31,19 @@ public:
 		{
 			exit(-1);
 		}
-
+		std::string path = "../Data/Sound/Bomb_Explode.wav";
+		m_Sounds.push_back(path);
+		path = "../Data/Sound/Hurt.wav";
+		m_Sounds.push_back(path);
 	};
 	~sound_systemImpl()
 	{
 		m_IsRunning = false;
 		m_Cv.notify_one();
-		while(!m_Sounds.empty())
-			m_Sounds.pop();
-		
+		for (int i{}; i < m_Sounds.size(); ++i)
+		{
+			m_Sounds[i].ReleaseSound();
+		}
 		Mix_CloseAudio();
 		m_Thread.join();
 
@@ -47,13 +51,18 @@ public:
 	void RegisterSound(const sound_id id, const std::string& path)
 	{
 		audioClips[id] = path.c_str();
+		m_Sounds.push_back(path);
 	}
 
 	void AddSoundToQ(const sound_id id, const float volume)
 	{
 		if (audioClips[id] != NULL)
 		{
-			m_Sounds.emplace();
+			const char* audioClip = audioClips[id];
+			std::string clipName = "../Data/Sound/";
+			clipName.append(audioClip);
+			m_Sounds[id].SetVolume(volume);
+
 			m_SoundsToPlay.push(std::make_pair(id, volume));
 			m_Cv.notify_one();
 		}
@@ -67,9 +76,8 @@ public:
 private:
 	std::thread m_Thread;
 	std::condition_variable m_Cv;
-	//std::vector<SoundEffect> m_Sounds;
+	std::vector<SoundEffect> m_Sounds;
 	std::queue<std::pair<sound_id, float>> m_SoundsToPlay;
-	std::queue<SoundEffect> m_Sounds;
 	std::mutex m_Mutex;
 	bool m_IsRunning;
 	void Play()
@@ -81,7 +89,7 @@ private:
 
 
 			m_Cv.wait(lock);
-			while (!m_Sounds.empty())
+			while (!m_SoundsToPlay.empty())
 			{
 				//Mix_Chunk* _sample;
 				//const char* audioClip = audioClips[m_SoundsToPlay.front().first];
@@ -100,15 +108,11 @@ private:
 
 
 				lock.unlock();
-				//m_Sounds[m_SoundsToPlay.front().first].Load(audioClips[m_SoundsToPlay.front().first]);
-				//m_Sounds[m_SoundsToPlay.front().first].Play();
+				m_Sounds[m_SoundsToPlay.front().first].Play();
 				//m_SoundsToDelete.push(m_SoundsToPlay2.front());
 
-				m_Sounds.front().Load(audioClips[m_SoundsToPlay.front().first]);
-				m_Sounds.front().Play();
 				lock.lock();
 
-				m_Sounds.pop();
 				m_SoundsToPlay.pop();
 
 			}
