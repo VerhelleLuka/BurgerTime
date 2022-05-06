@@ -44,8 +44,6 @@ namespace dae
 		static sound_system& GetSoundSystem() { return *m_ssInstance; }
 		static void RegisterSoundSystem(sound_system* ss);
 
-		~ServiceLocator() { delete m_ssInstance; }
-
 
 	};
 

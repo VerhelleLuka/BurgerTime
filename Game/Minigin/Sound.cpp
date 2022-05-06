@@ -4,7 +4,6 @@
 #include <queue>
 #include <thread>
 #include <condition_variable>
-#include "SoundEffect.h"
 
 const char* audioClips[] =
 {
@@ -20,7 +19,7 @@ class dae::sound_system::sound_systemImpl
 public:
 	sound_systemImpl()
 	{
-		m_Thread = std::thread(&sound_systemImpl::Play, this);
+		m_thread = std::thread(&sound_systemImpl::Thread, this);
 		m_IsRunning = true;
 
 		if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) == -1)
@@ -31,93 +30,55 @@ public:
 		{
 			exit(-1);
 		}
-		std::string path = "../Data/Sound/Bomb_Explode.wav";
-		m_Sounds.push_back(path);
-		path = "../Data/Sound/Hurt.wav";
-		m_Sounds.push_back(path);
 	};
 	~sound_systemImpl()
 	{
 		m_IsRunning = false;
 		m_Cv.notify_one();
-		for (int i{}; i < m_Sounds.size(); ++i)
-		{
-			m_Sounds[i].ReleaseSound();
-		}
-		Mix_CloseAudio();
-		m_Thread.join();
-
+		m_thread.join();
 	};
 	void RegisterSound(const sound_id id, const std::string& path)
 	{
 		audioClips[id] = path.c_str();
-		m_Sounds.push_back(path);
 	}
 
-	void AddSoundToQ(const sound_id id, const float volume)
+	void Play(const sound_id id, const float volume)
 	{
-		if (audioClips[id] != NULL)
-		{
-			const char* audioClip = audioClips[id];
-			std::string clipName = "../Data/Sound/";
-			clipName.append(audioClip);
-			m_Sounds[id].SetVolume(volume);
-
-			m_SoundsToPlay.push(std::make_pair(id, volume));
-			m_Cv.notify_one();
-		}
-		else
-		{
-			std::cout << "Invalid ID\n";
-		}
+		m_SoundsToPlay.push(std::make_pair(id, volume) );
+		m_Cv.notify_one();
 	}
 
 
 private:
-	std::thread m_Thread;
+	std::thread m_thread;
 	std::condition_variable m_Cv;
-	std::vector<SoundEffect> m_Sounds;
-	std::queue<std::pair<sound_id, float>> m_SoundsToPlay;
+	std::queue<std::pair< unsigned short, float>> m_SoundsToPlay;
 	std::mutex m_Mutex;
 	bool m_IsRunning;
-	void Play()
+	void Thread()
 	{
 		std::unique_lock lock(m_Mutex);
-
+		Mix_Chunk* _sample;
 		while (m_IsRunning)
 		{
-
-
 			m_Cv.wait(lock);
 			while (!m_SoundsToPlay.empty())
 			{
-				//Mix_Chunk* _sample;
-				//const char* audioClip = audioClips[m_SoundsToPlay.front().first];
-				//std::string clipName = "../Data/Sound/";
-				//clipName.append(audioClip);
-				//const char* clipNameChar = clipName.c_str();
-
-				//lock.unlock();
-				//_sample = Mix_LoadWAV(clipNameChar);
-				//_sample->volume = (Uint8)m_SoundsToPlay.front().second;
-
-				//Mix_PlayChannel(-1, _sample, 0);
-
-				//lock.lock();
-				//m_SoundsToPlay.pop();
-
+				
+				const char* audioClip = audioClips[m_SoundsToPlay.front().first];
+				std::string clipName = "../Data/Sound/";
+				clipName.append(audioClip);
+				const char* clipNameChar = clipName.c_str();
 
 				lock.unlock();
-				m_Sounds[m_SoundsToPlay.front().first].Play();
-				//m_SoundsToDelete.push(m_SoundsToPlay2.front());
+				_sample = Mix_LoadWAV(clipNameChar);
+				_sample->volume = (Uint8)m_SoundsToPlay.front().second;
+
+				Mix_PlayChannel(-1, _sample, 0);
 
 				lock.lock();
-
 				m_SoundsToPlay.pop();
-
 			}
-
-
 		}
 
 	}
@@ -141,7 +102,7 @@ void dae::sound_system::RegisterSound(const sound_id id, const std::string& path
 
 void dae::sound_system::Play(const sound_id id, const float volume)
 {
-	m_pImpl->AddSoundToQ(id, volume);
+	m_pImpl->Play(id, volume);
 }
 
 

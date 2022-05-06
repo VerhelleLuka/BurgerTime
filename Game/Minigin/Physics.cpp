@@ -4,19 +4,6 @@
 
 void dae::Physics::FixedUpdate(float /*deltaTime*/)
 {
-
-	CheckOverlapping();
-
-}
-
-void dae::Physics::AddRigidBodyComponent(std::shared_ptr<RigidBodyComponent>rigidBody)
-{
-	m_pRigidBodies.push_back(rigidBody);
-	//AddObserver(rigidBody.get());
-}
-
-void dae::Physics::CheckOverlapping()
-{
 	//Overlap check for players/AI on ladders
 	for (int i{}; i < m_pRigidBodies.size(); ++i)
 	{
@@ -44,16 +31,21 @@ void dae::Physics::CheckOverlapping()
 					//check widths (for ladders)
 					if (posA.x <= posB.x + widthB && posA.x >= posB.x)
 					{
-
+						//check heights for platforms, only needs to be the feet with a 4px offset
+						if (posA.y <= posB.y + 4.f && posA.y >= posB.y)
+						{
+						}
 					}
-					//check heights for platforms, only needs to be the feet with a 4px offset
-					if (posA.y <= posB.y + 4.f && posA.y >= posB.y)
-					{
-
-					}
-
+					//check if peter pepper component
+				
 				}
 			}
 		}
 	}
+}
+
+void dae::Physics::AddRigidBodyComponent(std::shared_ptr<RigidBodyComponent>rigidBody)
+{
+	m_pRigidBodies.push_back(rigidBody);
+	//AddObserver(rigidBody.get());
 }
