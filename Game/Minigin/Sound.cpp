@@ -35,6 +35,7 @@ public:
 	{
 		m_IsRunning = false;
 		m_Cv.notify_one();
+		Mix_CloseAudio();
 		m_thread.join();
 	};
 	void RegisterSound(const sound_id id, const std::string& path)

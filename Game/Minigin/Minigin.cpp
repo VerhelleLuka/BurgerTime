@@ -244,7 +244,7 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 	int scalingIncrease = 8 * levelScale;
 	float platformWidth = 16.f * levelScale;
 
-	for (int i{}; i < platforms.size(); ++i)
+	for (size_t i{}; i < platforms.size(); ++i)
 	{
 		//if (rowNumber != platforms[i].row)
 		//{
@@ -295,7 +295,7 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 
 
 	 //New ladder position calculation
-	for (int i{}; i < ladders.size(); ++i)
+	for (size_t i{}; i < ladders.size(); ++i)
 	{
 		auto ladder = std::make_shared<GameObject>();
 		std::shared_ptr<SpriteComponent>ladderSprite = std::make_shared<SpriteComponent>();

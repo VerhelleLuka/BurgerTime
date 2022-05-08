@@ -5,7 +5,7 @@
 void dae::Physics::FixedUpdate(float /*deltaTime*/)
 {
 	//Overlap check for players/AI on ladders
-	for (int i{}; i < m_pRigidBodies.size(); ++i)
+	for (size_t i{}; i < m_pRigidBodies.size(); ++i)
 	{
 		for (auto& rigidBody : m_pRigidBodies)
 		{
