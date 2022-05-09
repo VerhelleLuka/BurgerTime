@@ -49,7 +49,7 @@ void dae::Minigin::Initialize()
 
 	PrintSDLVersion();
 
-	if (SDL_Init(SDL_INIT_VIDEO |SDL_INIT_AUDIO) != 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
 	{
 		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
 	}
@@ -185,6 +185,8 @@ void dae::Minigin::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int
 	//peterPepperGo->AddComponent(pMovement, "Movement");
 
 	peterPepper->SetGameObject(peterPepperGo.get());
+	peterPepper->SetOverlapEvent();
+
 	scene.Add(peterPepperGo);
 
 
@@ -294,7 +296,7 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 	int ladderShift = 2 * levelScale;
 
 
-	 //New ladder position calculation
+	//New ladder position calculation
 	for (size_t i{}; i < ladders.size(); ++i)
 	{
 		auto ladder = std::make_shared<GameObject>();
@@ -367,7 +369,7 @@ void dae::Minigin::Run()
 
 		ServiceLocator::RegisterSoundSystem(new sound_system());
 
-		ServiceLocator::GetSoundSystem().Play(0,100);
+		ServiceLocator::GetSoundSystem().Play(0, 100);
 		//ss.Play(1, 100);
 		//ss.Play(0, 100);
 		while (doContinue)

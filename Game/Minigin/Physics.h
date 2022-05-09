@@ -17,6 +17,7 @@ namespace dae
 		void AddRigidBodyComponent(std::shared_ptr<RigidBodyComponent> rigidBody);
 
 		void FixedUpdate(float deltaTime);
+		void CheckOverlap();
 
 	private:
 		std::vector<std::shared_ptr<RigidBodyComponent>> m_pRigidBodies;
