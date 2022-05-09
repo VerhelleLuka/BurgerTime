@@ -5,7 +5,8 @@ dae::RigidBodyComponent::RigidBodyComponent(float width, float height, bool isTr
 	:m_pTransform(&m_pParent->GetTransform()) ,
 	m_Width(width),
 	m_Height(height),
-	m_IsTrigger(isTrigger)
+	m_IsTrigger(isTrigger),
+	m_OverlapEvent()
 {
 
 }
@@ -32,3 +33,12 @@ void dae::RigidBodyComponent::FixedUpdate(float elapsedSec)
 	}
 
 }
+
+void dae::RigidBodyComponent::OnOverlap(RigidBodyComponent* other)
+{
+	if (m_OverlapEvent != nullptr)
+	{
+		m_OverlapEvent(other);
+	}
+}
+

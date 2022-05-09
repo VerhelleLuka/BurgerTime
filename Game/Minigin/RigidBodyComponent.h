@@ -3,6 +3,7 @@
 #include "Subject.h"
 #include "Structs.h"
 #include "Observer.h"
+#include <functional>
 namespace dae
 {
 	struct RigdBodyEventArgs : EventArgs
@@ -17,7 +18,7 @@ namespace dae
 		virtual void Render() const {};
 
 		virtual void SetGameObject(GameObject* go) { m_pParent = go; };
-		RigidBodyComponent() {};
+		RigidBodyComponent() = default;
 		RigidBodyComponent(float width, float height, bool isTrigger);
 		virtual ~RigidBodyComponent() { m_pTransform = nullptr; delete m_pTransform; };
 
@@ -30,6 +31,17 @@ namespace dae
 		float GetWidth()const { return m_Width; }
 		float GetHeight()const { return m_Height; }
 		GameObject* GetParent() const { return m_pParent; }
+
+		template <typename T>
+		void SetOnOverlapEvent(void (*function)(RigidBodyComponent*), T* functionObj)
+		{
+			m_OverlapEvent = std::bind(function, functionObj, std::placeholders::_1);
+		}
+		void SetOnOverlapEvent(const std::function<void(RigidBodyComponent*)>& uwMama)
+		{
+			m_OverlapEvent = uwMama;
+		}
+		void OnOverlap(RigidBodyComponent* other);
 	protected:
 		GameObject* m_pParent{};
 		//This transform is a reference to the parent transform
@@ -42,5 +54,7 @@ namespace dae
 		float m_Width, m_Height;
 		bool m_IsTrigger;
 
+		//Function pointer
+		std::function<void(RigidBodyComponent*)> m_OverlapEvent;
 	};
 }

@@ -45,7 +45,9 @@ public:
 
 	void Play(const sound_id id, const float volume)
 	{
+		std::unique_lock lock(m_Mutex);
 		m_SoundsToPlay.push(std::make_pair(id, volume) );
+		lock.unlock();
 		m_Cv.notify_one();
 	}
 

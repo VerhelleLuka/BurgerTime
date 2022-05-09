@@ -6,6 +6,7 @@
 #include "EventStructs.h"
 #include "Achievements.h"
 #include "Structs.h"
+#include "RigidBodyComponent.h"
 namespace dae
 {
 	enum class PeterPepperState
@@ -40,9 +41,14 @@ namespace dae
 
 		bool GetCanClimb() const { return m_CanClimb; }
 		bool GetCanWalk() const { return m_CanWalk; }
+
+		void SetOverlapEvent()
+		{
+			auto bindIng = std::bind(&PeterPepperComponent::OnOverlap, this, std::placeholders::_1);
+			m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetOnOverlapEvent(bindIng);
+		}
 	
 	protected:
-		GameObject* m_pParent{};
 		PeterPepperState m_State;
 	private:
 		int m_Lives;
@@ -52,7 +58,7 @@ namespace dae
 		bool m_CanClimb;
 		bool m_CanWalk;
 
-
+		void OnOverlap(RigidBodyComponent* other);
 		// Achievement array which will hold data about the achievements and their state
 		//Achievement_t m_Achievements[1] =
 		//{
