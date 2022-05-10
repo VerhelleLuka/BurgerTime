@@ -83,6 +83,7 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 		//if the other overlap is a platform
 		if (other->GetParent()->GetComponent<RigidBodyComponent>("PlatformRigidBody"))
 		{
+			std::cout << "Is overlapping";
 
 			Float2 platformPos = { other->GetTransform().GetPosition().x, other->GetTransform().GetPosition().y };
 			float platformWidth = other->GetWidth();
@@ -100,16 +101,18 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 			m_CanWalkRight = true;
 			//IF there is no platform left to this one
 
-				//And the overlap is at its end
-			if ((m_pParent->GetTransform().GetPosition().x + m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->GetWidth()) >= (platformPos.x + (platformWidth / 1.25f)))
+			//And the overlap is at its end
+			if (!other->GetParent()->GetComponent<PlatformComponent>("PlatformComp")->GetHasNext())
 			{
-				if (!other->GetParent()->GetComponent<PlatformComponent>("PlatformComp")->GetHasNext())
+				std::cout << "DOES NOT HAVE NEXT\n";
+				if (m_pParent->GetTransform().GetPosition().x /*+ m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->GetWidth())*/ >= (platformPos.x + (platformWidth / 2.f)))
 				{
+					std::cout << "IS AT THE END OF PLATFORM\n";
 					m_CanWalkRight = false;
 				}
 			}
 		}
-			//if it's a ladder
+		//if it's a ladder
 		if (other->GetParent()->GetComponent<RigidBodyComponent>("LadderRigidBody"))
 		{
 			m_CanClimb = true;

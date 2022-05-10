@@ -247,7 +247,7 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 	//Is half 
 	int scalingIncrease = 8 * levelScale;
 	float platformWidth = 16.f * levelScale;
-	int nextPlatforms = 0;
+	//int nextPlatforms = 0;
 	for (size_t i{}; i < platforms.size(); ++i)
 	{
 
@@ -279,7 +279,6 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 			false);
 		pRigidBody->SetGameObject(platform.get());
 
-
 		//Platform component
 		auto pPlatform = std::make_shared<PlatformComponent>();
 		//If this platform has one in the column left to it, set it's previous platform to true
@@ -297,12 +296,12 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 			pPlatform->SetHasPrevious(false);
 		}
 		//Same for the right and next platform
-	
-		if (platforms[i].column != 11 && i != platforms.size() -1)
+
+		if (platforms[i].column != 11 && i != platforms.size() - 1)
 		{
-			if (platforms[i].row == platforms[i + 1].row && platforms[i].column +1== platforms[i+1].column)
+			if (platforms[i].row == platforms[i + 1].row && platforms[i].column + 1 == platforms[i + 1].column)
 			{
-				nextPlatforms++;
+				//nextPlatforms++;
 				pPlatform->SetHasNext(true);
 			}
 		}
@@ -311,7 +310,7 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 			pPlatform->SetHasNext(false);
 		}
 		platform->AddComponent(pPlatform, "PlatformComp");
-			platform->AddComponent(platformSprite, "PlatformSprite");
+		platform->AddComponent(platformSprite, "PlatformSprite");
 		platform->AddComponent(pRigidBody, "PlatformRigidBody");
 		pRigidBody->SetTransform(&platform->GetTransform());
 
@@ -319,6 +318,7 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 
 		scene.Add(platform);
 	}
+	//std::cout << nextPlatforms << "\n";
 	//Depending on the column, the ladder will have to be shifted forwards or backward in order to center it
 	//In the files, this is a 2 pixel shift
 	int ladderShift = 2 * levelScale;
