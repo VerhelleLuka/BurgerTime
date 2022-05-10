@@ -3,6 +3,8 @@
 #include "PointsDisplayComponent.h"
 #include "SpriteComponent.h"
 #include "Sound.h"
+#include "PlatformComponent.h"
+#include "Animation.h"
 dae::PeterPepperComponent::PeterPepperComponent(int lives, bool /*steamApi*/)
 	:m_Lives(lives)
 	, m_Points(0)
@@ -13,7 +15,7 @@ dae::PeterPepperComponent::PeterPepperComponent(int lives, bool /*steamApi*/)
 
 	//m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetOnOverlapEvent<PeterPepperComponent>((&PeterPepperComponent::OnOverlap), this);
 
-} 
+}
 
 void dae::PeterPepperComponent::Update(float /*elapsedSec*/)
 {
@@ -81,13 +83,43 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 		//if the other overlap is a platform
 		if (other->GetParent()->GetComponent<RigidBodyComponent>("PlatformRigidBody"))
 		{
-			std::cout << "Overlap platform\n";
+
+			Float2 platformPos = { other->GetTransform().GetPosition().x, other->GetTransform().GetPosition().y };
+			float platformWidth = other->GetWidth();
+			m_CanWalkLeft = true;
+
+			//IF there is no platform left to this one
+			if (!other->GetParent()->GetComponent<PlatformComponent>("PlatformComp")->GetHasPrevious())
+			{
+				//And the overlap is at its end
+				if (m_pParent->GetTransform().GetPosition().x < platformPos.x)
+				{
+					m_CanWalkLeft = false;
+				}
+			}
+			m_CanWalkRight = true;
+			//IF there is no platform left to this one
+
+				//And the overlap is at its end
+			if ((m_pParent->GetTransform().GetPosition().x + m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->GetWidth()) >= (platformPos.x + (platformWidth / 1.25f)))
+			{
+				if (!other->GetParent()->GetComponent<PlatformComponent>("PlatformComp")->GetHasNext())
+				{
+					m_CanWalkRight = false;
+				}
+			}
 		}
-		//if it's a ladder
+			//if it's a ladder
 		if (other->GetParent()->GetComponent<RigidBodyComponent>("LadderRigidBody"))
 		{
-			std::cout << "Overlap ladders\n";
-
+			m_CanClimb = true;
+			//Float2 ladderPos = { other->GetTransform().GetPosition().x, other->GetTransform().GetPosition().y };
+			////float ladderHeight = other->GetHeight();
+			//if (m_pParent->GetTransform().GetPosition().y >= ladderPos.y)
+			//{
+			//	m_CanClimb = false;
+			//}
 		}
 	}
+
 }

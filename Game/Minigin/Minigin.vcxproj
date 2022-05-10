@@ -239,6 +239,7 @@ xcopy $(SolutionDir)steam_appid.txt $(OutputPath)  /Y</Command>
     <ClInclude Include="FpsComponent.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="LadderComponent.h" />
     <ClInclude Include="Level1_Scene.h" />
     <ClInclude Include="LevelParser.h" />
     <ClInclude Include="LivesDisplayComponent.h" />
@@ -247,6 +248,7 @@ xcopy $(SolutionDir)steam_appid.txt $(OutputPath)  /Y</Command>
     <ClInclude Include="Observer.h" />
     <ClInclude Include="PeterPepper.h" />
     <ClInclude Include="Physics.h" />
+    <ClInclude Include="PlatformComponent.h" />
     <ClInclude Include="PointsDisplayComponent.h" />
     <ClInclude Include="RigidBodyComponent.h" />
     <ClInclude Include="SceneObject.h" />
@@ -357,6 +359,7 @@ xcopy $(SolutionDir)steam_appid.txt $(OutputPath)  /Y</Command>
     <ClCompile Include="Observer.cpp" />
     <ClCompile Include="PeterPepper.cpp" />
     <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="PlatformComponent.cpp" />
     <ClCompile Include="PointsDisplayComponent.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="ResourceManager.cpp" />

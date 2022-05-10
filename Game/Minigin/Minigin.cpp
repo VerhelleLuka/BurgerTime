@@ -23,6 +23,8 @@
 #include "MovementComponent.h"
 #include "Sound.h"
 #include "SDL_mixer.h"
+#include "PlatformComponent.h"
+#include "LadderComponent.h"
 
 using namespace std;
 
@@ -132,7 +134,7 @@ void dae::Minigin::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int
 	auto peterPepper = std::make_shared<PeterPepperComponent>(3, m_SteamApi);
 	auto peterPSprite = std::make_shared<SpriteComponent>();
 
-	float animationScale = 2.f;
+	float animationScale = 1.75f;
 	//Create animations 
 	// 	//Down
 	auto peterPAnimationDown = std::make_shared<Animation>(3, 3);
@@ -245,14 +247,10 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 	//Is half 
 	int scalingIncrease = 8 * levelScale;
 	float platformWidth = 16.f * levelScale;
-
+	int nextPlatforms = 0;
 	for (size_t i{}; i < platforms.size(); ++i)
 	{
-		//if (rowNumber != platforms[i].row)
-		//{
-		//	rowNumber = platforms[i].row;
-		//	scalingIncrease = 0;
-		//}
+
 		auto platform = std::make_shared<GameObject>();
 		auto platformSprite = std::make_shared<SpriteComponent>();
 		auto platformAnimation = std::make_shared<Animation>(1, 1);
@@ -281,7 +279,39 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 			false);
 		pRigidBody->SetGameObject(platform.get());
 
-		platform->AddComponent(platformSprite, "Platform");
+
+		//Platform component
+		auto pPlatform = std::make_shared<PlatformComponent>();
+		//If this platform has one in the column left to it, set it's previous platform to true
+		if (platforms[i].column != 0)
+		{
+			//If the row is the same
+			if (platforms[i - 1].row == platforms[i].row && platforms[i - 1].column == platforms[i].column - 1)
+			{
+				pPlatform->SetHasPrevious(true);
+			}
+		}
+		//Kind of redundant since it gets initialized to false anyway, but whatever
+		else
+		{
+			pPlatform->SetHasPrevious(false);
+		}
+		//Same for the right and next platform
+	
+		if (platforms[i].column != 11 && i != platforms.size() -1)
+		{
+			if (platforms[i].row == platforms[i + 1].row && platforms[i].column +1== platforms[i+1].column)
+			{
+				nextPlatforms++;
+				pPlatform->SetHasNext(true);
+			}
+		}
+		else
+		{
+			pPlatform->SetHasNext(false);
+		}
+		platform->AddComponent(pPlatform, "PlatformComp");
+			platform->AddComponent(platformSprite, "PlatformSprite");
 		platform->AddComponent(pRigidBody, "PlatformRigidBody");
 		pRigidBody->SetTransform(&platform->GetTransform());
 
@@ -289,8 +319,6 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 
 		scene.Add(platform);
 	}
-
-	scalingIncrease;
 	//Depending on the column, the ladder will have to be shifted forwards or backward in order to center it
 	//In the files, this is a 2 pixel shift
 	int ladderShift = 2 * levelScale;
@@ -327,6 +355,37 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 		pRigidBody->SetTransform(&ladder->GetTransform());
 
 		m_pPhysics->AddRigidBodyComponent(pRigidBody);
+
+		//ladder component
+		//auto pLadder = std::make_shared<LadderComponent>();
+		//If this platform has one in the column left to it, set it's previous platform to true
+		//if (ladders[i].column != 0)
+		//{
+		//	//If the row is the same
+		//	if (ladders[i - 1].row == ladders[i].row && ladders[i - 1].column == ladders[i].column - 1)
+		//	{
+		//		pLadder->SetHasUp(true);
+		//	}
+		//}
+		////Kind of redundant since it gets initialized to false anyway, but whatever
+		//else
+		//{
+		//	pLadder->SetHasUp(false);
+		//}
+		////Same for the right and next platform
+
+		//if (ladders[i].column != 11 && i != ladders.size() - 1)
+		//{
+		//	if (ladders[i].row == ladders[i + 1].row && ladders[i].column + 1 == ladders[i + 1].column)
+		//	{
+		//		
+		//		pLadder->SetHasDown(true);
+		//	}
+		//}
+		//else
+		//{
+		//	pLadder->SetHasDown(false);
+		//}
 
 		scene.Add(ladder);
 	}

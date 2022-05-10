@@ -40,7 +40,9 @@ namespace dae
 		void ChangeState(int state);
 
 		bool GetCanClimb() const { return m_CanClimb; }
-		bool GetCanWalk() const { return m_CanWalk; }
+		bool GetCanDescend() const { return m_CanDescend; }
+		bool GetCanWalkLeft() const { return m_CanWalkLeft; }
+		bool GetCanWalkRight() const { return m_CanWalkRight; }
 
 		void SetOverlapEvent()
 		{
@@ -56,7 +58,9 @@ namespace dae
 
 		//Terrain related
 		bool m_CanClimb;
-		bool m_CanWalk;
+		bool m_CanDescend;
+		bool m_CanWalkLeft;
+		bool m_CanWalkRight;
 
 		void OnOverlap(RigidBodyComponent* other);
 		// Achievement array which will hold data about the achievements and their state
