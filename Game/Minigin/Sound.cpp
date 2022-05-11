@@ -26,7 +26,7 @@ public:
 		{
 			exit(2);
 		}
-		if (Mix_AllocateChannels(16) < 0)
+		if (Mix_AllocateChannels(m_SoundChannels) < 0)
 		{
 			exit(-1);
 		}
@@ -35,6 +35,11 @@ public:
 	{
 		m_IsRunning = false;
 		m_Cv.notify_one();
+		//for (int i = 0; i < m_Sounds.size(); ++i)
+		//{
+		//	Mix_FreeChunk(m_Sounds[i]);
+		//	delete m_Sounds[i];
+		//}
 		Mix_CloseAudio();
 		m_thread.join();
 	};
@@ -56,18 +61,20 @@ private:
 	std::thread m_thread;
 	std::condition_variable m_Cv;
 	std::queue<std::pair< unsigned short, float>> m_SoundsToPlay;
+	//std::deque<Mix_Chunk*> m_Sounds;
 	std::mutex m_Mutex;
 	bool m_IsRunning;
+	const int m_SoundChannels = 16;
 	void Thread()
 	{
 		std::unique_lock lock(m_Mutex);
-		Mix_Chunk* _sample;
+
 		while (m_IsRunning)
 		{
 			m_Cv.wait(lock);
 			while (!m_SoundsToPlay.empty())
 			{
-				
+				Mix_Chunk* _sample;
 				const char* audioClip = audioClips[m_SoundsToPlay.front().first];
 				std::string clipName = "../Data/Sound/";
 				clipName.append(audioClip);
@@ -76,11 +83,18 @@ private:
 				lock.unlock();
 				_sample = Mix_LoadWAV(clipNameChar);
 				_sample->volume = (Uint8)m_SoundsToPlay.front().second;
-
 				Mix_PlayChannel(-1, _sample, 0);
-
+				//m_Sounds.push_back(_sample);
 				lock.lock();
 				m_SoundsToPlay.pop();
+
+				//while (m_Sounds.size() >= m_SoundChannels)
+				//{
+				//	Mix_FreeChunk(m_Sounds.front());
+				//	m_Sounds.front() = nullptr;
+				//	m_Sounds.pop_front();
+				//}
+
 			}
 		}
 
