@@ -4,7 +4,7 @@
 #include <queue>
 #include <thread>
 #include <condition_variable>
-
+#include <map>
 const char* audioClips[] =
 {
 "Bomb_Explode.wav",
@@ -61,7 +61,7 @@ private:
 	std::thread m_thread;
 	std::condition_variable m_Cv;
 	std::queue<std::pair< unsigned short, float>> m_SoundsToPlay;
-	//std::deque<Mix_Chunk*> m_Sounds;
+	std::map<int, Mix_Chunk*> m_Sounds;
 	std::mutex m_Mutex;
 	bool m_IsRunning;
 	const int m_SoundChannels = 16;
