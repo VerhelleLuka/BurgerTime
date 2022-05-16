@@ -25,6 +25,7 @@
 #include "SDL_mixer.h"
 #include "PlatformComponent.h"
 #include "LadderComponent.h"
+#include "BurgerComponent.h"
 
 using namespace std;
 
@@ -175,6 +176,7 @@ void dae::Minigin::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int
 		true);
 	pRigidBody->SetGameObject(peterPepperGo.get());
 	pRigidBody->SetTransform(&peterPepperGo->GetTransform());
+	pRigidBody->SetOffset(Float2{ 0.f,-3.f });
 	m_pPhysics->AddRigidBodyComponent(pRigidBody);
 
 	//Movementcomponent
@@ -225,7 +227,7 @@ void dae::Minigin::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int
 	input.AddCommand(ControllerButton::DPadUp, new MoveUp, KeyState::DOWN, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::Nothing, new Idle, KeyState::NOTHING, peterPepperGo.get(), playerNr);
 
-	//peterPepperGo->SetTransform(0, 400, 0);
+	peterPepperGo->SetTransform(50, 20, 0);
 }
 
 dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
@@ -234,20 +236,43 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 	std::vector<Platform> platforms;
 	std::vector<Ladder> ladders;
 	std::vector<Float2> spawnPositions;
-	ParseLevelFile("../Data/Level/Level1.txt", platforms, ladders, spawnPositions);
+	std::vector<Burger> burgers;
+	ParseLevelFile("../Data/Level/Level1.txt", platforms, ladders, spawnPositions, burgers);
+
+	int levelScale = 2;
+	//Is half 
+	int scalingIncrease = 8 * levelScale;
+	float platformWidth = 16.f * levelScale;
+	MakeLaddersAndPlatforms(scene, ladders, platforms);
+	MakeBurgers(scene, burgers);
+	//for now just one spawn position
+	Transform transform;
+	transform.SetPosition((platforms[0].column) * platformWidth + scalingIncrease * platforms[0].column, ((platforms[0].row + 1) * platformWidth) , 0.f);
+	return transform;
+}
+void dae::Minigin::Cleanup()
+{
+	Renderer::GetInstance().Destroy();
+	SDL_DestroyWindow(m_Window);
+	m_Window = nullptr;
+	//SteamAPI_Shutdown();
+	delete m_pPhysics;
+	m_pPhysics = nullptr;
+	SDL_Quit();
+}
+void dae::Minigin::MakeLaddersAndPlatforms(Scene& scene, const std::vector<Ladder>& ladders, const std::vector<Platform>& platforms) const
+{
 
 	//Every two platforms, the platfors get pushed 16 pixels further away because of the bug platform.
 	//This scalingIncrease goes +16 every 2 platforms
 	//And it gets reset when the rowNumber changes
 	//Same goes for the ladders
 
-	//int rowNumber = platforms[0].row;
-	//int columnNumber = platforms[0].column;
 	int levelScale = 2;
 	//Is half 
 	int scalingIncrease = 8 * levelScale;
 	float platformWidth = 16.f * levelScale;
-	//int nextPlatforms = 0;
+
 	for (size_t i{}; i < platforms.size(); ++i)
 	{
 
@@ -260,12 +285,12 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 		if (platforms[i].column % 2 == 0)
 		{
 			platformAnimation->SetTexture("Level/SmallPlatform.png");
-			transform.SetPosition((platforms[i].column) * platformWidth + scalingIncrease * platforms[i].column, (platforms[i].row + 1) * platformWidth, 0.f);
+			transform.SetPosition((platforms[i].column) * platformWidth + scalingIncrease * platforms[i].column, (platforms[i].row + 1) * platformWidth * 1.5f, 0.f);
 		}
 		else
 		{
 			platformAnimation->SetTexture("Level/BigPlatform.png");
-			transform.SetPosition((platforms[i].column) * platformWidth + scalingIncrease * (platforms[i].column - 1), (platforms[i].row + 1) * platformWidth, 0.f);
+			transform.SetPosition((platforms[i].column) * platformWidth + scalingIncrease * (platforms[i].column - 1), (platforms[i].row + 1) * platformWidth * 1.5f, 0.f);
 		}
 		platformSprite->AddAnimation(platformAnimation, "Platform");
 		platformSprite->SetActiveAnimation("Platform");
@@ -282,7 +307,7 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 		//Platform component
 		auto pPlatform = std::make_shared<PlatformComponent>();
 		//If this platform has one in the column left to it, set it's previous platform to true
-		if (platforms[i].column != 0)
+		if (platforms[i].column != 0 && platforms.size() > 1)
 		{
 			//If the row is the same
 			if (platforms[i - 1].row == platforms[i].row && platforms[i - 1].column == platforms[i].column - 1)
@@ -296,12 +321,10 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 			pPlatform->SetHasPrevious(false);
 		}
 		//Same for the right and next platform
-
 		if (platforms[i].column != 11 && i != platforms.size() - 1)
 		{
 			if (platforms[i].row == platforms[i + 1].row && platforms[i].column + 1 == platforms[i + 1].column)
 			{
-				//nextPlatforms++;
 				pPlatform->SetHasNext(true);
 			}
 		}
@@ -341,7 +364,7 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 
 		Transform transform;
 		//+4 because the ladders are otherwise off center
-		transform.SetPosition(ladders[i].column * platformWidth + ((platformWidth * ladders[i].column / 2)) + ladderShift, (ladders[i].row + 1) * platformWidth, 0.f);
+		transform.SetPosition(ladders[i].column * platformWidth + ((platformWidth * ladders[i].column / 2)) + ladderShift, (ladders[i].row + 1) * platformWidth * 1.5f, 0.f);
 		ladder->SetTransform(transform);
 		ladder->AddComponent(ladderSprite, "Ladder");
 
@@ -357,56 +380,119 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 		m_pPhysics->AddRigidBodyComponent(pRigidBody);
 
 		//ladder component
-		//auto pLadder = std::make_shared<LadderComponent>();
-		//If this platform has one in the column left to it, set it's previous platform to true
-		//if (ladders[i].column != 0)
-		//{
-		//	//If the row is the same
-		//	if (ladders[i - 1].row == ladders[i].row && ladders[i - 1].column == ladders[i].column - 1)
-		//	{
-		//		pLadder->SetHasUp(true);
-		//	}
-		//}
-		////Kind of redundant since it gets initialized to false anyway, but whatever
-		//else
-		//{
-		//	pLadder->SetHasUp(false);
-		//}
-		////Same for the right and next platform
+		auto pLadder = std::make_shared<LadderComponent>();
 
-		//if (ladders[i].column != 11 && i != ladders.size() - 1)
-		//{
-		//	if (ladders[i].row == ladders[i + 1].row && ladders[i].column + 1 == ladders[i + 1].column)
-		//	{
-		//		
-		//		pLadder->SetHasDown(true);
-		//	}
-		//}
-		//else
-		//{
-		//	pLadder->SetHasDown(false);
-		//}
+		for (int k{}; k < ladders.size(); ++k)
+		{
+			for (int j{}; j < ladders.size(); ++j)
+			{
+				//If they're not the same ladder
+				if (&ladders[j] != &ladders[k])
+				{
+					//Check for ladders lower
+					//if (k != 11)
+					//{
+					//	if (ladders[k].column == ladders[j].column)
+					//	{
+					//		if (ladders[k].row == ladders[j].row + 1)
+					//		{
+					//			pLadder->SetHasDown(true);
+					//		}
+					//	}
 
+					//}
+					//if (j != 11)
+					//{
+					//	if (ladders[j].column == ladders[k].column)
+					//	{
+					//		if (ladders[j].row - 1 == ladders[k].row)
+					//		{
+					//			pLadder->SetHasDown(true);
+					//		}
+					//	}
+					//}
+
+					//Check for ladders higher
+					if (i != 0)
+					{
+						if (ladders[i].column == ladders[j].column)
+						{
+							if (ladders[i].row - 1 == ladders[j].row)
+							{
+								pLadder->SetHasUp(true);
+							}
+						}
+
+					}
+					if (j != 0)
+					{
+						if (ladders[j].column == ladders[i].column)
+						{
+							if (ladders[j].row + 1 == ladders[i].row)
+							{
+								pLadder->SetHasUp(true);
+							}
+						}
+					}
+				}
+			}
+		}
+		ladder->AddComponent(pLadder, "LadderComp");
+		//std::cout << "Does ladder have up: " << pLadder->GetHasUp() << ". Does ladder have down: " << pLadder->GetHasDown() << "\n";
 		scene.Add(ladder);
 	}
-
-
-	//for now just one spawn position
-	Transform transform;
-	transform.SetPosition((platforms[0].column) * platformWidth + scalingIncrease * platforms[0].column, (platforms[0].row + 1) * platformWidth, 0.f);
-	return transform;
 }
-void dae::Minigin::Cleanup()
+
+void dae::Minigin::MakeBurgers(Scene& scene, const std::vector<Burger>& burgers) const
 {
-	Renderer::GetInstance().Destroy();
-	SDL_DestroyWindow(m_Window);
-	m_Window = nullptr;
-	//SteamAPI_Shutdown();
-	delete m_pPhysics;
-	m_pPhysics = nullptr;
-	SDL_Quit();
-}
+	int levelScale = 2;
+	//Is half 
+	int scalingIncrease = 8 * levelScale;
+	float platformWidth = 16.f * levelScale;
+	//int nextPlatforms = 0;
+	for (size_t i{}; i < burgers.size(); ++i)
+	{
 
+		auto burger = std::make_shared<GameObject>();
+		auto burgerSprite = std::make_shared<SpriteComponent>();
+		auto burgerAnimation = std::make_shared<Animation>(1, 1);
+
+		burgerSprite->SetGameObject(burger.get());
+		Transform transform;
+
+		std::string burgerPart = "Hamburger/";
+		burgerPart.append(burgers[i].partName);
+		burgerPart += ".png";
+		burgerAnimation->SetTexture(burgerPart);
+		transform.SetPosition((burgers[i].column) * platformWidth + scalingIncrease * (burgers[i].column-1) + 1, ((burgers[i].row + 1) * platformWidth * 1.5f) - 7 * levelScale, 0.f);
+		//transform.SetPosition(burgers[i].column * platformWidth + (((platformWidth/2) * burgers[i].column / 2)), ((burgers[i].row + 1) * platformWidth * 1.5f) - 7 * levelScale, 0.f);
+	
+		burgerSprite->AddAnimation(burgerAnimation, "Burger");
+		burgerSprite->SetActiveAnimation("Burger");
+		burgerAnimation->SetScale((float)levelScale);
+
+		burger->SetTransform(transform);
+		
+		//RigidbodyComponent
+		auto pRigidBody = std::make_shared<RigidBodyComponent>(burgerSprite->GetAnimation().GetScaledWidth(),
+			burgerSprite->GetAnimation().GetScaledHeight(),
+			true);
+		pRigidBody->SetGameObject(burger.get());
+		//Burger component
+		auto pBurger = std::make_shared<BurgerComponent>();
+
+		burger->AddComponent(burgerSprite, "BurgerSprite");
+		burger->AddComponent(pRigidBody, "RigidBody");
+		burger->AddComponent(pBurger, "BurgerComp");
+		pRigidBody->SetTransform(&burger->GetTransform());
+		pBurger->SetGameObject(burger.get());
+		pBurger->Initialize();
+		pBurger->SetOverlapEvent();
+		m_pPhysics->AddRigidBodyComponent(pRigidBody);
+		
+		scene.Add(burger);
+	}
+}
 void dae::Minigin::Run()
 {
 	Initialize();

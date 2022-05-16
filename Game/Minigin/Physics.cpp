@@ -31,11 +31,13 @@ void dae::Physics::CheckOverlap()
 					//The overlap with the ladder should be the center of the ladder (16px) with,
 					//the utmost left position they should be able to climb up on is 10 and utmost right 22
 					//so
-					Float2 posA = { rigidBody->GetTransform().GetPosition().x, rigidBody->GetTransform().GetPosition().y };
-					Float2 posB = { m_pRigidBodies[i]->GetTransform().GetPosition().x, m_pRigidBodies[i]->GetTransform().GetPosition().y };
+					Float2 posA = { rigidBody->GetTransform().GetPosition().x ,
+						rigidBody->GetTransform().GetPosition().y  };
+					Float2 posB = { m_pRigidBodies[i]->GetTransform().GetPosition().x,
+						m_pRigidBodies[i]->GetTransform().GetPosition().y  };
 					//float widthA = rigidBody->GetWidth();
 					float widthB = m_pRigidBodies[i]->GetWidth();
-					//float heightA = rigidBody->GetHeight();
+					float heightA = rigidBody->GetHeight();
 					float heightB = m_pRigidBodies[i]->GetHeight();
 
 					//check overlap
@@ -44,7 +46,11 @@ void dae::Physics::CheckOverlap()
 					if (posA.x <= posB.x + widthB && posA.x >= posB.x)
 					{
 						//check heights
-						if (posA.y <= posB.y + heightB && posA.y >= posB.y)
+						if (posA.y > posB.y + heightB || posB.y > posA.y + heightA)
+						{
+							continue;
+						}
+						else
 						{
 							if (m_pRigidBodies[i]->GetTrigger())
 							{

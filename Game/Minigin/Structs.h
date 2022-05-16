@@ -27,4 +27,9 @@ namespace dae
 	{
 		int row, column;
 	};
+	struct Burger
+	{
+		int row, column;
+		std::string partName;
+	};
 }

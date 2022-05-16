@@ -62,6 +62,8 @@ namespace dae
 		bool m_CanWalkLeft;
 		bool m_CanWalkRight;
 
+		bool m_OverlappingLadder;
+		bool m_OverlappingPlatform;
 		void OnOverlap(RigidBodyComponent* other);
 		// Achievement array which will hold data about the achievements and their state
 		//Achievement_t m_Achievements[1] =

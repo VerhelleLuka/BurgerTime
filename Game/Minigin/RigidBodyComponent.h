@@ -32,16 +32,21 @@ namespace dae
 		float GetHeight()const { return m_Height; }
 		GameObject* GetParent() const { return m_pParent; }
 
-		template <typename T>
-		void SetOnOverlapEvent(void (*function)(RigidBodyComponent*), T* functionObj)
-		{
-			m_OverlapEvent = std::bind(function, functionObj, std::placeholders::_1);
-		}
+		//template <typename T>
+		//void SetOnOverlapEvent(void (*function)(RigidBodyComponent*), T* functionObj)
+		//{
+		//	m_OverlapEvent = std::bind(function, functionObj, std::placeholders::_1);
+		//}
 		void SetOnOverlapEvent(const std::function<void(RigidBodyComponent*)>& uwMama)
 		{
 			m_OverlapEvent = uwMama;
 		}
 		void OnOverlap(RigidBodyComponent* other);
+
+		Float2 GetOffset() const { return m_PositionOffset; }
+		void SetOffset(Float2 offset) { m_PositionOffset = offset; }
+
+		void Reverse(float elapsedSec);
 	protected:
 		GameObject* m_pParent{};
 		//This transform is a reference to the parent transform
@@ -49,9 +54,12 @@ namespace dae
 
 		//m_Direction is for non physics-related movement
 		Float2 m_Direction;
+		Float2 m_LastDirection;
 
 		//For triggerbox
 		float m_Width, m_Height;
+			//Position offset
+		Float2 m_PositionOffset;
 		bool m_IsTrigger;
 
 		//Function pointer

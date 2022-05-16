@@ -10,7 +10,7 @@ namespace dae
 
 
 	//Just parses vertices and indices
-	static bool ParseLevelFile(const std::string& filename, std::vector<Platform>& platforms, std::vector<Ladder>& ladders, std::vector<Float2> spawnPositions)
+	static bool ParseLevelFile(const std::string& filename, std::vector<Platform>& platforms, std::vector<Ladder>& ladders, std::vector<Float2> spawnPositions, std::vector<Burger>& burgers)
 	{
 		std::ifstream file(filename);
 		if (!file)
@@ -49,6 +49,14 @@ namespace dae
 				file >> row >> column;
 
 				ladders.push_back(Ladder(row,column));
+			}
+			else if (sCommand == "b")
+			{
+				int row, column;
+				std::string burgerPart;
+				file >> row >> column >>burgerPart;
+
+				burgers.push_back(Burger(row, column, burgerPart));
 			}
 			else if (sCommand == "ps")
 			{

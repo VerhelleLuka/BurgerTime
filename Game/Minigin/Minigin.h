@@ -19,6 +19,8 @@ namespace dae
 
 		void CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene,int playerNr ) const;
 		Transform ParseLevel(Scene& scene)const;
+		void MakeLaddersAndPlatforms(Scene& scene, const std::vector<Ladder>& ladders, const std::vector<Platform>& platforms)const;
+		void MakeBurgers(Scene& scene, const std::vector<Burger>& burgers) const;
 		bool m_SteamApi;
 
 		Physics* m_pPhysics;

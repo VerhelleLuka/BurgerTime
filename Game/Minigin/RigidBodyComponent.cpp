@@ -6,7 +6,8 @@ dae::RigidBodyComponent::RigidBodyComponent(float width, float height, bool isTr
 	m_Width(width),
 	m_Height(height),
 	m_IsTrigger(isTrigger),
-	m_OverlapEvent()
+	m_OverlapEvent(),
+	m_PositionOffset(Float2{ 0.f,0.f })
 {
 
 }
@@ -14,6 +15,7 @@ dae::RigidBodyComponent::RigidBodyComponent(float width, float height, bool isTr
 void dae::RigidBodyComponent::SetDirection(Float2 direction)
 {
 	m_Direction = direction;
+	m_LastDirection = direction;
 }
 
 void dae::RigidBodyComponent::Update(float /*elapsedSec*/)
@@ -32,6 +34,12 @@ void dae::RigidBodyComponent::FixedUpdate(float elapsedSec)
 		m_Direction = { 0.f,0.f };
 	}
 
+}
+void dae::RigidBodyComponent::Reverse(float elapsedSec)
+{
+	m_pParent->SetTransform(m_pParent->GetTransform().GetPosition().x + m_LastDirection.x * elapsedSec,
+		m_pParent->GetTransform().GetPosition().y + m_LastDirection.y * elapsedSec,
+		m_pParent->GetTransform().GetPosition().z);
 }
 
 void dae::RigidBodyComponent::OnOverlap(RigidBodyComponent* other)
