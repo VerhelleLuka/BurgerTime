@@ -219,8 +219,8 @@ void dae::Minigin::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int
 	peterPepper->AddObserver(pointComp.get());
 
 	auto& input = InputManager::GetInstance();
-	input.AddCommand(ControllerButton::ButtonA, new Damage, KeyState::PRESSED, peterPepperGo.get(), playerNr);
-	input.AddCommand(ControllerButton::ButtonB, new GainPoints, KeyState::PRESSED, peterPepperGo.get(), playerNr);
+	//input.AddCommand(ControllerButton::ButtonA, new Damage, KeyState::PRESSED, peterPepperGo.get(), playerNr);
+	//input.AddCommand(ControllerButton::ButtonB, new GainPoints, KeyState::PRESSED, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::DPadRight, new MoveRight, KeyState::DOWN, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::DPadLeft, new MoveLeft, KeyState::DOWN, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::DPadDown, new MoveDown, KeyState::DOWN, peterPepperGo.get(), playerNr);

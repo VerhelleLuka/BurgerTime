@@ -46,6 +46,10 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 		{
 			m_pPlatformComp = other->GetParent()->GetComponent<PlatformComponent>("PlatformComp");
 			m_Fall = false;
+			if (m_pPeterPepper != nullptr)
+			{
+				m_pPeterPepper->AddPoints(50);
+			}
 			for (int i{}; i < m_NrParts - 1; ++i)
 			{
 				m_WalkedOver[i] = false;
@@ -54,9 +58,12 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 	}
 	if (other->GetParent()->GetComponent<PeterPepperComponent>("PeterPepper"))
 	{
+		if (other->GetParent()->GetComponent<PeterPepperComponent>("PeterPepper").get())
+			m_pPeterPepper = other->GetParent()->GetComponent<PeterPepperComponent>("PeterPepper").get();
 		for (int i{}; i < m_NrParts - 1; ++i)
 		{
-			if (other->GetParent()->GetTransform().GetPosition().x > m_xPositions[i] 
+
+			if (other->GetParent()->GetTransform().GetPosition().x > m_xPositions[i]
 				&& other->GetParent()->GetTransform().GetPosition().x < m_xPositions[i + 1])
 			{
 				m_WalkedOver[i] = true;
@@ -68,19 +75,27 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 						m_AllTrue = false;
 					}
 				}
+
 				m_Fall = m_AllTrue;
 			}
+
 		}
+
 	}
 	if (other->GetParent()->GetComponent<BurgerComponent>("BurgerComp"))
 	{
 		if (other->GetParent()->GetTransform().GetPosition().y < m_pParent->GetTransform().GetPosition().y)
 		{
+			m_pPeterPepper = other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->GetPeterPepper();
+
 			ForceFall();
 		}
 		else
 		{
+			other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->SetPeterPepper(m_pPeterPepper);
+
 			other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->ForceFall();
 		}
 	}
 }
+
