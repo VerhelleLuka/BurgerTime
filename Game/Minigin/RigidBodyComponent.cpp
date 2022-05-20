@@ -1,8 +1,10 @@
 #include "MiniginPCH.h"
 #include "RigidBodyComponent.h"
 #include "Structs.h"
+#include <algorithm>
+#include "PeterPepper.h"
 dae::RigidBodyComponent::RigidBodyComponent(float width, float height, bool isTrigger)
-	:m_pTransform(&m_pParent->GetTransform()) ,
+	:m_pTransform(&m_pParent->GetTransform()),
 	m_Width(width),
 	m_Height(height),
 	m_IsTrigger(isTrigger),
@@ -50,3 +52,35 @@ void dae::RigidBodyComponent::OnOverlap(RigidBodyComponent* other)
 	}
 }
 
+void dae::RigidBodyComponent::OnTriggerExit(RigidBodyComponent* other)
+{
+	if (m_OnTriggerExit != nullptr)
+	{
+		m_OnTriggerExit(other);
+	}
+}
+
+void dae::RigidBodyComponent::AddOverlappingBody(std::shared_ptr<RigidBodyComponent> overlappingBody)
+{
+	//std::weak_ptr<RigidBodyComponent> weak_RB = overlappingBody;
+	auto it = std::find(m_OverlappingBodies.begin(), m_OverlappingBodies.end(), overlappingBody.get());
+	it = m_OverlappingBodies.end();
+	if (it != m_OverlappingBodies.end())
+	{
+		return;
+	}
+	m_OverlappingBodies.push_back(overlappingBody.get());
+}
+
+void dae::RigidBodyComponent::RemoveOverlappingBody(std::shared_ptr<RigidBodyComponent> overlappingBody)
+{
+	//std::weak_ptr<RigidBodyComponent> weak_RB = overlappingBody;
+
+	auto it = std::find(m_OverlappingBodies.begin(), m_OverlappingBodies.end(), overlappingBody.get());
+	if (it != m_OverlappingBodies.end())
+	{
+		OnTriggerExit(overlappingBody.get());
+		m_OverlappingBodies.erase(std::remove(m_OverlappingBodies.begin(), m_OverlappingBodies.end(), *it), m_OverlappingBodies.end());
+	}
+
+}

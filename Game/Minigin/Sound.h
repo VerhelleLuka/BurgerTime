@@ -43,6 +43,7 @@ namespace dae
 	public:
 		static sound_system& GetSoundSystem() { return *m_ssInstance; }
 		static void RegisterSoundSystem(sound_system* ss);
+		static void DestroySoundSystem() { delete m_ssInstance; }
 
 
 	};

@@ -155,3 +155,12 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 		m_CanClimb = false;
 	}
 }
+
+void dae::PeterPepperComponent::OnTriggerExit(RigidBodyComponent* other)
+{
+	if (other->GetParent()->GetComponent<RigidBodyComponent>("LadderRigidBody"))
+	{
+		m_CanDescend = false;
+		m_CanClimb = false;
+	}
+}

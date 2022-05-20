@@ -14,7 +14,7 @@ void dae::BurgerComponent::Initialize()
 {
 	for (int i{}; i < m_NrParts; ++i)
 	{
-		m_xPositions[i] = m_pParent->GetTransform().GetPosition().x + (m_pParent->GetComponent<SpriteComponent>("BurgerSprite")->GetAnimation().GetScaledWidth() * (i + 1)) / 5;
+		m_xPositions[i] = m_pParent->GetTransform().GetPosition().x + (m_pParent->GetComponent<SpriteComponent>("BurgerSprite")->GetAnimation().GetScaledWidth() * i) / 5;
 	}
 }
 void dae::BurgerComponent::FixedUpdate(float /*elapsedSec*/)
@@ -38,13 +38,13 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 {
 	if (other->GetParent()->GetComponent<PlatformComponent>("PlatformComp"))
 	{
-		if (m_pPlatformComp == nullptr)
+		if (m_pPlatformComp.get() == nullptr)
 		{
-			m_pPlatformComp = other->GetParent()->GetComponent<PlatformComponent>("PlatformComp").get();
+			m_pPlatformComp = other->GetParent()->GetComponent<PlatformComponent>("PlatformComp");
 		}
-		if (m_Fall && other->GetParent()->GetComponent<PlatformComponent>("PlatformComp").get() != m_pPlatformComp)
+		if (m_Fall && other->GetParent()->GetComponent<PlatformComponent>("PlatformComp") != m_pPlatformComp)
 		{
-			m_pPlatformComp = other->GetParent()->GetComponent<PlatformComponent>("PlatformComp").get();
+			m_pPlatformComp = other->GetParent()->GetComponent<PlatformComponent>("PlatformComp");
 			m_Fall = false;
 			for (int i{}; i < m_NrParts - 1; ++i)
 			{
@@ -56,7 +56,7 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 	{
 		for (int i{}; i < m_NrParts - 1; ++i)
 		{
-			if (other->GetParent()->GetTransform().GetPosition().x /*+ other->GetParent()->GetComponent<SpriteComponent>("Sprite")->GetAnimation().GetScaledWidth()*/ > m_xPositions[i] 
+			if (other->GetParent()->GetTransform().GetPosition().x > m_xPositions[i] 
 				&& other->GetParent()->GetTransform().GetPosition().x < m_xPositions[i + 1])
 			{
 				m_WalkedOver[i] = true;

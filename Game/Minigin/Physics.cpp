@@ -43,6 +43,7 @@ void dae::Physics::CheckOverlap()
 					//check overlap
 
 					//check widths
+					bool isOverlapping = false;
 					if (posA.x <= posB.x + widthB && posA.x >= posB.x)
 					{
 						//check heights
@@ -52,14 +53,28 @@ void dae::Physics::CheckOverlap()
 						}
 						else
 						{
+							isOverlapping = true;
 							if (m_pRigidBodies[i]->GetTrigger())
 							{
+								m_pRigidBodies[i]->AddOverlappingBody(rigidBody);
 								m_pRigidBodies[i]->OnOverlap(rigidBody.get());
 							}
 							if (rigidBody->GetTrigger())
 							{
+								rigidBody->AddOverlappingBody(m_pRigidBodies[i]);
 								rigidBody->OnOverlap(m_pRigidBodies[i].get());
 							}
+						}
+					}
+					if (!isOverlapping)
+					{
+						if (m_pRigidBodies[i]->GetTrigger())
+						{
+							m_pRigidBodies[i]->RemoveOverlappingBody(rigidBody);
+						}
+						if (rigidBody->GetTrigger())
+						{
+							rigidBody->RemoveOverlappingBody(m_pRigidBodies[i]);
 						}
 					}
 

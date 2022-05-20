@@ -190,7 +190,7 @@ void dae::Minigin::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int
 
 	peterPepper->SetGameObject(peterPepperGo.get());
 	peterPepper->SetOverlapEvent();
-
+	peterPepper->SetOnTriggerExitEvent();
 	scene.Add(peterPepperGo);
 
 
@@ -250,16 +250,7 @@ dae::Transform dae::Minigin::ParseLevel(Scene& scene) const
 	transform.SetPosition((platforms[0].column) * platformWidth + scalingIncrease * platforms[0].column, ((platforms[0].row + 1) * platformWidth) , 0.f);
 	return transform;
 }
-void dae::Minigin::Cleanup()
-{
-	Renderer::GetInstance().Destroy();
-	SDL_DestroyWindow(m_Window);
-	m_Window = nullptr;
-	//SteamAPI_Shutdown();
-	delete m_pPhysics;
-	m_pPhysics = nullptr;
-	SDL_Quit();
-}
+
 void dae::Minigin::MakeLaddersAndPlatforms(Scene& scene, const std::vector<Ladder>& ladders, const std::vector<Platform>& platforms) const
 {
 
@@ -541,4 +532,16 @@ void dae::Minigin::Run()
 	}
 
 	Cleanup();
+}
+
+void dae::Minigin::Cleanup()
+{
+	ServiceLocator::DestroySoundSystem();
+	Renderer::GetInstance().Destroy();
+	SDL_DestroyWindow(m_Window);
+	m_Window = nullptr;
+	//SteamAPI_Shutdown();
+	delete m_pPhysics;
+	m_pPhysics = nullptr;
+	SDL_Quit();
 }

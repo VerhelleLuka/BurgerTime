@@ -49,6 +49,11 @@ namespace dae
 			auto bindIng = std::bind(&PeterPepperComponent::OnOverlap, this, std::placeholders::_1);
 			m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetOnOverlapEvent(bindIng);
 		}
+		void SetOnTriggerExitEvent()
+		{
+			auto bindIng = std::bind(&PeterPepperComponent::OnTriggerExit, this, std::placeholders::_1);
+			m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetOnTriggerExit(bindIng);
+		}
 	
 	protected:
 		PeterPepperState m_State;
@@ -65,6 +70,7 @@ namespace dae
 		bool m_OverlappingLadder;
 		bool m_OverlappingPlatform;
 		void OnOverlap(RigidBodyComponent* other);
+		void OnTriggerExit(RigidBodyComponent* other);
 		// Achievement array which will hold data about the achievements and their state
 		//Achievement_t m_Achievements[1] =
 		//{

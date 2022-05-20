@@ -37,16 +37,23 @@ namespace dae
 		//{
 		//	m_OverlapEvent = std::bind(function, functionObj, std::placeholders::_1);
 		//}
-		void SetOnOverlapEvent(const std::function<void(RigidBodyComponent*)>& uwMama)
+		void SetOnOverlapEvent(const std::function<void(RigidBodyComponent*)>& function)
 		{
-			m_OverlapEvent = uwMama;
+			m_OverlapEvent = function;
+		}
+		void SetOnTriggerExit(const std::function<void(RigidBodyComponent*)>& function)
+		{
+			m_OnTriggerExit = function;
 		}
 		void OnOverlap(RigidBodyComponent* other);
-
+		void OnTriggerExit(RigidBodyComponent* other);
 		Float2 GetOffset() const { return m_PositionOffset; }
 		void SetOffset(Float2 offset) { m_PositionOffset = offset; }
 
 		void Reverse(float elapsedSec);
+
+		void AddOverlappingBody(std::shared_ptr<RigidBodyComponent> overlappingBody);
+		void RemoveOverlappingBody(std::shared_ptr<RigidBodyComponent> overlappingBody);
 	protected:
 		GameObject* m_pParent{};
 		//This transform is a reference to the parent transform
@@ -62,7 +69,9 @@ namespace dae
 		Float2 m_PositionOffset;
 		bool m_IsTrigger;
 
-		//Function pointer
+		//Function pointers
 		std::function<void(RigidBodyComponent*)> m_OverlapEvent;
+		std::function<void(RigidBodyComponent*)> m_OnTriggerExit;
+		std::vector<RigidBodyComponent*> m_OverlappingBodies;
 	};
 }

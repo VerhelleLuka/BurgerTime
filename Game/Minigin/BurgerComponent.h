@@ -14,7 +14,8 @@ namespace dae
 		virtual void Render() const override {};
 		void Initialize();
 		BurgerComponent();
-		virtual ~BurgerComponent() {};
+		virtual ~BurgerComponent()
+		{}
 
 		void SetOverlapEvent()
 		{
@@ -28,8 +29,8 @@ namespace dae
 		bool m_WalkedOver[m_NrParts] = { false };
 		bool m_Fall;
 		float m_xPositions[m_NrParts];
-		PlatformComponent* m_pPlatformComp = nullptr;
-		PlatformComponent* m_pPrevPlatformComp;
+		std::shared_ptr<PlatformComponent> m_pPlatformComp;
+		std::shared_ptr<PlatformComponent> m_pPrevPlatformComp;
 		void OnOverlap(RigidBodyComponent* other);
 
 	};
