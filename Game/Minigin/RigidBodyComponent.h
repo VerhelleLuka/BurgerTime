@@ -52,8 +52,10 @@ namespace dae
 
 		void Reverse(float elapsedSec);
 
-		void AddOverlappingBody(std::shared_ptr<RigidBodyComponent> overlappingBody);
-		void RemoveOverlappingBody(std::shared_ptr<RigidBodyComponent> overlappingBody);
+		void AddOverlappingBody(RigidBodyComponent* overlappingBody);
+		void RemoveOverlappingBody(RigidBodyComponent* overlappingBody);
+
+		std::vector<RigidBodyComponent*> GetOverlappingBodies() const;
 	protected:
 		GameObject* m_pParent{};
 		//This transform is a reference to the parent transform
@@ -65,7 +67,7 @@ namespace dae
 
 		//For triggerbox
 		float m_Width, m_Height;
-			//Position offset
+		//Position offset
 		Float2 m_PositionOffset;
 		bool m_IsTrigger;
 

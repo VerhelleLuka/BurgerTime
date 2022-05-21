@@ -32,9 +32,9 @@ void dae::Physics::CheckOverlap()
 					//the utmost left position they should be able to climb up on is 10 and utmost right 22
 					//so
 					Float2 posA = { rigidBody->GetTransform().GetPosition().x ,
-						rigidBody->GetTransform().GetPosition().y  };
+						rigidBody->GetTransform().GetPosition().y };
 					Float2 posB = { m_pRigidBodies[i]->GetTransform().GetPosition().x,
-						m_pRigidBodies[i]->GetTransform().GetPosition().y  };
+						m_pRigidBodies[i]->GetTransform().GetPosition().y };
 					//float widthA = rigidBody->GetWidth();
 					float widthB = m_pRigidBodies[i]->GetWidth();
 					float heightA = rigidBody->GetHeight();
@@ -56,12 +56,12 @@ void dae::Physics::CheckOverlap()
 							isOverlapping = true;
 							if (m_pRigidBodies[i]->GetTrigger())
 							{
-								m_pRigidBodies[i]->AddOverlappingBody(rigidBody);
+								m_pRigidBodies[i]->AddOverlappingBody(rigidBody.get());
 								m_pRigidBodies[i]->OnOverlap(rigidBody.get());
 							}
 							if (rigidBody->GetTrigger())
 							{
-								rigidBody->AddOverlappingBody(m_pRigidBodies[i]);
+								rigidBody->AddOverlappingBody(m_pRigidBodies[i].get());
 								rigidBody->OnOverlap(m_pRigidBodies[i].get());
 							}
 						}
@@ -70,11 +70,11 @@ void dae::Physics::CheckOverlap()
 					{
 						if (m_pRigidBodies[i]->GetTrigger())
 						{
-							m_pRigidBodies[i]->RemoveOverlappingBody(rigidBody);
+							m_pRigidBodies[i]->RemoveOverlappingBody(rigidBody.get());
 						}
 						if (rigidBody->GetTrigger())
 						{
-							rigidBody->RemoveOverlappingBody(m_pRigidBodies[i]);
+							rigidBody->RemoveOverlappingBody(m_pRigidBodies[i].get());
 						}
 					}
 

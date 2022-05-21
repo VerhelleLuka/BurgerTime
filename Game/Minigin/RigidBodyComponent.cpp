@@ -60,27 +60,32 @@ void dae::RigidBodyComponent::OnTriggerExit(RigidBodyComponent* other)
 	}
 }
 
-void dae::RigidBodyComponent::AddOverlappingBody(std::shared_ptr<RigidBodyComponent> overlappingBody)
+void dae::RigidBodyComponent::AddOverlappingBody(RigidBodyComponent* overlappingBody)
 {
 	//std::weak_ptr<RigidBodyComponent> weak_RB = overlappingBody;
-	auto it = std::find(m_OverlappingBodies.begin(), m_OverlappingBodies.end(), overlappingBody.get());
-	it = m_OverlappingBodies.end();
+	auto it = std::find(m_OverlappingBodies.begin(), m_OverlappingBodies.end(), overlappingBody);
+	//it = m_OverlappingBodies.end();
 	if (it != m_OverlappingBodies.end())
 	{
 		return;
 	}
-	m_OverlappingBodies.push_back(overlappingBody.get());
+	m_OverlappingBodies.push_back(overlappingBody);
 }
 
-void dae::RigidBodyComponent::RemoveOverlappingBody(std::shared_ptr<RigidBodyComponent> overlappingBody)
+void dae::RigidBodyComponent::RemoveOverlappingBody(RigidBodyComponent* overlappingBody)
 {
 	//std::weak_ptr<RigidBodyComponent> weak_RB = overlappingBody;
 
-	auto it = std::find(m_OverlappingBodies.begin(), m_OverlappingBodies.end(), overlappingBody.get());
+	auto it = std::find(m_OverlappingBodies.begin(), m_OverlappingBodies.end(), overlappingBody);
 	if (it != m_OverlappingBodies.end())
 	{
-		OnTriggerExit(overlappingBody.get());
+		OnTriggerExit(overlappingBody);
 		m_OverlappingBodies.erase(std::remove(m_OverlappingBodies.begin(), m_OverlappingBodies.end(), *it), m_OverlappingBodies.end());
 	}
 
+}
+
+std::vector<dae::RigidBodyComponent*> dae::RigidBodyComponent::GetOverlappingBodies() const
+{
+	return m_OverlappingBodies;
 }

@@ -12,10 +12,10 @@ dae::PeterPepperComponent::PeterPepperComponent(int lives, bool /*steamApi*/)
 	, m_State(PeterPepperState::Climb)
 	, m_OverlappingLadder(false),
 	m_OverlappingPlatform(false)
-	,m_CanClimb(false)
-	,m_CanDescend(false)
-	,m_CanWalkLeft(false)
-	,m_CanWalkRight(false)
+	, m_CanClimb(false)
+	, m_CanDescend(false)
+	, m_CanWalkLeft(false)
+	, m_CanWalkRight(false)
 {
 	//if(steamApi)
 	//	m_pSteamAchievements = new CSteamAchievements(m_Achieve 
@@ -32,7 +32,23 @@ void dae::PeterPepperComponent::Update(float elapsedSec)
 	}
 }
 
-
+void dae::PeterPepperComponent::FixedUpdate(float /*elapsedSec*/)
+{
+	auto overlappingBodies = m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->GetOverlappingBodies();
+	bool isOverlappingPlatform = false;
+	for (int i{}; i < overlappingBodies.size(); ++i)
+	{
+		if (overlappingBodies[i]->GetParent()->GetComponent<PlatformComponent>("PlatformComp"))
+		{
+			isOverlappingPlatform = true;
+		}
+	}
+	if (!isOverlappingPlatform)
+	{
+		m_CanWalkLeft = false;
+		m_CanWalkRight = false;
+	}
+}
 void dae::PeterPepperComponent::AddPoints(int points)
 {
 
@@ -92,8 +108,6 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 {
 	if (other->GetParent())
 	{
-
-
 		//if the other overlap is a platform
 		if (other->GetParent()->GetComponent<RigidBodyComponent>("PlatformRigidBody"))
 		{
@@ -136,7 +150,7 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 			m_CanDescend = false;
 			Float2 ladderPos = { other->GetTransform().GetPosition().x, other->GetTransform().GetPosition().y };
 			float ladderHeight = other->GetHeight();
-			if (m_pParent->GetTransform().GetPosition().y  >= ladderPos.y - ladderHeight / 2 ||
+			if (m_pParent->GetTransform().GetPosition().y >= ladderPos.y - ladderHeight / 2 ||
 				other->GetParent()->GetComponent<LadderComponent>("LadderComp")->GetHasUp())
 			{
 				m_CanClimb = true;

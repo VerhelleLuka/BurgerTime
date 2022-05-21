@@ -25,18 +25,18 @@ namespace dae
 	class PeterPepperComponent final : public BaseComponent, public Subject
 	{
 	public:
-		virtual void Update(float deltaTime) ;
-		virtual void FixedUpdate(float /*deltaTime*/) override {}
+		virtual void Update(float deltaTime);
+		virtual void FixedUpdate(float /*deltaTime*/) override;
 		virtual void Render() const {};
 
-		PeterPepperComponent(int lives, bool steamApi) ;
+		PeterPepperComponent(int lives, bool steamApi);
 		virtual ~PeterPepperComponent() {};
 
 		void ReduceLife();
 		int GetLives() { return m_Lives; }
 		void AddPoints(int points);
-		int GetPoints(){return m_Points;}
-		
+		int GetPoints() { return m_Points; }
+
 		void ChangeState(int state);
 
 		bool GetCanClimb() const { return m_CanClimb; }
@@ -54,7 +54,7 @@ namespace dae
 			auto bindIng = std::bind(&PeterPepperComponent::OnTriggerExit, this, std::placeholders::_1);
 			m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetOnTriggerExit(bindIng);
 		}
-	
+
 	protected:
 		PeterPepperState m_State;
 	private:
