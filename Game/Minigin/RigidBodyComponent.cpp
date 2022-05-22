@@ -2,7 +2,6 @@
 #include "RigidBodyComponent.h"
 #include "Structs.h"
 #include <algorithm>
-#include "PeterPepper.h"
 dae::RigidBodyComponent::RigidBodyComponent(float width, float height, bool isTrigger)
 	:m_pTransform(&m_pParent->GetTransform()),
 	m_Width(width),
@@ -10,6 +9,8 @@ dae::RigidBodyComponent::RigidBodyComponent(float width, float height, bool isTr
 	m_IsTrigger(isTrigger),
 	m_OverlapEvent(),
 	m_PositionOffset(Float2{ 0.f,0.f })
+	, m_Direction(Float2{0.f, 0.f})
+	,m_LastDirection(Float2{0.f, 0.f})
 {
 
 }

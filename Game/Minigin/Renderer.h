@@ -2,6 +2,8 @@
 #include "Singleton.h"
 #include "TrashTheCache.h"
 #include "Structs.h"
+#include "SDL_render.h"
+#include "SDL.h"
 namespace dae
 {
 	class Texture2D;

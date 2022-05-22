@@ -6,7 +6,8 @@
 dae::Animation::Animation(int rows, int nrFrames)
 	:m_Rows(rows),
 	m_NrFrames(nrFrames),
-	m_CurrentFrame(0)//,
+	m_CurrentFrame(0),
+	m_Position(Float2{0.f, 0.f})
 	//m_DeltaTime(0.f),
 	//m_IsDirty(false)
 {

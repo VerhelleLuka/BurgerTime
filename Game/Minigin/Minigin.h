@@ -12,18 +12,20 @@ namespace dae
 		void LoadGame() const;
 		void Cleanup();
 		void Run();
+		Physics* GetPhysics()const { return m_pPhysics; }
 		
 	private:
 		static const int MsPerFrame = 16; //16 for 60 fps, 33 for 30 fps
 		SDL_Window* m_Window{};
 
-		void CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene,int playerNr ) const;
-		Transform ParseLevel(Scene& scene)const;
-		void MakeLaddersAndPlatforms(Scene& scene, const std::vector<Ladder>& ladders, const std::vector<Platform>& platforms)const;
-		void MakeBurgers(Scene& scene, const std::vector<Burger>& burgers) const;
+		//void CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene,int playerNr ) const;
+		//Transform ParseLevel(Scene& scene)const;
+		//void MakeLaddersAndPlatforms(Scene& scene, const std::vector<Ladder>& ladders, const std::vector<Platform>& platforms)const;
+		//void MakeBurgers(Scene& scene, const std::vector<Burger>& burgers) const;
 		bool m_SteamApi;
 
 		Physics* m_pPhysics;
+		bool m_IsInitialized = false;
 
 	};
 }

@@ -17,19 +17,10 @@ namespace dae
 
 			return *this;
 		}
-	};
-
-	struct Platform
-	{
-		int row, column;
-	};
-	struct Ladder
-	{
-		int row, column;
-	};
-	struct Burger
-	{
-		int row, column;
-		std::string partName;
+		Float2(float xx, float yy)
+		{
+			x = xx;
+			y = yy;
+		}
 	};
 }

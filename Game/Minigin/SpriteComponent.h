@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include <string>
 #include "BaseComponent.h"
-#include"Structs.h"
+#include "Structs.h"
 #include "Observer.h"
 namespace dae
 {

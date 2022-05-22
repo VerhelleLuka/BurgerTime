@@ -3,6 +3,8 @@
 #include "SceneObject.h"
 #include <memory>
 #include <map>
+#include <vector>
+#include <string>
 namespace dae
 {
 	class BaseComponent;
