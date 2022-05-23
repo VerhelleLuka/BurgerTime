@@ -1,9 +1,11 @@
 #include "MiniginPCH.h"
 #include "Physics.h"
-
+#include "SceneManager.h"
+#include "Scene.h"
 
 void dae::Physics::FixedUpdate(float /*deltaTime*/)
 {
+	m_SceneNr = SceneManager::GetInstance().GetActiveScene().GetIndex();
 	CheckOverlap();
 }
 
@@ -26,6 +28,7 @@ void dae::Physics::SetSceneNr(int sceneNr)
 }
 void dae::Physics::CheckOverlap()
 {
+	
 	//Overlap check for players/AI on ladders
 	for (size_t i{}; i < m_pRigidBodies[m_SceneNr].size(); ++i)
 	{

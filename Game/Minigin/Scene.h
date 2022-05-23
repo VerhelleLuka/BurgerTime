@@ -9,7 +9,8 @@ namespace dae
 		friend Scene& SceneManager::CreateScene(const std::string& name);
 	public:
 		void Add(const std::shared_ptr<SceneObject>& object);
-
+		void SetIndex(int index) { m_Index = index; }
+		int GetIndex() const { return m_Index; }
 		void Update(float deltaTime);
 		void FixedUpdate(float deltaTime);
 
@@ -27,7 +28,7 @@ namespace dae
 
 		std::string m_Name;
 		std::vector < std::shared_ptr<SceneObject>> m_Objects{};
-
+		int m_Index;
 
 		static unsigned int m_IdCounter; 
 	};
