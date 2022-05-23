@@ -19,36 +19,36 @@
 #include "BurgerComponent.h"
 void dae::BurgerTime::Initialize()
 {
-
 }
 
 void dae::BurgerTime::LoadGame() const
 {
-	auto& scene = SceneManager::GetInstance().CreateScene("Level1");
-
+	auto& levelScene = SceneManager::GetInstance().CreateScene("Level");
+	auto& menuScene = SceneManager::GetInstance().CreateScene("MainMenu");
 	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 
-	//FPS counter
-	//auto fpsCounter = std::make_shared<FpsComponent>();
-	//auto fpsText = std::make_shared<TextComponent>("Fps: ", font);
-
-	//auto fpsCounterGo = std::make_shared<GameObject>();
-	//fpsCounterGo->AddComponent(fpsCounter, "fpsCounter");
-	//fpsCounterGo->AddComponent(fpsText, "text");
-	//fpsCounter->SetGameObject(fpsCounterGo.get());
-	//fpsText->SetGameObject(fpsCounterGo.get());
-	//scene.Add(fpsCounterGo);
-	//===========
-
-	Transform peterPepperSpawnPos = ParseLevel(scene);
-	CreatePeterPepperAndHUD(peterPepperSpawnPos, scene, 0);
-	//CreatePeterPepperAndHUD(peterPepperSpawnPos, scene, 1);
+	//m_Minigin.GetPhysics()->AddScene();
+	//m_Minigin.GetPhysics()->AddScene();
+	Transform peterPepperSpawnPos = ParseLevel(levelScene, 0);
+	CreatePeterPepperAndHUD(peterPepperSpawnPos, menuScene, 0, false,1);
+	CreatePeterPepperAndHUD(peterPepperSpawnPos, levelScene, 0, true,0);
+	SceneManager::GetInstance().SetActiveScene(&levelScene);
 }
-void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int playerNr) const
+void dae::BurgerTime::CreateMenu(Scene& /*scene*/) const
+{
+
+}
+
+void dae::BurgerTime::AddRigidBodyToPhysics(int sceneNr, std::shared_ptr<RigidBodyComponent> rB) const
+{
+	m_Minigin.GetPhysics()->SetSceneNr(sceneNr);
+	m_Minigin.GetPhysics()->AddRigidBodyComponent(rB);
+}
+void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int playerNr, bool andHUD, int sceneNr) const
 {
 	float hudX, hudY;
 	hudX = 0;
-	hudY = 420;
+	hudY = 440;
 	if (playerNr == 1)
 	{
 		hudX = 400;
@@ -59,7 +59,7 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 	//Transform transform{};
 	//transform.SetPosition(50.f, 50.f, 0.f);
 	peterPepperGo->SetTransform(spawnPos);
-	auto peterPepper = std::make_shared<PeterPepperComponent>(3, false);
+	auto peterPepper = std::make_shared<PeterPepperComponent>(3);
 	auto peterPSprite = std::make_shared<SpriteComponent>();
 
 	float animationScale = 1.75f;
@@ -104,14 +104,15 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 	pRigidBody->SetGameObject(peterPepperGo.get());
 	pRigidBody->SetTransform(&peterPepperGo->GetTransform());
 	pRigidBody->SetOffset(Float2{ 0.f,-3.f });
-	m_Minigin.GetPhysics()->AddRigidBodyComponent(pRigidBody);
 
-	//Movementcomponent
-	//auto pMovement = std::make_shared<MovementComponent>();
+	AddRigidBodyToPhysics(sceneNr, pRigidBody);
+	//m_Minigin.GetPhysics()->AddRigidBodyComponent(pRigidBody);
 
 	//Add everything to scene
 	peterPepperGo->AddComponent(peterPSprite, "Sprite");
+
 	peterPepperGo->AddComponent(peterPepper, "PeterPepper");
+
 	peterPepperGo->AddComponent(pRigidBody, "RigidBody");
 	//peterPepperGo->AddComponent(pMovement, "Movement");
 
@@ -120,44 +121,66 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 	peterPepper->SetOnTriggerExitEvent();
 	scene.Add(peterPepperGo);
 
+	if (andHUD)
+	{
+		auto livesDisplay = std::make_shared<GameObject>();
+		auto smallFont = ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
+		auto lifeComp = std::make_shared<LivesDisplayComponent>(livesDisplay);
+		auto textComp = std::make_shared<TextComponent>("Lives: 3", smallFont);
+		livesDisplay->AddComponent(lifeComp, "LifeComponent");
+		livesDisplay->AddComponent(textComp, "TextComponent");
+		textComp->SetPosition(hudX, hudY);
+		scene.Add(livesDisplay);
 
-	auto livesDisplay = std::make_shared<GameObject>();
-	auto smallFont = ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
-	auto lifeComp = std::make_shared<LivesDisplayComponent>(livesDisplay);
-	auto textComp = std::make_shared<TextComponent>("Lives: 3", smallFont);
-	livesDisplay->AddComponent(lifeComp, "LifeComponent");
-	livesDisplay->AddComponent(textComp, "TextComponent");
-	textComp->SetPosition(hudX, hudY);
-	scene.Add(livesDisplay);
+		auto pointsDisplay = std::make_shared<GameObject>();
+		auto pointComp = std::make_shared<PointsDisplayComponent>(pointsDisplay);
+		auto textCompPts = std::make_shared<TextComponent>("Points: 0", smallFont);
+		pointsDisplay->AddComponent(pointComp, "PointsComponent");
+		pointsDisplay->AddComponent(textCompPts, "TextComponent");
+		textCompPts->SetPosition(hudX, hudY + 20);
+		scene.Add(pointsDisplay);
 
+		peterPepper->AddObserver(lifeComp.get());
+		peterPepper->AddObserver(pointComp.get());
 
+	}
 
-	auto pointsDisplay = std::make_shared<GameObject>();
-	auto pointComp = std::make_shared<PointsDisplayComponent>(pointsDisplay);
-	auto textCompPts = std::make_shared<TextComponent>("Points: 0", smallFont);
-	pointsDisplay->AddComponent(pointComp, "PointsComponent");
-	pointsDisplay->AddComponent(textCompPts, "TextComponent");
-	textCompPts->SetPosition(hudX, hudY + 20);
-	scene.Add(pointsDisplay);
-
-	//Observers
-	peterPepper->AddObserver(lifeComp.get());
 	peterPepper->AddObserver(peterPSprite.get());
-	peterPepper->AddObserver(pointComp.get());
-
+	//MakeCommands(playerNr,peterPepperGo.get(), andHUD);
 	auto& input = InputManager::GetInstance();
-	//input.AddCommand(ControllerButton::ButtonA, new Damage, KeyState::PRESSED, peterPepperGo.get(), playerNr);
-	//input.AddCommand(ControllerButton::ButtonB, new GainPoints, KeyState::PRESSED, peterPepperGo.get(), playerNr);
+
 	input.AddCommand(ControllerButton::DPadRight, new MoveRight, KeyState::DOWN, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::DPadLeft, new MoveLeft, KeyState::DOWN, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::DPadDown, new MoveDown, KeyState::DOWN, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::DPadUp, new MoveUp, KeyState::DOWN, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::Nothing, new Idle, KeyState::NOTHING, peterPepperGo.get(), playerNr);
+	input.AddCommand(ControllerButton::ButtonX, new ChangeScene, KeyState::PRESSED, peterPepperGo.get(), playerNr);
 
+	if (andHUD)
+	{
+		peterPepper->SetInMenu(false);
+		input.AddCommand((ControllerButton::ButtonA), new Select, KeyState::RELEASED, peterPepperGo.get(), playerNr);
+	}
+
+	//input.SetPlayer(peterPepperGo.get(), playerNr);
 	peterPepperGo->SetTransform(50, 20, 0);
 }
 
-dae::Transform dae::BurgerTime::ParseLevel(Scene& scene) const
+void dae::BurgerTime::MakeCommands(int playerNr, GameObject* go, bool andHUD) const
+{
+	auto& input = InputManager::GetInstance();
+
+	input.AddCommand(ControllerButton::DPadRight, new MoveRight, KeyState::DOWN, go, playerNr);
+	input.AddCommand(ControllerButton::DPadLeft, new MoveLeft, KeyState::DOWN, go, playerNr);
+	input.AddCommand(ControllerButton::DPadDown, new MoveDown, KeyState::DOWN, go, playerNr);
+	input.AddCommand(ControllerButton::DPadUp, new MoveUp, KeyState::DOWN, go, playerNr);
+	input.AddCommand(ControllerButton::Nothing, new Idle, KeyState::NOTHING, go, playerNr);
+	if (andHUD)
+	{
+		input.AddCommand((ControllerButton::ButtonA), new Select, KeyState::RELEASED, go, playerNr);
+	}
+}
+dae::Transform dae::BurgerTime::ParseLevel(Scene& scene, int sceneNr) const
 {
 
 	std::vector<Platform> platforms;
@@ -170,15 +193,15 @@ dae::Transform dae::BurgerTime::ParseLevel(Scene& scene) const
 	//Is half 
 	int scalingIncrease = 8 * levelScale;
 	float platformWidth = 16.f * levelScale;
-	MakeLaddersAndPlatforms(scene, ladders, platforms);
-	MakeBurgers(scene, burgers);
+	MakeLaddersAndPlatforms(scene, ladders, platforms, sceneNr);
+	MakeBurgers(scene, burgers, sceneNr);
 	//for now just one spawn position
 	Transform transform{};
 	transform.SetPosition((platforms[0].column) * platformWidth + scalingIncrease * platforms[0].column, ((platforms[0].row + 1) * platformWidth), 0.f);
 	return transform;
 }
 
-void dae::BurgerTime::MakeLaddersAndPlatforms(Scene& scene, const std::vector<Ladder>& ladders, const std::vector<Platform>& platforms) const
+void dae::BurgerTime::MakeLaddersAndPlatforms(Scene& scene, const std::vector<Ladder>& ladders, const std::vector<Platform>& platforms, int sceneNr) const
 {
 
 	//Every two platforms, the platfors get pushed 16 pixels further away because of the bug platform.
@@ -255,7 +278,8 @@ void dae::BurgerTime::MakeLaddersAndPlatforms(Scene& scene, const std::vector<La
 		platform->AddComponent(pRigidBody, "PlatformRigidBody");
 		pRigidBody->SetTransform(&platform->GetTransform());
 
-		m_Minigin.GetPhysics()->AddRigidBodyComponent(pRigidBody);
+		AddRigidBodyToPhysics(sceneNr, pRigidBody);
+		//m_Minigin.GetPhysics()->AddRigidBodyComponent(pRigidBody);
 
 		scene.Add(platform);
 	}
@@ -295,7 +319,8 @@ void dae::BurgerTime::MakeLaddersAndPlatforms(Scene& scene, const std::vector<La
 		ladder->AddComponent(pRigidBody, "LadderRigidBody");
 		pRigidBody->SetTransform(&ladder->GetTransform());
 
-		m_Minigin.GetPhysics()->AddRigidBodyComponent(pRigidBody);
+		AddRigidBodyToPhysics(sceneNr, pRigidBody);
+		//m_Minigin.GetPhysics()->AddRigidBodyComponent(pRigidBody);
 
 		//ladder component
 		auto pLadder = std::make_shared<LadderComponent>();
@@ -337,7 +362,7 @@ void dae::BurgerTime::MakeLaddersAndPlatforms(Scene& scene, const std::vector<La
 	}
 }
 
-void dae::BurgerTime::MakeBurgers(Scene& scene, const std::vector<Burger>& burgers) const
+void dae::BurgerTime::MakeBurgers(Scene& scene, const std::vector<Burger>& burgers, int sceneNr) const
 {
 	int levelScale = 2;
 	//Is half 
@@ -382,7 +407,9 @@ void dae::BurgerTime::MakeBurgers(Scene& scene, const std::vector<Burger>& burge
 		pBurger->SetGameObject(burger.get());
 		pBurger->Initialize();
 		pBurger->SetOverlapEvent();
-		m_Minigin.GetPhysics()->AddRigidBodyComponent(pRigidBody);
+
+		AddRigidBodyToPhysics(sceneNr, pRigidBody);
+		//m_Minigin.GetPhysics()->AddRigidBodyComponent(pRigidBody);
 
 		scene.Add(burger);
 	}
@@ -395,47 +422,12 @@ void dae::BurgerTime::Run()
 	m_Minigin.Initialize();
 	Initialize();
 	LoadGame();
-
 	{
-		//auto& renderer = Renderer::GetInstance();
-		//auto& sceneManager = SceneManager::GetInstance();
-		//auto& input = InputManager::GetInstance();
-		//bool doContinue = true;
-
-		//auto lastTime = std::chrono::high_resolution_clock::now();
-		//float lag = 0.0f;
-		//float fixedTimeStep = 0.02f;
-
-		//ServiceLocator::GetSoundSystem().Play(0, 100);
-		//ss.Play(1, 100);
-		//ss.Play(0, 100);
-		//while (doContinue)
-		{
-			m_Minigin.Run();
-			//SteamAPI_RunCallbacks();
-
-			//const auto currentTime = std::chrono::high_resolution_clock::now();
-			//float deltaTime = std::chrono::duration<float>(currentTime - lastTime).count();
-			//lastTime = currentTime;
-			//lag += deltaTime;
-			//doContinue = input.ProcessInput();
-			//input.Update();
-			//sceneManager.Update(deltaTime);
-
-			//while (lag >= fixedTimeStep)
-			//{
-			//	sceneManager.FixedUpdate(fixedTimeStep);
-			//	m_pPhysics->FixedUpdate(fixedTimeStep);
-			//	lag -= fixedTimeStep;
-
-			//}
-			//renderer.Render();
-		}
+		m_Minigin.Run();
 	}
 	Cleanup();
 }
 
 void dae::BurgerTime::Cleanup()
 {
-
 }

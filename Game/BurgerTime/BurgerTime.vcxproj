@@ -22,6 +22,7 @@
     <ClInclude Include="BurgerComponent.h" />
     <ClInclude Include="BurgerTime.h" />
     <ClInclude Include="BurgerTimeStructs.h" />
+    <ClInclude Include="ButtonComponent.h" />
     <ClInclude Include="LevelParser.h" />
     <ClInclude Include="LivesDisplayComponent.h" />
     <ClInclude Include="PeterPepper.h" />
@@ -33,6 +34,7 @@
   <ItemGroup>
     <ClCompile Include="BurgerComponent.cpp" />
     <ClCompile Include="BurgerTime.cpp" />
+    <ClCompile Include="ButtonComponent.cpp" />
     <ClCompile Include="LivesDisplayComponent.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PeterPepper.cpp" />

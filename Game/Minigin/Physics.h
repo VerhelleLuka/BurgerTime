@@ -19,7 +19,10 @@ namespace dae
 		void FixedUpdate(float deltaTime);
 		void CheckOverlap();
 
+		void SetSceneNr(int sceneNr);
+
 	private:
-		std::vector<std::shared_ptr<RigidBodyComponent>> m_pRigidBodies;
+		std::vector<std::vector<std::shared_ptr<RigidBodyComponent>>> m_pRigidBodies;
+		int m_SceneNr;
 	};
 }

@@ -57,6 +57,9 @@
     <ClInclude Include="BurgerTimeStructs.h">
       <Filter>Header Files\StructsDatatypes</Filter>
     </ClInclude>
+    <ClInclude Include="ButtonComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PointsDisplayComponent.cpp">
@@ -79,6 +82,9 @@
     </ClCompile>
     <ClCompile Include="BurgerTime.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ButtonComponent.cpp">
+      <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

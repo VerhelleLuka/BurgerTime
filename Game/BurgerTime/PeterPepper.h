@@ -7,6 +7,7 @@
 #include "Achievements.h"
 #include "Structs.h"
 #include "RigidBodyComponent.h"
+#include "ButtonComponent.h"
 namespace dae
 {
 	enum class PeterPepperState
@@ -29,14 +30,14 @@ namespace dae
 		virtual void FixedUpdate(float /*deltaTime*/) override;
 		virtual void Render() const {};
 
-		PeterPepperComponent(int lives, bool steamApi);
+		PeterPepperComponent(int lives);
 		virtual ~PeterPepperComponent() {};
 
 		void ReduceLife();
 		int GetLives() { return m_Lives; }
 		void AddPoints(int points);
 		int GetPoints() { return m_Points; }
-
+		void ButtonPress();
 		void ChangeState(int state);
 
 		bool GetCanClimb() const { return m_CanClimb; }
@@ -55,6 +56,9 @@ namespace dae
 			m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetOnTriggerExit(bindIng);
 		}
 
+		bool GetInMenu() const { return m_InMenu; }
+		void SetInMenu(bool inGameScene)  { m_InMenu = inGameScene; }
+
 	protected:
 		PeterPepperState m_State;
 	private:
@@ -67,10 +71,13 @@ namespace dae
 		bool m_CanWalkLeft;
 		bool m_CanWalkRight;
 
+		bool m_InMenu;
 		bool m_OverlappingLadder;
 		bool m_OverlappingPlatform;
 		void OnOverlap(RigidBodyComponent* other);
 		void OnTriggerExit(RigidBodyComponent* other);
+
+		ButtonComponent* m_pOverlappingButton;
 		// Achievement array which will hold data about the achievements and their state
 		//Achievement_t m_Achievements[1] =
 		//{

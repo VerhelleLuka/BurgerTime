@@ -1,6 +1,6 @@
 #pragma once
 #include "SceneManager.h"
-
+#include "RigidBodyComponent.h"
 namespace dae
 {
 	class SceneObject;
@@ -15,7 +15,7 @@ namespace dae
 
 		std::vector<std::shared_ptr<SceneObject>>& GetSceneObjects() { return m_Objects; }
 		void Render() const;
-
+		const std::string& GetName() const { return m_Name; }
 		~Scene();
 		Scene(const Scene& other) = delete;
 		Scene(Scene&& other) = delete;
@@ -27,6 +27,7 @@ namespace dae
 
 		std::string m_Name;
 		std::vector < std::shared_ptr<SceneObject>> m_Objects{};
+
 
 		static unsigned int m_IdCounter; 
 	};

@@ -160,32 +160,14 @@ void dae::InputManager::Update()
 	}
 
 }
-void dae::InputManager::HandleCommand(ControllerButton /*button*/, KeyState /*keyState*/, int /*playerIdx*/)
+
+
+void dae::InputManager::SetPlayer(GameObject* pGo, int playerIdx)
 {
-	//switch (keyState)
-	//{
-	//case KeyState::DOWN:
-	//	if (IsDown(button, playerIdx))
-	//	{
-	//		pImpl->GetButtonCommands(playerIdx)[button]->Execute();
-	//	}
-	//	break;
-	//case KeyState::RELEASED:
-	//	if (IsReleased(button, playerIdx))
-	//	{
-	//		pImpl->GetButtonCommands(playerIdx)[button]->Execute();
-	//	}
-	//	break;
-	//case KeyState::PRESSED:
-	//	if (IsPressed(button, playerIdx))
-	//	{
-	//		pImpl->GetButtonCommands(playerIdx)[button]->Execute();
-	//	}
-	//case KeyState::NOTHING:
-	//	if (button == ControllerButton::Nothing)
-	//	{
-	//		pImpl->GetButtonCommands(playerIdx)[button]->Execute();
-	//	}
-	//	break;
-	//}
+	auto it = pImpl->GetButtonCommands(playerIdx).begin();
+	while (it != pImpl->GetButtonCommands(playerIdx).end())
+	{
+		it->second->SetGameObject(pGo);
+		it++;
+	}
 }

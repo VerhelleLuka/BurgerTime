@@ -9,21 +9,32 @@ void dae::Physics::FixedUpdate(float /*deltaTime*/)
 
 void dae::Physics::AddRigidBodyComponent(std::shared_ptr<RigidBodyComponent>rigidBody)
 {
-	m_pRigidBodies.push_back(rigidBody);
+	
+	if (int(m_pRigidBodies.size() - 1) < m_SceneNr)
+	{
+		std::vector<std::shared_ptr<RigidBodyComponent>> newSceneVector;
+		newSceneVector.push_back(rigidBody);
+		m_pRigidBodies.push_back(newSceneVector);
+		return;
+	}
+	m_pRigidBodies[m_SceneNr].push_back(rigidBody);
 	//AddObserver(rigidBody.get());
 }
-
+void dae::Physics::SetSceneNr(int sceneNr)
+{
+	m_SceneNr = sceneNr;
+}
 void dae::Physics::CheckOverlap()
 {
 	//Overlap check for players/AI on ladders
-	for (size_t i{}; i < m_pRigidBodies.size(); ++i)
+	for (size_t i{}; i < m_pRigidBodies[m_SceneNr].size(); ++i)
 	{
-		for (auto& rigidBody : m_pRigidBodies)
+		for (auto& rigidBody : m_pRigidBodies[m_SceneNr])
 		{
-			if (rigidBody != m_pRigidBodies[i])
+			if (rigidBody != m_pRigidBodies[m_SceneNr][i])
 			{
 				//If at least one of the rigidbodies is a trigger
-				if (rigidBody->GetTrigger() || m_pRigidBodies[i]->GetTrigger())
+				if (rigidBody->GetTrigger() || m_pRigidBodies[m_SceneNr][i]->GetTrigger())
 				{
 					//This is super specific code for PeterPepper/Enemy overlap with stairs
 
@@ -33,12 +44,12 @@ void dae::Physics::CheckOverlap()
 					//so
 					Float2 posA = { rigidBody->GetTransform().GetPosition().x ,
 						rigidBody->GetTransform().GetPosition().y };
-					Float2 posB = { m_pRigidBodies[i]->GetTransform().GetPosition().x,
-						m_pRigidBodies[i]->GetTransform().GetPosition().y };
+					Float2 posB = { m_pRigidBodies[m_SceneNr][i]->GetTransform().GetPosition().x,
+						m_pRigidBodies[m_SceneNr][i]->GetTransform().GetPosition().y };
 					//float widthA = rigidBody->GetWidth();
-					float widthB = m_pRigidBodies[i]->GetWidth();
+					float widthB = m_pRigidBodies[m_SceneNr][i]->GetWidth();
 					float heightA = rigidBody->GetHeight();
-					float heightB = m_pRigidBodies[i]->GetHeight();
+					float heightB = m_pRigidBodies[m_SceneNr][i]->GetHeight();
 
 					//check overlap
 
@@ -54,27 +65,27 @@ void dae::Physics::CheckOverlap()
 						else
 						{
 							isOverlapping = true;
-							if (m_pRigidBodies[i]->GetTrigger())
+							if (m_pRigidBodies[m_SceneNr][i]->GetTrigger())
 							{
-								m_pRigidBodies[i]->AddOverlappingBody(rigidBody.get());
-								m_pRigidBodies[i]->OnOverlap(rigidBody.get());
+								m_pRigidBodies[m_SceneNr][i]->AddOverlappingBody(rigidBody.get());
+								m_pRigidBodies[m_SceneNr][i]->OnOverlap(rigidBody.get());
 							}
 							if (rigidBody->GetTrigger())
 							{
-								rigidBody->AddOverlappingBody(m_pRigidBodies[i].get());
-								rigidBody->OnOverlap(m_pRigidBodies[i].get());
+								rigidBody->AddOverlappingBody(m_pRigidBodies[m_SceneNr][i].get());
+								rigidBody->OnOverlap(m_pRigidBodies[m_SceneNr][i].get());
 							}
 						}
 					}
 					if (!isOverlapping)
 					{
-						if (m_pRigidBodies[i]->GetTrigger())
+						if (m_pRigidBodies[m_SceneNr][i]->GetTrigger())
 						{
-							m_pRigidBodies[i]->RemoveOverlappingBody(rigidBody.get());
+							m_pRigidBodies[m_SceneNr][i]->RemoveOverlappingBody(rigidBody.get());
 						}
 						if (rigidBody->GetTrigger())
 						{
-							rigidBody->RemoveOverlappingBody(m_pRigidBodies[i].get());
+							rigidBody->RemoveOverlappingBody(m_pRigidBodies[m_SceneNr][i].get());
 						}
 					}
 

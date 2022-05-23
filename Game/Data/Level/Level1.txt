@@ -26,8 +26,9 @@ p 3 2
 p 3 3
 p 4 4
 p 7 2
-p 10 5
-p 11 0
+p 8 8
+p 9 9
+
 #List of ladders and their row, column
 ld 0 2
 ld 0 4
