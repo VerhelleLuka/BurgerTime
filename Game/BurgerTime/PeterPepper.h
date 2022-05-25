@@ -77,13 +77,7 @@ namespace dae
 		void OnOverlap(RigidBodyComponent* other);
 		void OnTriggerExit(RigidBodyComponent* other);
 
-		ButtonComponent* m_pOverlappingButton;
-		// Achievement array which will hold data about the achievements and their state
-		//Achievement_t m_Achievements[1] =
-		//{
-		//	_ACH_ID(ACH_WIN_ONE_GAME, "Winner"),
-		//};
-		//CSteamAchievements* m_pSteamAchievements = NULL;
+		bool m_OverlappingButton;
 
 	};
 }

@@ -1,5 +1,5 @@
 #pragma once
-enum EventType
+enum class EventType
 {
 	LOSTLIFE,
 	GAINEDPOINTS,

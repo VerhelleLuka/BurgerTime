@@ -25,18 +25,59 @@ void dae::BurgerTime::LoadGame() const
 {
 	auto& levelScene = SceneManager::GetInstance().CreateScene("Level");
 	auto& menuScene = SceneManager::GetInstance().CreateScene("MainMenu");
-	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 
 	//m_Minigin.GetPhysics()->AddScene();
 	//m_Minigin.GetPhysics()->AddScene();
 	Transform peterPepperSpawnPos = ParseLevel(levelScene, 0);
-	CreatePeterPepperAndHUD(peterPepperSpawnPos, menuScene, 0, false,1);
-	CreatePeterPepperAndHUD(peterPepperSpawnPos, levelScene, 0, true,0);
-	SceneManager::GetInstance().SetActiveScene(&levelScene);
+	CreatePeterPepperAndHUD(peterPepperSpawnPos, levelScene, 0, true, 0);
+	CreatePeterPepperAndHUD(peterPepperSpawnPos, menuScene, 0, false, 1);
+	CreateMenu(menuScene);
+	SceneManager::GetInstance().SetActiveScene(&menuScene);
 }
-void dae::BurgerTime::CreateMenu(Scene& /*scene*/) const
+void dae::BurgerTime::CreateMenu(Scene& scene) const
 {
+	auto titleGo = std::make_shared<GameObject>();
+	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 
+	auto textComp = std::make_shared<TextComponent>("BURGER TIME!!!!!!!", font);
+	titleGo->AddComponent(textComp, "TextComp");
+	titleGo->GetTransform().SetPosition(50, 0, 0);
+	scene.Add(titleGo);
+
+	auto buttonGo = std::make_shared<GameObject>();
+
+	auto buttonAnim = std::make_shared<Animation>(1, 1);
+	buttonAnim->SetTexture("Menu/Button.png");
+
+	auto buttonTextComp = std::make_shared<TextComponent>("PLAY", font);
+	buttonGo->AddComponent(buttonTextComp, "TextComp");
+	buttonTextComp->SetGameObject(buttonGo.get());
+	buttonTextComp->SetPosition(150, 100);
+
+	auto buttonSprite = std::make_shared<SpriteComponent>();
+	buttonSprite->SetGameObject(buttonGo.get());
+	buttonSprite->AddAnimation(buttonAnim, "button");
+	buttonSprite->SetActiveAnimation("button");
+	buttonGo->AddComponent(buttonSprite, "ButtonSprite");
+
+	auto buttonComp = std::make_shared<ButtonComponent>("Level");
+	buttonGo->AddComponent(buttonComp, "ButtonComp");
+
+	auto buttonRigidBody = std::make_shared<RigidBodyComponent>(buttonAnim->GetScaledWidth(), buttonAnim->GetScaledHeight(), false);
+	buttonGo->AddComponent(buttonRigidBody, "ButtonRigidBody");
+	buttonRigidBody->SetGameObject(buttonGo.get());
+	buttonRigidBody->SetTransform(&buttonGo->GetTransform());
+	auto sceneObjects = scene.GetSceneObjects();
+	for (int i = 0; i < sceneObjects.size(); ++i)
+	{
+		if (dynamic_cast<GameObject*>(sceneObjects[i].get())->GetComponent<PeterPepperComponent>("PeterPepper").get())
+		{
+			dynamic_cast<GameObject*>(sceneObjects[i].get())->GetComponent<PeterPepperComponent>("PeterPepper")->AddObserver(buttonComp.get());
+		}
+	}
+	buttonGo->SetTransform(150, 100, -1);
+	m_Minigin.GetPhysics()->AddRigidBodyComponent(buttonRigidBody);
+	scene.Add(buttonGo);
 }
 
 void dae::BurgerTime::AddRigidBodyToPhysics(int sceneNr, std::shared_ptr<RigidBodyComponent> rB) const
@@ -119,10 +160,12 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 	peterPepper->SetGameObject(peterPepperGo.get());
 	peterPepper->SetOverlapEvent();
 	peterPepper->SetOnTriggerExitEvent();
+
 	scene.Add(peterPepperGo);
 
 	if (andHUD)
 	{
+
 		auto livesDisplay = std::make_shared<GameObject>();
 		auto smallFont = ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
 		auto lifeComp = std::make_shared<LivesDisplayComponent>(livesDisplay);
@@ -156,14 +199,20 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 	input.AddCommand(ControllerButton::Nothing, new Idle, KeyState::NOTHING, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::ButtonX, new ChangeScene, KeyState::PRESSED, peterPepperGo.get(), playerNr);
 
-	if (andHUD)
+	if (!andHUD)
 	{
-		peterPepper->SetInMenu(false);
 		input.AddCommand((ControllerButton::ButtonA), new Select, KeyState::RELEASED, peterPepperGo.get(), playerNr);
 	}
-
+	else
+	{
+		peterPepper->SetInMenu(false);
+	}
 	//input.SetPlayer(peterPepperGo.get(), playerNr);
 	peterPepperGo->SetTransform(50, 20, 0);
+	if (!andHUD)
+	{
+		peterPepperGo->SetTransform(150, 20, 0);
+	}
 }
 
 void dae::BurgerTime::MakeCommands(int playerNr, GameObject* go, bool andHUD) const
@@ -422,6 +471,7 @@ void dae::BurgerTime::Run()
 	m_Minigin.Initialize();
 	Initialize();
 	LoadGame();
+
 	{
 		m_Minigin.Run();
 	}

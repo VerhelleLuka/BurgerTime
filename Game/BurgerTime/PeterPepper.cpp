@@ -6,6 +6,8 @@
 #include "PlatformComponent.h"
 #include "Animation.h"
 #include "LadderComponent.h"
+#include "SceneManager.h"
+#include "Scene.h"
 dae::PeterPepperComponent::PeterPepperComponent(int lives)
 	:m_Lives(lives)
 	, m_Points(0)
@@ -16,7 +18,8 @@ dae::PeterPepperComponent::PeterPepperComponent(int lives)
 	, m_CanDescend(false)
 	, m_CanWalkLeft(false)
 	, m_CanWalkRight(false)
-	,m_InMenu(true)
+	, m_InMenu(true)
+	, m_OverlappingButton(false)
 {
 	//if(steamApi)
 	//	m_pSteamAchievements = new CSteamAchievements(m_Achieve 
@@ -27,6 +30,7 @@ dae::PeterPepperComponent::PeterPepperComponent(int lives)
 
 void dae::PeterPepperComponent::Update(float elapsedSec)
 {
+	std::cout << m_OverlappingButton << "\n";
 	if (!m_CanClimb && !m_CanDescend && !m_CanWalkLeft && !m_CanWalkRight)
 	{
 		m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->Reverse(elapsedSec);
@@ -36,21 +40,23 @@ void dae::PeterPepperComponent::Update(float elapsedSec)
 	{
 		return;
 	}
-	m_CanWalkLeft = false;
-	m_CanWalkRight = false;
+	//m_OverlappingButton = false;
+
+	m_CanWalkLeft = true;
+	m_CanWalkRight = true;
 	m_CanClimb = true;
 	m_CanDescend = true;
-	//if (m_pParent->GetTransform().GetPosition().x < 0)
-	//{
-	//	m_CanWalkLeft = false;
-	//}
-	////640 is the window width
-	////480 is the platform height
-	//if (m_pParent->GetTransform().GetPosition().x + m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->GetWidth() > 640)
-	//{
-	//	m_CanWalkRight = false;
-	//}
-	if (m_pParent->GetTransform().GetPosition().y  < 0)
+	if (m_pParent->GetTransform().GetPosition().x < 0)
+	{
+		m_CanWalkLeft = false;
+	}
+	//640 is the window width
+	//480 is the platform height
+	if (m_pParent->GetTransform().GetPosition().x + m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->GetWidth() > 640)
+	{
+		m_CanWalkRight = false;
+	}
+	if (m_pParent->GetTransform().GetPosition().y < 0)
 	{
 		m_CanClimb = false;
 	}
@@ -78,6 +84,7 @@ void dae::PeterPepperComponent::FixedUpdate(float /*elapsedSec*/)
 		m_CanWalkLeft = false;
 		m_CanWalkRight = false;
 	}
+
 }
 void dae::PeterPepperComponent::AddPoints(int points)
 {
@@ -107,11 +114,7 @@ void dae::PeterPepperComponent::ReduceLife()
 	}
 }
 
-void dae::PeterPepperComponent::ButtonPress()
-{
-	std::shared_ptr<EventArgs> emptyArgs = std::make_shared<EventArgs>();
-	Notify(EventType::LOADLEVEL, emptyArgs);
-}
+
 
 void dae::PeterPepperComponent::ChangeState(int state = 0)
 {
@@ -139,15 +142,23 @@ void dae::PeterPepperComponent::ChangeState(int state = 0)
 	Notify(EventType::STATECHANGED, args);
 
 }
-
+void dae::PeterPepperComponent::ButtonPress()
+{
+	if (m_OverlappingButton)
+	{
+		std::shared_ptr<EventArgs> emptyArgs = std::make_shared<EventArgs>();
+		Notify(EventType::LOADLEVEL, emptyArgs);
+	}
+}
 void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 {
 	if (other->GetParent())
 	{
-		//if (other->GetParent()->GetComponent<ButtonComponent>("ButtonComp"))
-		//{
-		//	m_pOverlappingButton = other->GetParent()->GetComponent<ButtonComponent>("ButtonComp").get();
-		//}
+		if (other->GetParent()->GetComponent<ButtonComponent>("ButtonComp"))
+		{
+			m_OverlappingButton = true;
+			return;
+		}
 		//if the other overlap is a platform
 		if (other->GetParent()->GetComponent<RigidBodyComponent>("PlatformRigidBody"))
 		{
@@ -180,6 +191,7 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 					m_CanWalkRight = false;
 				}
 			}
+			return;
 		}
 
 
@@ -202,6 +214,7 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 				m_CanDescend = true;
 			}
 		}
+		return;
 	}
 	else
 	{
@@ -216,5 +229,9 @@ void dae::PeterPepperComponent::OnTriggerExit(RigidBodyComponent* other)
 	{
 		m_CanDescend = false;
 		m_CanClimb = false;
+	}
+	if (other->GetParent()->GetComponent<RigidBodyComponent>("ButtonRigidBody"))
+	{
+		m_OverlappingButton = false;
 	}
 }

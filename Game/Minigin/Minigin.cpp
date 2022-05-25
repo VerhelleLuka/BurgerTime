@@ -109,7 +109,11 @@ void dae::Minigin::Run()
 		while (doContinue)
 		{
 			//SteamAPI_RunCallbacks();
-
+			if (sceneManager.GetSceneChanged())
+			{
+				m_pPhysics->SetSceneNr(sceneManager.GetActiveSceneNr());
+				sceneManager.SetSceneChanged(false);
+			}
 			const auto currentTime = std::chrono::high_resolution_clock::now();
 			float deltaTime = std::chrono::duration<float>(currentTime - lastTime).count();
 			lastTime = currentTime;

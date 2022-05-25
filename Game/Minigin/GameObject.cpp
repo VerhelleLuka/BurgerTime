@@ -40,6 +40,7 @@ void dae::GameObject::Render() const
 	}
 	for (auto& child : m_pGameObjects)
 	{
+
 		child->Render();
 	}
 	

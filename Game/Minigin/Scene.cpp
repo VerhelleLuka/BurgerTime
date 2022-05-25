@@ -33,9 +33,25 @@ void dae::Scene::FixedUpdate(float deltaTime)
 
 void Scene::Render() const
 {
+	//Render objects with lower z axis first
+
+	std::vector<SceneObject*> lowerZAxisObjects;
 	for (const auto& object : m_Objects)
 	{
-		object->Render();
+		if (dynamic_cast<GameObject*>(object.get())->GetTransform().GetPosition().z >= 0)
+		{
+			lowerZAxisObjects.push_back(object.get());
+		}
+		else
+		{
+			object->Render();
+		}
+		
+	}
+	for (const auto& remainingObjects : lowerZAxisObjects)
+	{
+		remainingObjects->Render();
+			
 	}
 }
 

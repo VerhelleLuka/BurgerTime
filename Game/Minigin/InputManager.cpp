@@ -161,7 +161,6 @@ void dae::InputManager::Update()
 
 }
 
-
 void dae::InputManager::SetPlayer(GameObject* pGo, int playerIdx)
 {
 	auto it = pImpl->GetButtonCommands(playerIdx).begin();

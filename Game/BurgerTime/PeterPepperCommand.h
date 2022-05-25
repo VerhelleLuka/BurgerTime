@@ -18,7 +18,6 @@ namespace dae
 			{
 				m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(100.f, 0.f));
 				m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(2);
-				//SceneManager::GetInstance().SetActiveSceneByName("Level1");
 
 			}
 		}
@@ -30,10 +29,9 @@ namespace dae
 		{
 			if (m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->GetCanWalkLeft())
 			{
-				
+
 				m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(-100.f, 0.f));
 				m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(1);
-				//SceneManager::GetInstance().SetActiveSceneByName("MainMenu");
 			}
 		}
 	};
@@ -77,17 +75,6 @@ namespace dae
 		void Execute() override
 		{
 			m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ButtonPress();
-		}
-	};
-	class ChangeScene final : public Command
-	{
-	public:
-		void Execute() override
-		{
-			if (SceneManager::GetInstance().GetActiveSceneName() == "Level")
-				SceneManager::GetInstance().SetActiveSceneByName("MainMenu");
-			else
-				SceneManager::GetInstance().SetActiveSceneByName("Level");
 			auto sceneObjects = SceneManager::GetInstance().GetActiveScene().GetSceneObjects();
 			for (int i = 0; i < sceneObjects.size(); ++i)
 			{
@@ -97,6 +84,30 @@ namespace dae
 					InputManager::GetInstance().SetPlayer(dynamic_cast<GameObject*>(sceneObjects[i].get()), 0);
 				}
 			}
+		}
+	};
+	class ChangeScene final : public Command
+	{
+	public:
+		void Execute() override
+		{
+			//if (SceneManager::GetInstance().GetActiveSceneName() == "Level")
+			//{
+			//	SceneManager::GetInstance().SetActiveSceneByName("MainMenu");
+			//}
+			//else
+			//{
+			//	SceneManager::GetInstance().SetActiveSceneByName("Level");
+			//}
+			//auto sceneObjects = SceneManager::GetInstance().GetActiveScene().GetSceneObjects();
+			//for (int i = 0; i < sceneObjects.size(); ++i)
+			//{
+			//	if (dynamic_cast<GameObject*>(sceneObjects[i].get())->GetComponent<PeterPepperComponent>("PeterPepper").get())
+			//	{
+
+			//		InputManager::GetInstance().SetPlayer(dynamic_cast<GameObject*>(sceneObjects[i].get()), 0);
+			//	}
+			//}
 
 		}
 	};

@@ -1,4 +1,3 @@
-#include "MiniginPCH.h"
 #include "PointsDisplayComponent.h"
 #include "TextComponent.h"
 void dae::PointsDisplayComponent::OnNotify(EventType event_, std::shared_ptr<EventArgs> args)

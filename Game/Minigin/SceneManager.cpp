@@ -44,6 +44,7 @@ dae::Scene& dae::SceneManager::CreateScene(const std::string& name)
 
 void dae::SceneManager::SetActiveScene(Scene* scene)
 {
+	m_SceneChanged = true;
 	m_pActiveScene = scene;
 }
 void dae::SceneManager::SetActiveSceneByName(const std::string& name)
@@ -52,6 +53,7 @@ void dae::SceneManager::SetActiveSceneByName(const std::string& name)
 	{
 		if (scene->GetName() == name)
 		{
+			m_SceneChanged = true;
 			m_pActiveScene = scene.get();
 			return;
 		}
@@ -65,4 +67,16 @@ const std::string& dae::SceneManager::GetActiveSceneName() const
 dae::Scene& dae::SceneManager::GetActiveScene() const
 {
 	return *m_pActiveScene;
+}
+
+int dae::SceneManager::GetActiveSceneNr() const
+{
+	for (int i{}; i < m_Scenes.size(); ++i)
+	{
+		if (m_Scenes[i].get() == m_pActiveScene)
+		{
+			return i;
+		}
+	}
+	return 0;
 }
