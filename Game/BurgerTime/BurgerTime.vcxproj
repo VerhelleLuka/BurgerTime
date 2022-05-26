@@ -23,18 +23,21 @@
     <ClInclude Include="BurgerTime.h" />
     <ClInclude Include="BurgerTimeStructs.h" />
     <ClInclude Include="ButtonComponent.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="LevelParser.h" />
     <ClInclude Include="LivesDisplayComponent.h" />
     <ClInclude Include="PeterPepper.h" />
     <ClInclude Include="PeterPepperCommand.h" />
     <ClInclude Include="PlatformComponent.h" />
     <ClInclude Include="PointsDisplayComponent.h" />
+    <ClInclude Include="EnemyState.h" />
     <ClInclude Include="Structs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BurgerComponent.cpp" />
     <ClCompile Include="BurgerTime.cpp" />
     <ClCompile Include="ButtonComponent.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="LivesDisplayComponent.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PeterPepper.cpp" />
