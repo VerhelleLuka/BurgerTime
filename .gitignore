@@ -4,7 +4,6 @@
 # release and debug
 Debug
 Release
-x64
 
 # Prerequisites
 *.d
