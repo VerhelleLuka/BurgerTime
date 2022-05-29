@@ -129,10 +129,10 @@ void dae::BurgerTime::CreateEnemy(Scene& scene, int sceneNr) const
 	//Enemy component
 	auto enemy = std::make_shared<Enemy>();
 	enemy->SetGameObject(enemyGo.get());
-	enemy->Initialize();
 	enemy->SetOverlapEvent();
 	enemy->SetOnTriggerExitEvent();
 	enemyGo->AddComponent(enemy, "Enemy");
+	enemy->Initialize(scene);
 	enemyGo->SetTransform(150, 70, 0);
 
 	scene.Add(enemyGo);
@@ -264,7 +264,7 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 		peterPepper->SetInMenu(false);
 	}
 	//input.SetPlayer(peterPepperGo.get(), playerNr);
-	peterPepperGo->SetTransform(100, 20, 0);
+	peterPepperGo->SetTransform(100, 8, 0);
 	if (!andHUD)
 	{
 		peterPepperGo->SetTransform(150, 20, 0);
