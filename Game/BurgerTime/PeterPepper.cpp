@@ -30,7 +30,6 @@ dae::PeterPepperComponent::PeterPepperComponent(int lives)
 
 void dae::PeterPepperComponent::Update(float elapsedSec)
 {
-	std::cout << m_OverlappingButton << "\n";
 	if (!m_CanClimb && !m_CanDescend && !m_CanWalkLeft && !m_CanWalkRight)
 	{
 		m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->Reverse(elapsedSec);
@@ -202,7 +201,8 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 			m_CanDescend = false;
 			Float2 ladderPos = { other->GetTransform().GetPosition().x, other->GetTransform().GetPosition().y };
 			float ladderHeight = other->GetHeight();
-			if (m_pParent->GetTransform().GetPosition().y >= ladderPos.y - ladderHeight / 2 ||
+			//8 is a ladder offset
+			if (m_pParent->GetTransform().GetPosition().y >= (ladderPos.y - ladderHeight / 2) - 8 ||
 				other->GetParent()->GetComponent<LadderComponent>("LadderComp")->GetHasUp())
 			{
 				m_CanClimb = true;

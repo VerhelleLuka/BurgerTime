@@ -1,36 +1,42 @@
 #pragma once
-#include "Enemy.h"
-class EnemyState
-{
-public:
-	static MovingHorizontal m_MovingHorizontal;
-	static MovingVertical m_MovingVertical;
 
-	virtual ~EnemyState() {};
-protected:
-	virtual void Update(Enemy& enemy) = 0;
-};
-
-class MovingHorizontal final : public EnemyState
+#include "RigidBodyComponent.h"
+namespace dae
 {
-protected:
-	virtual void Update(Enemy& enemy) override
+	class SpriteComponent;
+	class EnemyState
 	{
+	public:
+		virtual ~EnemyState() = default;
+		virtual void Update() {};
+		void SetRigidBody(RigidBodyComponent* rigidBody) { m_pRigidBody = rigidBody; }
+		void SetSprite(SpriteComponent* sprite) { m_pSprite = sprite; }
+	protected:
+		RigidBodyComponent* m_pRigidBody;
+		SpriteComponent* m_pSprite;
+	};
 
-	}
-
-private: 
-	bool m_MovingLeft;
-};
-
-class MovingVertical final : public EnemyState
-{
-protected:
-	virtual void Update(Enemy& enemy) override
+	class MovingLeft final : public EnemyState
 	{
+	public:
+		virtual void Update() override;
+	};
 
-	}
+	class MovingUp final : public EnemyState
+	{
+	public:
+		virtual void Update() override;
+	};
+	class MovingRight final : public EnemyState
+	{
+	public:
+		virtual void Update() override;
+	};
 
-private:
-	bool m_MovingUp;
-};
+	class MovingDown final : public EnemyState
+	{
+	public:
+		virtual void Update() override;
+	};
+}
+

@@ -25,6 +25,9 @@
     <Filter Include="Header Files\StructsDatatypes">
       <UniqueIdentifier>{d7590b7c-1176-41ea-8ae2-64f1cda1c167}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Patterns">
+      <UniqueIdentifier>{7a54bb53-5f96-4fb3-8475-4fd3ce174da5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Structs.h">
@@ -94,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
       <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyState.cpp">
+      <Filter>Source Files\Patterns</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

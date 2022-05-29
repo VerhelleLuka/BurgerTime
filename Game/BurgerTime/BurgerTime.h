@@ -13,6 +13,7 @@ namespace dae
 		void Run();
 	private:
 		void CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int playerNr, bool andHUD, int sceneNr) const;
+		void CreateEnemy(Scene& scene, int sceneNr) const;
 		void CreateMenu(Scene& scene) const;
 		Transform ParseLevel(Scene& scene, int sceneNr)const;
 		void MakeLaddersAndPlatforms(Scene& scene, const std::vector<Ladder>& ladders, const std::vector<Platform>& platforms, int sceneNr)const;

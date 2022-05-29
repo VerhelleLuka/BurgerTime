@@ -43,6 +43,7 @@
     <ClCompile Include="PeterPepper.cpp" />
     <ClCompile Include="PlatformComponent.cpp" />
     <ClCompile Include="PointsDisplayComponent.cpp" />
+    <ClCompile Include="EnemyState.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
