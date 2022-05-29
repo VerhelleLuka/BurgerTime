@@ -2,6 +2,8 @@
 #include "RigidBodyComponent.h"
 #include "BaseComponent.h"
 #include "EnemyState.h"
+#include "PeterPepper.h"
+#include "Scene.h"
 namespace dae
 {
 	class Enemy final : public BaseComponent
@@ -10,7 +12,7 @@ namespace dae
 		virtual void Update(float /*deltaTime*/) {};
 		virtual void FixedUpdate(float /*deltaTime*/) override;
 		virtual void Render() const {};
-		void Initialize();
+		void Initialize(Scene& scene);
 		Enemy();
 		virtual ~Enemy();
 
@@ -47,5 +49,9 @@ namespace dae
 		void OnTriggerExit(RigidBodyComponent* /*other*/);
 
 		EnemyState* m_pEnemyState;
+
+		PeterPepperComponent* m_pPeter1Ref;
+		PeterPepperComponent* m_pPeter2Ref;
+		
 	};
 }
