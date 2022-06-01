@@ -44,7 +44,6 @@ void dae::Physics::RemoveRigidBodyComponent(RigidBodyComponent* rigidBody)
 	{
 		for (size_t j{}; j < m_pRigidBodies[i].size(); ++j)
 		{
-			std::cout << m_pRigidBodies[i][j] << " " << rigidBody << "\n";
 			if (m_pRigidBodies[i][j] == rigidBody)
 			{
 				m_pRigidBodies[i].erase(std::remove(m_pRigidBodies[i].begin(), m_pRigidBodies[i].end(), m_pRigidBodies[i][j]), m_pRigidBodies[i].end());

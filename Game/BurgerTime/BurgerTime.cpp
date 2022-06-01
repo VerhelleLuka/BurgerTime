@@ -472,7 +472,7 @@ void dae::BurgerTime::MakeBurgers(Scene& scene, const std::vector<Burger>& burge
 			column = burgers[i].column;
 			if (i > 0)
 			{
-				prevColumn = burgers[i].column;
+				prevColumn = burgers[i - 1].column;
 			}
 			if (column != prevColumn)
 			{

@@ -99,7 +99,7 @@ void dae::Enemy::SetOnTriggerExitEvent()
 
 void dae::Enemy::OnOverlap(RigidBodyComponent* other)
 {
-	if (!m_IsDead && !m_IsFalling)
+	if (!m_IsDead || !m_IsFalling)
 	{
 		if (other->GetParent()->GetComponent<PlatformComponent>("PlatformComp"))
 		{
