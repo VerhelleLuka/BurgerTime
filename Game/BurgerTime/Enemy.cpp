@@ -16,7 +16,7 @@ dae::Enemy::Enemy(EnemyType type)
 	m_EnemyType(type),
 	m_IsFalling(false),
 	m_StuckTime(0.f),
-	m_PrevPos(Float2{0.f,0.f})
+	m_PrevPos(Float2{ 0.f,0.f })
 {
 }
 
@@ -51,6 +51,54 @@ void dae::Enemy::Initialize(Scene& scene)
 void dae::Enemy::FixedUpdate(float /*elapsedTime*/)
 {
 	m_pEnemyState->Update();
+
+	std::cout << m_CanWalkLeft << " " << m_CanWalkRight << " " << m_CanClimb << " " << m_CanDescend << "\n";
+
+	//if (m_IsDead || m_IsFalling)
+	//{
+	//	return;
+	//}
+	//if (m_PrevPos.x == m_pParent->GetTransform().GetPosition().x && m_PrevPos.y == m_pParent->GetTransform().GetPosition().y)
+	//{
+	//	m_StuckTime += elapsedTime;
+	//	if (m_StuckTime > m_StuckTimer)
+	//	{
+	//		if (m_pPeter1Transform->GetPosition().x < m_pParent->GetTransform().GetPosition().x &&
+	//			m_CanWalkLeft)
+	//		{
+	//			delete m_pEnemyState;
+	//			m_pEnemyState = new MovingLeft;
+	//		}
+	//		if (m_pPeter1Transform->GetPosition().x > m_pParent->GetTransform().GetPosition().x &&
+	//			m_CanWalkLeft)
+	//		{
+	//			delete m_pEnemyState;
+	//			m_pEnemyState = new MovingRight;
+	//		}
+	//		if (m_pPeter1Transform->GetPosition().y < m_pParent->GetTransform().GetPosition().y &&
+	//			m_CanClimb)
+	//		{
+	//			std::cout << m_pParent->GetTransform().GetPosition().y << "\n";
+	//			delete m_pEnemyState;
+	//			m_pEnemyState = new MovingUp;
+	//		}
+	//		if (m_pPeter1Transform->GetPosition().y > m_pParent->GetTransform().GetPosition().y &&
+	//			m_CanDescend)
+	//		{
+	//			delete m_pEnemyState;
+	//			m_pEnemyState = new MovingDown;
+	//		}
+	//		Reinitialize();
+	//		m_StuckTime = 0.f;
+
+	//	}
+	//}
+	//else
+	//{
+	//	m_StuckTime = 0.f;
+	//}
+	//m_PrevPos.x = m_pParent->GetTransform().GetPosition().x;
+	//m_PrevPos.y = m_pParent->GetTransform().GetPosition().y;
 }
 
 void dae::Enemy::Kill()
@@ -101,6 +149,7 @@ void dae::Enemy::SetOnTriggerExitEvent()
 
 void dae::Enemy::OnOverlap(RigidBodyComponent* other)
 {
+
 	if (!m_IsDead || !m_IsFalling)
 	{
 		if (other->GetParent()->GetComponent<PlatformComponent>("PlatformComp"))
@@ -141,8 +190,6 @@ void dae::Enemy::OnOverlap(RigidBodyComponent* other)
 				return;
 			}
 
-
-
 			if (m_pPeter1Transform->GetPosition().x >= m_pParent->GetTransform().GetPosition().x && m_CanWalkRight)
 			{
 				if (m_pEnemyState)
@@ -176,8 +223,8 @@ void dae::Enemy::OnOverlap(RigidBodyComponent* other)
 			m_pWalkedLadder = other->GetParent()->GetComponent<LadderComponent>("Ladder").get();
 			Float2 ladderPos = { other->GetTransform().GetPosition().x, other->GetTransform().GetPosition().y };
 			float ladderHeight = other->GetHeight();
-			if (m_pParent->GetTransform().GetPosition().x < other->GetTransform().GetPosition().x + 1 &&
-				m_pParent->GetTransform().GetPosition().x + 1  >= ladderPos.x)
+			if (m_pParent->GetTransform().GetPosition().x < other->GetTransform().GetPosition().x m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->GetOffset().x &&
+				m_pParent->GetTransform().GetPosition().x + m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->GetOffset().x >= ladderPos.x)
 			{
 				m_CanClimb = false;
 				m_CanDescend = false;

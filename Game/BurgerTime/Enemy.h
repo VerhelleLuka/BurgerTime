@@ -74,7 +74,7 @@ namespace dae
 		bool m_IsFalling;
 
 
-		const float m_StuckTimer{ .5f };
+		const float m_StuckTimer{ 10.f };
 		float m_StuckTime;
 		Float2 m_PrevPos;
 	};
