@@ -2,6 +2,7 @@
 #include "RigidBodyComponent.h"
 #include "Enemy.h"
 #include "SpriteComponent.h"
+#include "Animation.h"
 void dae::MovingDown::Update()
 {
 	if (m_pEnemy->GetCanDescend())
@@ -17,6 +18,7 @@ void dae::MovingUp::Update()
 	{
 		m_pRigidBody->SetDirection(Float2{ 0.f, -50.f });
 		m_pSprite->SetActiveAnimation("Climb");
+		
 	}
 }
 void dae::MovingLeft::Update()
@@ -35,6 +37,17 @@ void dae::MovingRight::Update()
 	{
 		m_pRigidBody->SetDirection(Float2{ 50.f, 0.f });
 		m_pSprite->SetActiveAnimation("WalkRight");
+	}
+}
 
+void dae::Dying::Update()
+{
+	if (m_pEnemy->IsDead())
+	{
+		m_pSprite->SetActiveAnimation("Death");
+	}
+	if (m_pSprite->GetAnimation().GetFrameNr() == m_pSprite->GetAnimation().GetNrFrames() -1 )
+	{
+		m_pRigidBody->GetParent()->MarkForDelete();
 	}
 }

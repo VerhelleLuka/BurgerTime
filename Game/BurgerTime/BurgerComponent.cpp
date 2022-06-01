@@ -4,6 +4,7 @@
 #include "SpriteComponent.h"
 #include "Animation.h"
 #include "PlatformComponent.h"
+#include "Enemy.h"
 dae::BurgerComponent::BurgerComponent()
 	:m_Fall(false)
 {
@@ -36,6 +37,17 @@ void dae::BurgerComponent::ForceFall()
 }
 void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 {
+	if (other->GetParent()->GetComponent<Enemy>("Enemy"))
+	{
+		if (other->GetTransform().GetPosition().y > m_pParent->GetTransform().GetPosition().y && m_Fall)
+		{
+			if (other->GetParent()->GetComponent<Enemy>("Enemy")->GetEnemyType() == EnemyType::SAUSAGE && !other->GetParent()->GetComponent<Enemy>("Enemy")->IsDead())
+			{
+				m_pPeterPepper->AddPoints(100);
+			}
+			other->GetParent()->GetComponent<Enemy>("Enemy")->Kill();
+		}
+	}
 	if (other->GetParent()->GetComponent<PlatformComponent>("PlatformComp"))
 	{
 		if (m_pPlatformComp.get() == nullptr)
@@ -58,12 +70,12 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 	}
 	if (other->GetParent()->GetComponent<PeterPepperComponent>("PeterPepper"))
 	{
-		if (other->GetParent()->GetComponent<PeterPepperComponent>("PeterPepper").get())
+		if (other->GetParent()->GetComponent<PeterPepperComponent>("PeterPepper").get() != m_pPeterPepper)
 			m_pPeterPepper = other->GetParent()->GetComponent<PeterPepperComponent>("PeterPepper").get();
 		for (int i{}; i < m_NrParts - 1; ++i)
 		{
 
-			if (other->GetParent()->GetTransform().GetPosition().x > m_xPositions[i]
+			if (other->GetParent()->GetTransform().GetPosition().x - 4 > m_xPositions[i]
 				&& other->GetParent()->GetTransform().GetPosition().x < m_xPositions[i + 1])
 			{
 				m_WalkedOver[i] = true;

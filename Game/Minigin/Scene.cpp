@@ -20,7 +20,13 @@ void Scene::Update(float deltaTime)
 	for(auto& object : m_Objects)
 	{
 		object->Update(deltaTime);
+		if (object->GetMarkForDelete())
+		{
+			object.reset();
+			m_Objects.erase(std::remove(m_Objects.begin(), m_Objects.end(), object), m_Objects.end());
+		}
 	}
+	
 }
 
 void dae::Scene::FixedUpdate(float deltaTime)

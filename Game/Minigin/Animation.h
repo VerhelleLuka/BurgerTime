@@ -29,6 +29,9 @@ namespace dae
 
 		//void SetIsDirty(bool isDirty) { m_IsDirty = isDirty; }
 		//bool GetIsDirty() { return m_IsDirty; }
+
+		int GetFrameNr() const { return m_CurrentFrame; }
+		int GetNrFrames() const { return m_NrFrames; }
 	private:
 
 		std::shared_ptr<Texture2D> m_pTexture;

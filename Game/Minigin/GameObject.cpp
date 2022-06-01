@@ -43,7 +43,6 @@ void dae::GameObject::Render() const
 
 		child->Render();
 	}
-	
 }
 
 

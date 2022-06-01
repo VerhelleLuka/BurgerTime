@@ -15,6 +15,7 @@ namespace dae
 		void FixedUpdate(float deltaTime);
 
 		std::vector<std::shared_ptr<SceneObject>>& GetSceneObjects() { return m_Objects; }
+		//void DeleteSceneObject(SceneObject& object) { }
 		void Render() const;
 		const std::string& GetName() const { return m_Name; }
 		~Scene();

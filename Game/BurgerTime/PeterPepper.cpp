@@ -87,20 +87,11 @@ void dae::PeterPepperComponent::FixedUpdate(float /*elapsedSec*/)
 }
 void dae::PeterPepperComponent::AddPoints(int points)
 {
-
-	//ServiceLocator::GetSoundSystem();
-
 	m_Points += points;
 	std::shared_ptr<PointsEventArgs> args = std::make_shared<PointsEventArgs>();
 
 	args->points = m_Points;
 	Notify(EventType::GAINEDPOINTS, args);
-
-	//if (m_Points >= 500)
-	//{
-	//	m_pSteamAchievements->SetAchievement("ACH_WIN_ONE_GAME");
-	//}
-
 }
 
 void dae::PeterPepperComponent::ReduceLife()

@@ -14,5 +14,11 @@ namespace dae
 		SceneObject(SceneObject&& other) = delete;
 		SceneObject& operator=(const SceneObject& other) = delete;
 		SceneObject& operator=(SceneObject&& other) = delete;
+
+		void MarkForDelete() { m_MarkForDelete = true;}
+		bool GetMarkForDelete() const { return m_MarkForDelete; }
+
+	protected:
+		bool m_MarkForDelete = false;
 	};
 }

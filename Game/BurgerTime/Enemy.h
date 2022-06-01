@@ -7,6 +7,12 @@
 namespace dae
 {
 	class LadderComponent;
+	enum class EnemyType
+	{
+		EGG,
+		SAUSAGE,
+		PICKLE
+	};
 	class Enemy final : public BaseComponent
 	{
 	public:
@@ -15,7 +21,7 @@ namespace dae
 		virtual void Render() const {};
 		void Initialize(Scene& scene);
 		void Reinitialize();
-		Enemy();
+		Enemy(EnemyType type);
 		virtual ~Enemy();
 
 		//void ReduceLife();
@@ -29,10 +35,17 @@ namespace dae
 		bool GetCanDescend() const { return m_CanDescend; }
 		bool GetCanWalkLeft() const { return m_CanWalkLeft; }
 		bool GetCanWalkRight() const { return m_CanWalkRight; }
+		EnemyType GetEnemyType() const { return m_EnemyType; }
 
 		void SetOverlapEvent();
 
 		void SetOnTriggerExitEvent();
+		bool IsDead() const { return m_IsDead; }
+		void Kill();
+		//Enemy* clone(Float2 pos)
+		//{
+		//	retu
+		//}
 	private:
 		//Terrain related
 		bool m_CanClimb;
@@ -46,7 +59,7 @@ namespace dae
 		void OnTriggerExit(RigidBodyComponent* /*other*/);
 
 		EnemyState* m_pEnemyState;
-
+		EnemyType m_EnemyType;
 		Transform* m_pPeter1Transform;
 		Transform* m_pPeter2Transform;
 
@@ -55,6 +68,7 @@ namespace dae
 		const float m_BehaviorSwitchTimer{ 0.7f };
 		float m_BehaviorSwitchTime;
 		bool m_SwitchBehavior;
+		bool m_IsDead;
 		
 	};
 }

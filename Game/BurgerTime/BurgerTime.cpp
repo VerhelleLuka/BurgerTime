@@ -31,7 +31,10 @@ void dae::BurgerTime::LoadGame() const
 	//m_Minigin.GetPhysics()->AddScene();
 	Transform peterPepperSpawnPos = ParseLevel(levelScene, 0);
 	CreatePeterPepperAndHUD(peterPepperSpawnPos, levelScene, 0, true, 0);
-	CreateEnemy(levelScene, 0);
+	CreateEnemy(levelScene, 0, Float2{150,70});
+	//CreateEnemy(levelScene, 0, Float2{120,70});
+	//CreateEnemy(levelScene, 0, Float2{300,70});
+	//CreateEnemy(levelScene, 0, Float2{100,86});
 	//CreatePeterPepperAndHUD(peterPepperSpawnPos, menuScene, 0, false, 1);
 	//CreateMenu(menuScene);
 	SceneManager::GetInstance().SetActiveScene(&levelScene);
@@ -82,7 +85,7 @@ void dae::BurgerTime::CreateMenu(Scene& scene) const
 	scene.Add(buttonGo);
 }
 
-void dae::BurgerTime::CreateEnemy(Scene& scene, int sceneNr) const
+void dae::BurgerTime::CreateEnemy(Scene& scene, int sceneNr, Float2 position) const
 {
 	const float animationScale = 1.75f;
 	auto enemyGo = std::make_shared<GameObject>();
@@ -104,12 +107,16 @@ void dae::BurgerTime::CreateEnemy(Scene& scene, int sceneNr) const
 	walkRightAnim->SetScale(animationScale);
 	walkRightAnim->SetReversed(true);
 
+	auto deathAnim = std::make_shared<Animation>(4, 4);
+	deathAnim->SetTexture("Enemies/Sausage_Kill.png");
+	deathAnim->SetScale(animationScale);
+
 	auto enemySprite = std::make_shared<SpriteComponent>();
 	enemySprite->SetGameObject(enemyGo.get());
 	enemySprite->AddAnimation(climbAnim, "Climb");
 	enemySprite->AddAnimation(descendAnim, "Descend");
 	enemySprite->AddAnimation(walkRightAnim, "WalkRight");
-
+	enemySprite->AddAnimation(deathAnim, "Death");
 	enemySprite->AddAnimation(walkLeftAnim, "WalkLeft");
 
 	enemySprite->SetActiveAnimation("WalkLeft");
@@ -127,13 +134,13 @@ void dae::BurgerTime::CreateEnemy(Scene& scene, int sceneNr) const
 	enemyGo->AddComponent(pRigidBody, "RigidBody");
 
 	//Enemy component
-	auto enemy = std::make_shared<Enemy>();
+	auto enemy = std::make_shared<Enemy>(EnemyType::SAUSAGE);
 	enemy->SetGameObject(enemyGo.get());
 	enemy->SetOverlapEvent();
 	enemy->SetOnTriggerExitEvent();
 	enemyGo->AddComponent(enemy, "Enemy");
 	enemy->Initialize(scene);
-	enemyGo->SetTransform(150, 70, 0);
+	enemyGo->SetTransform(position.x, position.y, 0);
 
 	scene.Add(enemyGo);
 }
