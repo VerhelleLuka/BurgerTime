@@ -78,7 +78,6 @@ void dae::Minigin::Initialize()
 
 	Renderer::GetInstance().Init(m_Window);
 
-	m_pPhysics = new Physics();
 	m_IsInitialized = true;
 
 }
@@ -96,23 +95,23 @@ void dae::Minigin::Run()
 		auto& renderer = Renderer::GetInstance();
 		auto& sceneManager = SceneManager::GetInstance();
 		auto& input = InputManager::GetInstance();
+		auto& physics = Physics::GetInstance();
 		bool doContinue = true;
-
+	
 		auto lastTime = std::chrono::high_resolution_clock::now();
 		float lag = 0.0f;
 		float fixedTimeStep = 0.02f;
 
 		ServiceLocator::RegisterSoundSystem(new sound_system());
 
-		ServiceLocator::GetSoundSystem().Play(0, 100);
-		//ss.Play(1, 100);
-		//ss.Play(0, 100);
+		//By now all gameobjects and scenes should have been made; intitialize everything
+		sceneManager.Initialize();
 		while (doContinue)
 		{
 			//SteamAPI_RunCallbacks();
 			if (sceneManager.GetSceneChanged())
 			{
-				m_pPhysics->SetSceneNr(sceneManager.GetActiveSceneNr());
+				physics.SetSceneNr(sceneManager.GetActiveSceneNr());
 				sceneManager.SetSceneChanged(false);
 			}
 			const auto currentTime = std::chrono::high_resolution_clock::now();
@@ -126,7 +125,7 @@ void dae::Minigin::Run()
 			while (lag >= fixedTimeStep)
 			{
 				sceneManager.FixedUpdate(fixedTimeStep);
-				m_pPhysics->FixedUpdate(fixedTimeStep);
+				physics.FixedUpdate(fixedTimeStep);
 				lag -= fixedTimeStep;
 
 			}
@@ -143,8 +142,5 @@ void dae::Minigin::Cleanup()
 	Renderer::GetInstance().Destroy();
 	SDL_DestroyWindow(m_Window);
 	m_Window = nullptr;
-	//SteamAPI_Shutdown();
-	delete m_pPhysics;
-	m_pPhysics = nullptr;
 	SDL_Quit();
 }

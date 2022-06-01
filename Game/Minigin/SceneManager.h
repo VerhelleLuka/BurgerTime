@@ -12,7 +12,7 @@ namespace dae
 		void Update(float deltaTime);
 		void FixedUpdate(float deltaTime);
 		void Render();
-
+		void Initialize();
 		void SetActiveScene(Scene* scene);
 		void SetActiveSceneByName(const std::string& name);
 		const std::string& GetActiveSceneName() const;

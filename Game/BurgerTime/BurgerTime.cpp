@@ -26,11 +26,8 @@ void dae::BurgerTime::Initialize()
 void dae::BurgerTime::LoadGame()
 {
 	auto& levelScene = SceneManager::GetInstance().CreateScene("Level");
-	levelScene.SetPhysics(m_Minigin.GetPhysics());
 	//auto& menuScene = SceneManager::GetInstance().CreateScene("MainMenu");
 
-	//m_Minigin.GetPhysics()->AddScene();
-	//m_Minigin.GetPhysics()->AddScene();
 	Transform peterPepperSpawnPos = ParseLevel(levelScene, 0);
 
 	CreatePeterPepperAndHUD(Transform(), levelScene, 0, true, 0);
@@ -74,7 +71,6 @@ void dae::BurgerTime::CreateMenu(Scene& scene) const
 	auto buttonRigidBody = std::make_shared<RigidBodyComponent>(buttonAnim->GetScaledWidth(), buttonAnim->GetScaledHeight(), false);
 	buttonGo->AddComponent(buttonRigidBody, "RigidBody");
 	//buttonRigidBody->SetGameObject(buttonGo.get());
-	buttonRigidBody->SetTransform(&buttonGo->GetTransform());
 	auto sceneObjects = scene.GetSceneObjects();
 	for (int i = 0; i < sceneObjects.size(); ++i)
 	{
@@ -84,11 +80,11 @@ void dae::BurgerTime::CreateMenu(Scene& scene) const
 		}
 	}
 	buttonGo->SetTransform(150, 100, -1);
-	m_Minigin.GetPhysics()->AddRigidBodyComponent(buttonRigidBody);
+
 	scene.Add(buttonGo);
 }
 
-dae::GameObject* dae::BurgerTime::CreateEnemyTemplate(Scene& scene, int sceneNr, Float2 position) const
+dae::GameObject* dae::BurgerTime::CreateEnemyTemplate(Scene& scene, int /*sceneNr*/, Float2 position) const
 {
 	const float animationScale = 1.75f;
 	auto enemyGo = std::make_shared<GameObject>();
@@ -130,9 +126,6 @@ dae::GameObject* dae::BurgerTime::CreateEnemyTemplate(Scene& scene, int sceneNr,
 		enemySprite->GetAnimation().GetScaledHeight(),
 		true);
 	pRigidBody->SetGameObject(enemyGo.get());
-	pRigidBody->SetTransform(&enemyGo->GetTransform());
-
-	AddRigidBodyToPhysics(sceneNr, pRigidBody);
 
 	enemyGo->AddComponent(pRigidBody, "RigidBody");
 
@@ -150,12 +143,7 @@ dae::GameObject* dae::BurgerTime::CreateEnemyTemplate(Scene& scene, int sceneNr,
 	return enemyGo.get();
 }
 
-void dae::BurgerTime::AddRigidBodyToPhysics(int sceneNr, std::shared_ptr<RigidBodyComponent> rB) const
-{
-	m_Minigin.GetPhysics()->SetSceneNr(sceneNr);
-	m_Minigin.GetPhysics()->AddRigidBodyComponent(rB);
-}
-void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int playerNr, bool andHUD, int sceneNr) const
+void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int playerNr, bool andHUD, int /*sceneNr*/) const
 {
 	float hudX, hudY;
 	hudX = 0;
@@ -212,11 +200,8 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 		peterPSprite->GetAnimation().GetScaledHeight(),
 		true);
 	pRigidBody->SetGameObject(peterPepperGo.get());
-	pRigidBody->SetTransform(&peterPepperGo->GetTransform());
 	pRigidBody->SetOffset(Float2{ 0.f,-3.f });
 
-	AddRigidBodyToPhysics(sceneNr, pRigidBody);
-	//m_Minigin.GetPhysics()->AddRigidBodyComponent(pRigidBody);
 
 	//Add everything to scene
 	peterPepperGo->AddComponent(peterPSprite, "Sprite");
@@ -318,7 +303,7 @@ dae::Transform dae::BurgerTime::ParseLevel(Scene& scene, int sceneNr) const
 	return transform;
 }
 
-void dae::BurgerTime::MakeLaddersAndPlatforms(Scene& scene, const std::vector<Ladder>& ladders, const std::vector<Platform>& platforms, int sceneNr) const
+void dae::BurgerTime::MakeLaddersAndPlatforms(Scene& scene, const std::vector<Ladder>& ladders, const std::vector<Platform>& platforms, int /*sceneNr*/) const
 {
 
 	//Every two platforms, the platfors get pushed 16 pixels further away because of the bug platform.
@@ -393,14 +378,9 @@ void dae::BurgerTime::MakeLaddersAndPlatforms(Scene& scene, const std::vector<La
 		platform->AddComponent(pPlatform, "PlatformComp");
 		platform->AddComponent(platformSprite, "PlatformSprite");
 		platform->AddComponent(pRigidBody, "RigidBody");
-		pRigidBody->SetTransform(&platform->GetTransform());
-
-		AddRigidBodyToPhysics(sceneNr, pRigidBody);
-		//m_Minigin.GetPhysics()->AddRigidBodyComponent(pRigidBody);
 
 		scene.Add(platform);
 	}
-	//std::cout << nextPlatforms << "\n";
 	//Depending on the column, the ladder will have to be shifted forwards or backward in order to center it
 	//In the files, this is a 2 pixel shift
 	int ladderShift = 2 * levelScale;
@@ -434,10 +414,7 @@ void dae::BurgerTime::MakeLaddersAndPlatforms(Scene& scene, const std::vector<La
 		pRigidBody->SetGameObject(ladder.get());
 
 		ladder->AddComponent(pRigidBody, "RigidBody");
-		pRigidBody->SetTransform(&ladder->GetTransform());
 
-		AddRigidBodyToPhysics(sceneNr, pRigidBody);
-		//m_Minigin.GetPhysics()->AddRigidBodyComponent(pRigidBody);
 
 		//ladder component
 		auto pLadder = std::make_shared<LadderComponent>();
@@ -533,20 +510,17 @@ void dae::BurgerTime::MakeBurgers(Scene& scene, const std::vector<Burger>& burge
 			burger->AddComponent(burgerSprite, "BurgerSprite");
 			burger->AddComponent(pRigidBody, "RigidBody");
 			burger->AddComponent(pBurger, "BurgerComp");
-			pRigidBody->SetTransform(&burger->GetTransform());
 			pBurger->SetGameObject(burger.get());
 			pBurger->Initialize();
 			pBurger->SetOverlapEvent();
 
-			AddRigidBodyToPhysics(sceneNr, pRigidBody);
-			//m_Minigin.GetPhysics()->AddRigidBodyComponent(pRigidBody);
 
 			scene.Add(burger);
 		}
 	}
 }
 
-void dae::BurgerTime::CreateTray(Scene& scene, int sceneNr, Float2 position) const
+void dae::BurgerTime::CreateTray(Scene& scene, int /*sceneNr*/, Float2 position) const
 {
 	float levelScale = 2.f;
 	auto trayGo = std::make_shared<GameObject>();
@@ -566,14 +540,12 @@ void dae::BurgerTime::CreateTray(Scene& scene, int sceneNr, Float2 position) con
 		sprite->GetAnimation().GetScaledHeight(),
 		true);
 	rigidBody->SetGameObject(trayGo.get());
-	rigidBody->SetTransform(&trayGo->GetTransform());
 	trayGo->AddComponent(rigidBody, "RigidBody");
 
 	auto trayComp = std::make_shared<TrayComponent>();
 	trayComp->SetGameObject(trayGo.get());
 	trayComp->SetOverlapEvent();
 	trayGo->AddComponent(trayComp, "TrayComp");
-	AddRigidBodyToPhysics(sceneNr, rigidBody);
 	scene.Add(trayGo);
 }
 void dae::BurgerTime::Run()

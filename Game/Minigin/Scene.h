@@ -14,6 +14,7 @@ namespace dae
 		int GetIndex() const { return m_Index; }
 		void Update(float deltaTime);
 		void FixedUpdate(float deltaTime);
+		void Initialize();
 
 		std::vector<std::shared_ptr<SceneObject>>& GetSceneObjects() { return m_Objects; }
 		//void DeleteSceneObject(SceneObject& object) { }
@@ -25,7 +26,6 @@ namespace dae
 		Scene& operator=(const Scene& other) = delete;
 		Scene& operator=(Scene&& other) = delete;
 
-		void SetPhysics(Physics* physics) { m_pPhysics = physics; }
 
 	private: 
 		explicit Scene(const std::string& name);
@@ -35,8 +35,6 @@ namespace dae
 		int m_Index;
 
 		static unsigned int m_IdCounter; 
-
-		Physics* m_pPhysics;
 	};
 
 }

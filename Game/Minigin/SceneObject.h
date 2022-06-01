@@ -7,7 +7,7 @@ namespace dae
 		virtual void Update(float deltaTime) = 0;
 		virtual void FixedUpdate(float deltaTime) = 0;
 		virtual void Render() const = 0;
-
+		virtual void Initialize() = 0;
 		SceneObject() = default;
 		virtual ~SceneObject() = default;
 		SceneObject(const SceneObject& other) = delete;

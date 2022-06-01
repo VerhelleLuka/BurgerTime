@@ -3,6 +3,7 @@
 #include "Enemy.h"
 #include "SpriteComponent.h"
 #include "Animation.h"
+#include "Physics.h"
 void dae::MovingDown::Update()
 {
 	if (m_pEnemy->GetCanDescend())
@@ -48,6 +49,7 @@ void dae::Dying::Update()
 	}
 	if (m_pSprite->GetAnimation().GetFrameNr() == m_pSprite->GetAnimation().GetNrFrames() -1 )
 	{
+		/*Physics::GetInstance().*/
 		m_pRigidBody->GetParent()->MarkForDelete();
 	}
 }

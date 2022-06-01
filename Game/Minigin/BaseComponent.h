@@ -12,9 +12,14 @@ namespace dae
 		virtual void FixedUpdate(float deltaTime) = 0;
 		virtual void Render() const = 0;
 
-		virtual void SetGameObject(GameObject* go) { m_pParent = go; };
+		virtual void SetGameObject(GameObject* go)
+		{
+			m_pParent = go; 
+		};
 		BaseComponent() {};
 		virtual ~BaseComponent() {};
+
+		virtual void Initialize() {};
 	protected :
 		GameObject* m_pParent{};
 	};

@@ -2,6 +2,14 @@
 #include "SceneManager.h"
 #include "Scene.h"
 #include "Physics.h"
+void dae::SceneManager::Initialize()
+{
+	for (auto& scene : m_Scenes)
+	{
+		scene->Initialize();
+	}
+}
+
 void dae::SceneManager::Update(float deltaTime)
 {
 	if (m_pActiveScene)

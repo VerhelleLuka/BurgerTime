@@ -2,9 +2,9 @@
 #include "RigidBodyComponent.h"
 #include "Structs.h"
 #include <algorithm>
+#include "Physics.h"
 dae::RigidBodyComponent::RigidBodyComponent(float width, float height, bool isTrigger)
-	:m_pTransform(&m_pParent->GetTransform()),
-	m_Width(width),
+	:m_Width(width),
 	m_Height(height),
 	m_IsTrigger(isTrigger),
 	m_OverlapEvent(),
@@ -12,9 +12,16 @@ dae::RigidBodyComponent::RigidBodyComponent(float width, float height, bool isTr
 	, m_Direction(Float2{0.f, 0.f})
 	,m_LastDirection(Float2{0.f, 0.f})
 {
+}
+void dae::RigidBodyComponent::Initialize()
+{
+	Physics::GetInstance().AddRigidBodyComponent(this);
 
 }
-//
+//dae::RigidBodyComponent::RigidBodyComponent(RigidBodyComponent* rb)
+//{
+//}
+////
 void dae::RigidBodyComponent::SetDirection(Float2 direction)
 {
 	m_Direction = direction;
@@ -28,8 +35,7 @@ void dae::RigidBodyComponent::Update(float /*elapsedSec*/)
 
 dae::RigidBodyComponent::~RigidBodyComponent()
 {
-	 m_pTransform = nullptr; 
-	 delete m_pTransform; 
+
 }
 
 

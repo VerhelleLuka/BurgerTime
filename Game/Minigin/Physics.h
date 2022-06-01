@@ -1,9 +1,9 @@
 #pragma once
 #include "RigidBodyComponent.h"
-
+#include "Singleton.h"  
 namespace dae
 {
-	class Physics : public Subject
+	class Physics : public Singleton<Physics>
 	{
 	public:
 		Physics() {};
@@ -14,8 +14,8 @@ namespace dae
 		Physics& operator=(const Physics& other) = delete;
 		Physics& operator=(Physics&& other) = delete;
 
-		void AddRigidBodyComponent(std::shared_ptr<RigidBodyComponent> rigidBody);
-
+		void AddRigidBodyComponent(RigidBodyComponent* rigidBody);
+		void RemoveRigidBodyComponent(RigidBodyComponent* rigidBody);
 		void FixedUpdate(float deltaTime);
 		void CheckOverlap();
 
@@ -23,7 +23,7 @@ namespace dae
 		//void DeleteRigidBody(RigidBodyComponent* rB);
 
 	private:
-		std::vector<std::vector<std::shared_ptr<RigidBodyComponent>>> m_pRigidBodies;
+		std::vector<std::vector<RigidBodyComponent*>> m_pRigidBodies;
 		int m_SceneNr;
 	};
 }

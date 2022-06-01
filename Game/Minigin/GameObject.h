@@ -1,4 +1,4 @@
-#pragma once
+   #pragma once
 #include "Transform.h"
 #include "SceneObject.h"
 #include <memory>
@@ -15,7 +15,7 @@ namespace dae
 		void Update(float deltaTime) override;
 		void FixedUpdate(float deltaTime) override;
 		void Render() const override;
-
+		virtual void Initialize() override;
 
 		void AddComponent(std::shared_ptr<BaseComponent> pComponent, const std::string& name);
 		template <typename T> std::shared_ptr<T> GetComponent(const std::string& name) const

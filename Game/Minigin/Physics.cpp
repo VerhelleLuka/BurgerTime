@@ -20,25 +20,39 @@
 void dae::Physics::FixedUpdate(float /*deltaTime*/)
 {
 	m_SceneNr = SceneManager::GetInstance().GetActiveScene().GetIndex();
-	std::cout << m_pRigidBodies[m_SceneNr].size() << "\n";
+	//std::cout << m_pRigidBodies[m_SceneNr].size() << "\n";
 	CheckOverlap();
 
 
 }
 
-void dae::Physics::AddRigidBodyComponent(std::shared_ptr<RigidBodyComponent>rigidBody)
+void dae::Physics::AddRigidBodyComponent(RigidBodyComponent* rigidBody)
 {
-	
 	if (int(m_pRigidBodies.size() - 1) < m_SceneNr)
 	{
-		std::vector<std::shared_ptr<RigidBodyComponent>> newSceneVector;
+		std::vector<RigidBodyComponent*> newSceneVector;
 		newSceneVector.push_back(rigidBody);
 		m_pRigidBodies.push_back(newSceneVector);
 		return;
 	}
 	m_pRigidBodies[m_SceneNr].push_back(rigidBody);
-	//AddObserver(rigidBody.get());
 }
+
+void dae::Physics::RemoveRigidBodyComponent(RigidBodyComponent* rigidBody)
+{
+	for (size_t i{}; i < m_pRigidBodies.size(); ++i)
+	{
+		for (size_t j{}; j < m_pRigidBodies[i].size(); ++j)
+		{
+			std::cout << m_pRigidBodies[i][j] << " " << rigidBody << "\n";
+			if (m_pRigidBodies[i][j] == rigidBody)
+			{
+				m_pRigidBodies[i].erase(std::remove(m_pRigidBodies[i].begin(), m_pRigidBodies[i].end(), m_pRigidBodies[i][j]), m_pRigidBodies[i].end());
+			}
+		}
+	}
+}
+
 void dae::Physics::SetSceneNr(int sceneNr)
 {
 	m_SceneNr = sceneNr;
@@ -87,13 +101,13 @@ void dae::Physics::CheckOverlap()
 							isOverlapping = true;
 							if (m_pRigidBodies[m_SceneNr][i]->GetTrigger())
 							{
-								m_pRigidBodies[m_SceneNr][i]->AddOverlappingBody(rigidBody.get());
-								m_pRigidBodies[m_SceneNr][i]->OnOverlap(rigidBody.get());
+								m_pRigidBodies[m_SceneNr][i]->AddOverlappingBody(rigidBody);
+								m_pRigidBodies[m_SceneNr][i]->OnOverlap(rigidBody);
 							}
 							if (rigidBody->GetTrigger())
 							{
-								rigidBody->AddOverlappingBody(m_pRigidBodies[m_SceneNr][i].get());
-								rigidBody->OnOverlap(m_pRigidBodies[m_SceneNr][i].get());
+								rigidBody->AddOverlappingBody(m_pRigidBodies[m_SceneNr][i]);
+								rigidBody->OnOverlap(m_pRigidBodies[m_SceneNr][i]);
 							}
 						}
 					}
@@ -101,11 +115,11 @@ void dae::Physics::CheckOverlap()
 					{
 						if (m_pRigidBodies[m_SceneNr][i]->GetTrigger())
 						{
-							m_pRigidBodies[m_SceneNr][i]->RemoveOverlappingBody(rigidBody.get());
+							m_pRigidBodies[m_SceneNr][i]->RemoveOverlappingBody(rigidBody);
 						}
 						if (rigidBody->GetTrigger())
 						{
-							rigidBody->RemoveOverlappingBody(m_pRigidBodies[m_SceneNr][i].get());
+							rigidBody->RemoveOverlappingBody(m_pRigidBodies[m_SceneNr][i]);
 						}
 					}
 

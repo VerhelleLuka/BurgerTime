@@ -6,10 +6,6 @@
 #include <functional>
 namespace dae
 {
-	struct RigdBodyEventArgs : EventArgs
-	{
-		Transform otherTransform;
-	};
 	class RigidBodyComponent final : public BaseComponent
 	{
 	public:
@@ -17,8 +13,8 @@ namespace dae
 		virtual void FixedUpdate(float deltaTime) override;
 		virtual void Render() const {};
 
-		virtual void SetGameObject(GameObject* go) { m_pParent = go; };
-		RigidBodyComponent() = default;
+		RigidBodyComponent();
+		//RigidBodyComponent(RigidBodyComponent* rb);
 		RigidBodyComponent(float width, float height, bool isTrigger);
 		virtual ~RigidBodyComponent() override;
 
@@ -26,8 +22,7 @@ namespace dae
 
 		//All the getters for component overlap
 		bool GetTrigger() const { return m_IsTrigger; }
-		Transform GetTransform() const { return *m_pTransform; }
-		void SetTransform(Transform* transform) { m_pTransform = transform; }
+		Transform GetTransform() const { return m_pParent->GetTransform(); }
 		float GetWidth()const { return m_Width; }
 		float GetHeight()const { return m_Height; }
 		GameObject* GetParent() const { return m_pParent; }
@@ -57,10 +52,8 @@ namespace dae
 
 		std::vector<RigidBodyComponent*> GetOverlappingBodies() const;
 	protected:
-		GameObject* m_pParent{};
-		//This transform is a reference to the parent transform
-		Transform* m_pTransform;
 
+		virtual void Initialize() override;
 		//m_Direction is for non physics-related movement
 		Float2 m_Direction;
 		Float2 m_LastDirection;

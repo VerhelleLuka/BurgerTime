@@ -10,6 +10,14 @@ Scene::Scene(const std::string& name) : m_Name(name) {}
 
 Scene::~Scene() = default;
 
+
+void Scene::Initialize()
+{
+	for (size_t i = 0; i < m_Objects.size(); i++)
+	{
+		m_Objects[i]->Initialize();
+	}
+}
 void Scene::Add(const std::shared_ptr<SceneObject>&object)
 {
 	m_Objects.push_back(object);
@@ -25,7 +33,6 @@ void Scene::Update(float deltaTime)
 		m_Objects[i]->Update(deltaTime);
 		if (m_Objects[i]->GetMarkForDelete())
 		{
-			//m_pPhysics->DeleteRigidBody(dynamic_cast<GameObject*>(m_Objects[i].get())->GetComponent<RigidBodyComponent>("RigidBody").get());
 			m_Objects[i] = nullptr;
 			m_Objects.erase(std::remove(m_Objects.begin(), m_Objects.end(), m_Objects[i]), m_Objects.end());
 		}

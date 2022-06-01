@@ -5,6 +5,20 @@
 #include <algorithm>
 #include <vector>
 #include "BaseComponent.h"
+#include "RigidBodyComponent.h"
+#include "Physics.h"
+void dae::GameObject::Initialize()
+{
+	for (auto& component : m_pComponents)
+	{
+		component.second->Initialize();
+
+	}
+	for (auto& child : m_pGameObjects)
+	{
+		child->Initialize();
+	}
+}
 
 void dae::GameObject::Update(float deltaTime)
 {
@@ -104,4 +118,11 @@ void dae::GameObject::SetTransform(float x, float y, float z)
 
 dae::GameObject::~GameObject()
 {
+	for (auto& comp : m_pComponents)
+	{
+		if (dynamic_cast<RigidBodyComponent*>(comp.second.get()))
+		{
+			Physics::GetInstance().RemoveRigidBodyComponent(dynamic_cast<RigidBodyComponent*>(comp.second.get()));
+		}
+	}
 }
