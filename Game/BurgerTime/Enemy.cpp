@@ -174,9 +174,9 @@ void dae::Enemy::OnOverlap(RigidBodyComponent* other)
 			m_pWalkedLadder = other->GetParent()->GetComponent<LadderComponent>("Ladder").get();
 			Float2 ladderPos = { other->GetTransform().GetPosition().x, other->GetTransform().GetPosition().y };
 			float ladderHeight = other->GetHeight();
-			float ladderWidth = other->GetWidth();
-			if (m_pParent->GetTransform().GetPosition().x < other->GetTransform().GetPosition().x + ladderWidth / 2 &&
-				m_pParent->GetTransform().GetPosition().x + m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->GetWidth() / 2 >= ladderPos.x)
+			//The 1 is just a small offset
+			if (m_pParent->GetTransform().GetPosition().x < other->GetTransform().GetPosition().x  &&
+				m_pParent->GetTransform().GetPosition().x + 1 >= ladderPos.x)
 			{
 				m_CanClimb = false;
 				m_CanDescend = false;
