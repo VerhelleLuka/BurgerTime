@@ -13,7 +13,7 @@ dae::RigidBodyComponent::RigidBodyComponent(float width, float height, bool isTr
 	,m_LastDirection(Float2{0.f, 0.f})
 {
 }
-void dae::RigidBodyComponent::Initialize()
+void dae::RigidBodyComponent::Initialize(Scene&)
 {
 	Physics::GetInstance().AddRigidBodyComponent(this);
 

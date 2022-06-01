@@ -19,7 +19,7 @@ namespace dae
 		virtual void Update(float /*deltaTime*/) override;
 		virtual void FixedUpdate(float /*deltaTime*/) override;
 		virtual void Render() const {};
-		void Initialize(Scene& scene);
+		void Initialize(Scene& scene) override;
 		void Reinitialize();
 		Enemy(EnemyType type);
 		virtual ~Enemy();
@@ -72,6 +72,10 @@ namespace dae
 		bool m_SwitchBehavior;
 		bool m_IsDead;
 		bool m_IsFalling;
-		
+
+
+		const float m_StuckTimer{ .5f };
+		float m_StuckTime;
+		Float2 m_PrevPos;
 	};
 }

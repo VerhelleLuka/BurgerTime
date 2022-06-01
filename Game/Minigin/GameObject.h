@@ -7,6 +7,7 @@
 #include <string>
 namespace dae
 {
+	class Scene;
 	class BaseComponent;
 	class GameObject final: public SceneObject, std::enable_shared_from_this<GameObject>
 	{
@@ -15,7 +16,7 @@ namespace dae
 		void Update(float deltaTime) override;
 		void FixedUpdate(float deltaTime) override;
 		void Render() const override;
-		virtual void Initialize() override;
+		virtual void Initialize(Scene& scene) override;
 
 		void AddComponent(std::shared_ptr<BaseComponent> pComponent, const std::string& name);
 		template <typename T> std::shared_ptr<T> GetComponent(const std::string& name) const

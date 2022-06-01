@@ -53,7 +53,7 @@ namespace dae
 		std::vector<RigidBodyComponent*> GetOverlappingBodies() const;
 	protected:
 
-		virtual void Initialize() override;
+		virtual void Initialize(Scene& scene) override;
 		//m_Direction is for non physics-related movement
 		Float2 m_Direction;
 		Float2 m_LastDirection;

@@ -14,7 +14,9 @@ dae::Enemy::Enemy(EnemyType type)
 	m_CanWalkLeft(false),
 	m_CanWalkRight(false),
 	m_EnemyType(type),
-	m_IsFalling(false)
+	m_IsFalling(false),
+	m_StuckTime(0.f),
+	m_PrevPos(Float2{0.f,0.f})
 {
 }
 
@@ -174,9 +176,8 @@ void dae::Enemy::OnOverlap(RigidBodyComponent* other)
 			m_pWalkedLadder = other->GetParent()->GetComponent<LadderComponent>("Ladder").get();
 			Float2 ladderPos = { other->GetTransform().GetPosition().x, other->GetTransform().GetPosition().y };
 			float ladderHeight = other->GetHeight();
-			//The 1 is just a small offset
-			if (m_pParent->GetTransform().GetPosition().x < other->GetTransform().GetPosition().x  &&
-				m_pParent->GetTransform().GetPosition().x + 1 >= ladderPos.x)
+			if (m_pParent->GetTransform().GetPosition().x < other->GetTransform().GetPosition().x + 1 &&
+				m_pParent->GetTransform().GetPosition().x + 1  >= ladderPos.x)
 			{
 				m_CanClimb = false;
 				m_CanDescend = false;

@@ -7,16 +7,17 @@
 #include "BaseComponent.h"
 #include "RigidBodyComponent.h"
 #include "Physics.h"
-void dae::GameObject::Initialize()
+#include "Scene.h"
+void dae::GameObject::Initialize(Scene& scene)
 {
 	for (auto& component : m_pComponents)
 	{
-		component.second->Initialize();
+		component.second->Initialize(scene);
 
 	}
 	for (auto& child : m_pGameObjects)
 	{
-		child->Initialize();
+		child->Initialize(scene);
 	}
 }
 

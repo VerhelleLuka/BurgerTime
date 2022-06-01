@@ -15,7 +15,7 @@ void Scene::Initialize()
 {
 	for (size_t i = 0; i < m_Objects.size(); i++)
 	{
-		m_Objects[i]->Initialize();
+		m_Objects[i]->Initialize(*this);
 	}
 }
 void Scene::Add(const std::shared_ptr<SceneObject>&object)

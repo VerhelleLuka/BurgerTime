@@ -57,6 +57,7 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 			if (other->GetTransform().GetPosition().y <= m_pParent->GetTransform().GetPosition().y && m_Fall && m_StartFall)
 			{
 				other->GetParent()->GetComponent<Enemy>("Enemy")->Fall();
+				m_pPeterPepper->AddPoints(500);
 				m_LevelsToFall++;
 			}
 		}

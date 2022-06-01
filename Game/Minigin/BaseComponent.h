@@ -5,6 +5,7 @@
 
 namespace dae
 {
+	class Scene;
 	class BaseComponent
 	{
 	public:
@@ -19,7 +20,7 @@ namespace dae
 		BaseComponent() {};
 		virtual ~BaseComponent() {};
 
-		virtual void Initialize() {};
+		virtual void Initialize(Scene& /*scene*/) {};
 	protected :
 		GameObject* m_pParent{};
 	};

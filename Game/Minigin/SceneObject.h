@@ -1,13 +1,14 @@
 #pragma once
 namespace dae
 {
+	class Scene;
 	class SceneObject
 	{
 	public:
 		virtual void Update(float deltaTime) = 0;
 		virtual void FixedUpdate(float deltaTime) = 0;
 		virtual void Render() const = 0;
-		virtual void Initialize() = 0;
+		virtual void Initialize(Scene& /*scene*/) {};
 		SceneObject() = default;
 		virtual ~SceneObject() = default;
 		SceneObject(const SceneObject& other) = delete;
