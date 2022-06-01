@@ -20,7 +20,7 @@ namespace dae
 		virtual void SetGameObject(GameObject* go) { m_pParent = go; };
 		RigidBodyComponent() = default;
 		RigidBodyComponent(float width, float height, bool isTrigger);
-		virtual ~RigidBodyComponent() { m_pTransform = nullptr; delete m_pTransform; };
+		virtual ~RigidBodyComponent() override;
 
 		void SetDirection(Float2 velocity);
 

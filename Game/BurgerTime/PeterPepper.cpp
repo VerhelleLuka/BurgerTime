@@ -150,7 +150,7 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 			return;
 		}
 		//if the other overlap is a platform
-		if (other->GetParent()->GetComponent<RigidBodyComponent>("PlatformRigidBody"))
+		if (other->GetParent()->GetComponent<PlatformComponent>("PlatformComp"))
 		{
 			m_CanWalkLeft = false;
 			m_CanWalkRight = false;
@@ -186,7 +186,7 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 
 
 		//if it's a ladder
-		if (other->GetParent()->GetComponent<RigidBodyComponent>("LadderRigidBody"))
+		if (other->GetParent()->GetComponent<LadderComponent>("LadderComp"))
 		{
 			m_CanClimb = false;
 			m_CanDescend = false;
@@ -216,12 +216,12 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 
 void dae::PeterPepperComponent::OnTriggerExit(RigidBodyComponent* other)
 {
-	if (other->GetParent()->GetComponent<RigidBodyComponent>("LadderRigidBody"))
+	if (other->GetParent()->GetComponent<LadderComponent>("LadderComp"))
 	{
 		m_CanDescend = false;
 		m_CanClimb = false;
 	}
-	if (other->GetParent()->GetComponent<RigidBodyComponent>("ButtonRigidBody"))
+	if (other->GetParent()->GetComponent<ButtonComponent>("ButtonComp"))
 	{
 		m_OverlappingButton = false;
 	}

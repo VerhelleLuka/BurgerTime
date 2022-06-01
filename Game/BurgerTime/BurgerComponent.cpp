@@ -6,7 +6,10 @@
 #include "PlatformComponent.h"
 #include "Enemy.h"
 dae::BurgerComponent::BurgerComponent()
-	:m_Fall(false)
+	:m_Fall(false),
+	m_Caught(false),
+	m_LevelsToFall(0),
+	m_StartFall(false)
 {
 
 }
@@ -20,10 +23,11 @@ void dae::BurgerComponent::Initialize()
 }
 void dae::BurgerComponent::FixedUpdate(float /*elapsedSec*/)
 {
-	if (m_Fall == true)
+	if (m_Fall && !m_Caught)
 	{
 		m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2{ 0, 100 });
 	}
+	m_StartFall = false;
 	//std::cout << m_WalkedOver[0] << " " << m_WalkedOver[1] << " " << m_WalkedOver[2] << " " << m_WalkedOver[3] << "\n";
 }
 
@@ -34,6 +38,7 @@ void dae::BurgerComponent::ForceFall()
 		m_WalkedOver[i] = true;
 	}
 	m_Fall = true;
+	m_StartFall = true;
 }
 void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 {
@@ -47,6 +52,18 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 			}
 			other->GetParent()->GetComponent<Enemy>("Enemy")->Kill();
 		}
+		if (!other->GetParent()->GetComponent<Enemy>("Enemy")->GetFalling())
+		{
+			if (other->GetTransform().GetPosition().y <= m_pParent->GetTransform().GetPosition().y && m_Fall && m_StartFall)
+			{
+				other->GetParent()->GetComponent<Enemy>("Enemy")->Fall();
+				m_LevelsToFall++;
+			}
+		}
+		//else if ((other->GetTransform().GetPosition().y <= m_pParent->GetTransform().GetPosition().y && m_Fall)
+		//	{
+
+		//	}
 	}
 	if (other->GetParent()->GetComponent<PlatformComponent>("PlatformComp"))
 	{
@@ -65,6 +82,11 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 			for (int i{}; i < m_NrParts - 1; ++i)
 			{
 				m_WalkedOver[i] = false;
+			}
+			if (m_LevelsToFall > 0)
+			{
+				ForceFall();
+				m_LevelsToFall--;
 			}
 		}
 	}
@@ -89,6 +111,7 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 				}
 
 				m_Fall = m_AllTrue;
+				m_StartFall = m_AllTrue;
 			}
 
 		}
@@ -96,7 +119,11 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 	}
 	if (other->GetParent()->GetComponent<BurgerComponent>("BurgerComp"))
 	{
-		if (other->GetParent()->GetTransform().GetPosition().y < m_pParent->GetTransform().GetPosition().y)
+		if (other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->GetCaught())
+		{
+			m_Caught = true;
+		}
+		else if (other->GetParent()->GetTransform().GetPosition().y < m_pParent->GetTransform().GetPosition().y)
 		{
 			m_pPeterPepper = other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->GetPeterPepper();
 

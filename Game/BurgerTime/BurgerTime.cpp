@@ -18,22 +18,25 @@
 #include "Sound.h"
 #include "BurgerComponent.h"
 #include "Enemy.h"
+#include "TrayComponent.h"
 void dae::BurgerTime::Initialize()
 {
 }
 
-void dae::BurgerTime::LoadGame() const
+void dae::BurgerTime::LoadGame()
 {
 	auto& levelScene = SceneManager::GetInstance().CreateScene("Level");
+	levelScene.SetPhysics(m_Minigin.GetPhysics());
 	//auto& menuScene = SceneManager::GetInstance().CreateScene("MainMenu");
 
 	//m_Minigin.GetPhysics()->AddScene();
 	//m_Minigin.GetPhysics()->AddScene();
 	Transform peterPepperSpawnPos = ParseLevel(levelScene, 0);
-	CreatePeterPepperAndHUD(peterPepperSpawnPos, levelScene, 0, true, 0);
-	CreateEnemy(levelScene, 0, Float2{150,70});
-	//CreateEnemy(levelScene, 0, Float2{120,70});
-	//CreateEnemy(levelScene, 0, Float2{300,70});
+
+	CreatePeterPepperAndHUD(Transform(), levelScene, 0, true, 0);
+	/*m_pEnemyTemplate = */CreateEnemyTemplate(levelScene, 0, Float2{ 150,70 });
+	CreateEnemyTemplate(levelScene, 0, Float2{400,70});
+	CreateEnemyTemplate(levelScene, 0, Float2{300,70});
 	//CreateEnemy(levelScene, 0, Float2{100,86});
 	//CreatePeterPepperAndHUD(peterPepperSpawnPos, menuScene, 0, false, 1);
 	//CreateMenu(menuScene);
@@ -69,8 +72,8 @@ void dae::BurgerTime::CreateMenu(Scene& scene) const
 	buttonGo->AddComponent(buttonComp, "ButtonComp");
 
 	auto buttonRigidBody = std::make_shared<RigidBodyComponent>(buttonAnim->GetScaledWidth(), buttonAnim->GetScaledHeight(), false);
-	buttonGo->AddComponent(buttonRigidBody, "ButtonRigidBody");
-	buttonRigidBody->SetGameObject(buttonGo.get());
+	buttonGo->AddComponent(buttonRigidBody, "RigidBody");
+	//buttonRigidBody->SetGameObject(buttonGo.get());
 	buttonRigidBody->SetTransform(&buttonGo->GetTransform());
 	auto sceneObjects = scene.GetSceneObjects();
 	for (int i = 0; i < sceneObjects.size(); ++i)
@@ -85,7 +88,7 @@ void dae::BurgerTime::CreateMenu(Scene& scene) const
 	scene.Add(buttonGo);
 }
 
-void dae::BurgerTime::CreateEnemy(Scene& scene, int sceneNr, Float2 position) const
+dae::GameObject* dae::BurgerTime::CreateEnemyTemplate(Scene& scene, int sceneNr, Float2 position) const
 {
 	const float animationScale = 1.75f;
 	auto enemyGo = std::make_shared<GameObject>();
@@ -143,6 +146,8 @@ void dae::BurgerTime::CreateEnemy(Scene& scene, int sceneNr, Float2 position) co
 	enemyGo->SetTransform(position.x, position.y, 0);
 
 	scene.Add(enemyGo);
+
+	return enemyGo.get();
 }
 
 void dae::BurgerTime::AddRigidBodyToPhysics(int sceneNr, std::shared_ptr<RigidBodyComponent> rB) const
@@ -338,7 +343,7 @@ void dae::BurgerTime::MakeLaddersAndPlatforms(Scene& scene, const std::vector<La
 		if (platforms[i].column % 2 == 0)
 		{
 			platformAnimation->SetTexture("Level/SmallPlatform.png");
-			transform.SetPosition((platforms[i].column) * platformWidth + scalingIncrease * platforms[i].column, (platforms[i].row + 1) * platformWidth , 0.f);
+			transform.SetPosition((platforms[i].column) * platformWidth + scalingIncrease * platforms[i].column, (platforms[i].row + 1) * platformWidth, 0.f);
 		}
 		else
 		{
@@ -387,7 +392,7 @@ void dae::BurgerTime::MakeLaddersAndPlatforms(Scene& scene, const std::vector<La
 		}
 		platform->AddComponent(pPlatform, "PlatformComp");
 		platform->AddComponent(platformSprite, "PlatformSprite");
-		platform->AddComponent(pRigidBody, "PlatformRigidBody");
+		platform->AddComponent(pRigidBody, "RigidBody");
 		pRigidBody->SetTransform(&platform->GetTransform());
 
 		AddRigidBodyToPhysics(sceneNr, pRigidBody);
@@ -418,7 +423,7 @@ void dae::BurgerTime::MakeLaddersAndPlatforms(Scene& scene, const std::vector<La
 
 		Transform transform{};
 		//+4 because the ladders are otherwise off center
-		transform.SetPosition(ladders[i].column * platformWidth + ((platformWidth * ladders[i].column / 2)) + ladderShift, (ladders[i].row + 1) * platformWidth , 0.f);
+		transform.SetPosition(ladders[i].column * platformWidth + ((platformWidth * ladders[i].column / 2)) + ladderShift, (ladders[i].row + 1) * platformWidth, 0.f);
 		ladder->SetTransform(transform);
 		ladder->AddComponent(ladderSprite, "Ladder");
 
@@ -428,7 +433,7 @@ void dae::BurgerTime::MakeLaddersAndPlatforms(Scene& scene, const std::vector<La
 			false);
 		pRigidBody->SetGameObject(ladder.get());
 
-		ladder->AddComponent(pRigidBody, "LadderRigidBody");
+		ladder->AddComponent(pRigidBody, "RigidBody");
 		pRigidBody->SetTransform(&ladder->GetTransform());
 
 		AddRigidBodyToPhysics(sceneNr, pRigidBody);
@@ -481,10 +486,21 @@ void dae::BurgerTime::MakeBurgers(Scene& scene, const std::vector<Burger>& burge
 	int scalingIncrease = 8 * levelScale;
 	float platformWidth = 16.f * levelScale;
 	//int nextPlatforms = 0;
+	int column;
+	int prevColumn = -1;
 	for (size_t i{}; i < burgers.size(); ++i)
 	{
 		if (burgers[i].partName != "")
 		{
+			column = burgers[i].column;
+			if (i > 0)
+			{
+				prevColumn = burgers[i].column;
+			}
+			if (column != prevColumn)
+			{
+				CreateTray(scene, sceneNr, Float2((burgers[i].column) * platformWidth + scalingIncrease * (burgers[i].column - 1) + 1, 440));
+			}
 			auto burger = std::make_shared<GameObject>();
 			auto burgerSprite = std::make_shared<SpriteComponent>();
 			auto burgerAnimation = std::make_shared<Animation>(1, 1);
@@ -497,14 +513,12 @@ void dae::BurgerTime::MakeBurgers(Scene& scene, const std::vector<Burger>& burge
 			burgerPart += ".png";
 
 			burgerAnimation->SetTexture(burgerPart);
-			transform.SetPosition((burgers[i].column) * platformWidth + scalingIncrease * (burgers[i].column - 1) + 1, ((burgers[i].row + 1) * platformWidth ) - 7 * levelScale, 0.f);
+			transform.SetPosition((burgers[i].column) * platformWidth + scalingIncrease * (burgers[i].column - 1) + 1, ((burgers[i].row + 1) * platformWidth) - 7 * levelScale, 0.f);
 			//transform.SetPosition(burgers[i].column * platformWidth + (((platformWidth/2) * burgers[i].column / 2)), ((burgers[i].row + 1) * platformWidth * 1.5f) - 7 * levelScale, 0.f);
 
 			burgerSprite->AddAnimation(burgerAnimation, "Burger");
 			burgerSprite->SetActiveAnimation("Burger");
 			burgerAnimation->SetScale((float)levelScale);
-
-
 
 			burger->SetTransform(transform);
 
@@ -530,6 +544,37 @@ void dae::BurgerTime::MakeBurgers(Scene& scene, const std::vector<Burger>& burge
 			scene.Add(burger);
 		}
 	}
+}
+
+void dae::BurgerTime::CreateTray(Scene& scene, int sceneNr, Float2 position) const
+{
+	float levelScale = 2.f;
+	auto trayGo = std::make_shared<GameObject>();
+	trayGo->SetTransform(position.x, position.y, 0.f);
+
+	auto animation = std::make_shared<Animation>(1, 1);
+	animation->SetTexture("Hamburger/Tray.png");
+	animation->SetScale(levelScale);
+	auto sprite = std::make_shared<SpriteComponent>();
+
+	sprite->SetGameObject(trayGo.get());
+	sprite->AddAnimation(animation, "Tray");
+	sprite->SetActiveAnimation("Tray");
+
+	trayGo->AddComponent(sprite, "Sprite");
+	auto rigidBody = std::make_shared<RigidBodyComponent>(sprite->GetAnimation().GetScaledWidth(),
+		sprite->GetAnimation().GetScaledHeight(),
+		true);
+	rigidBody->SetGameObject(trayGo.get());
+	rigidBody->SetTransform(&trayGo->GetTransform());
+	trayGo->AddComponent(rigidBody, "RigidBody");
+
+	auto trayComp = std::make_shared<TrayComponent>();
+	trayComp->SetGameObject(trayGo.get());
+	trayComp->SetOverlapEvent();
+	trayGo->AddComponent(trayComp, "TrayComp");
+	AddRigidBodyToPhysics(sceneNr, rigidBody);
+	scene.Add(trayGo);
 }
 void dae::BurgerTime::Run()
 {

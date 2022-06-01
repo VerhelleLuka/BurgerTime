@@ -49,6 +49,7 @@ void dae::GameObject::Render() const
 
 void dae::GameObject::AddComponent(std::shared_ptr<BaseComponent> pComponent, const std::string& name)
 {
+	pComponent->SetGameObject(this);
 	m_pComponents[name] = pComponent;
 }
 

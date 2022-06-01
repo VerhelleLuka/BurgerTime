@@ -32,6 +32,7 @@
     <ClInclude Include="PointsDisplayComponent.h" />
     <ClInclude Include="EnemyState.h" />
     <ClInclude Include="Structs.h" />
+    <ClInclude Include="TrayComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BurgerComponent.cpp" />
@@ -44,6 +45,7 @@
     <ClCompile Include="PlatformComponent.cpp" />
     <ClCompile Include="PointsDisplayComponent.cpp" />
     <ClCompile Include="EnemyState.cpp" />
+    <ClCompile Include="TrayComponent.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -42,6 +42,8 @@ namespace dae
 		void SetOnTriggerExitEvent();
 		bool IsDead() const { return m_IsDead; }
 		void Kill();
+		void Fall();
+		bool GetFalling() const { return m_IsFalling; }
 		//Enemy* clone(Float2 pos)
 		//{
 		//	retu
@@ -69,6 +71,7 @@ namespace dae
 		float m_BehaviorSwitchTime;
 		bool m_SwitchBehavior;
 		bool m_IsDead;
+		bool m_IsFalling;
 		
 	};
 }

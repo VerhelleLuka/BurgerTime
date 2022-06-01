@@ -13,7 +13,8 @@ dae::Enemy::Enemy(EnemyType type)
 	m_CanDescend(false),
 	m_CanWalkLeft(false),
 	m_CanWalkRight(false),
-	m_EnemyType(type)
+	m_EnemyType(type),
+	m_IsFalling(false)
 {
 }
 
@@ -57,6 +58,15 @@ void dae::Enemy::Kill()
 	m_pEnemyState = new Dying;
 	Reinitialize();
 }
+void dae::Enemy::Fall()
+{
+	m_IsFalling = true;
+	delete m_pEnemyState;
+	m_pEnemyState = new Falling;
+	Reinitialize();
+	m_SwitchBehavior = true;
+	m_BehaviorSwitchTime = 0.f;
+}
 void dae::Enemy::Update(float elapsedTime)
 {
 	if (m_SwitchBehavior)
@@ -67,6 +77,10 @@ void dae::Enemy::Update(float elapsedTime)
 			m_SwitchBehavior = false;
 			m_BehaviorSwitchTime = 0.f;
 		}
+	}
+	if (m_IsFalling && !m_SwitchBehavior)
+	{
+		Kill();
 	}
 }
 
@@ -85,10 +99,11 @@ void dae::Enemy::SetOnTriggerExitEvent()
 
 void dae::Enemy::OnOverlap(RigidBodyComponent* other)
 {
-	if (!m_IsDead)
+	if (!m_IsDead && !m_IsFalling)
 	{
-		if (other->GetParent()->GetComponent<RigidBodyComponent>("PlatformRigidBody"))
+		if (other->GetParent()->GetComponent<PlatformComponent>("PlatformComp"))
 		{
+
 			m_CanWalkLeft = false;
 			m_CanWalkRight = false;
 			Float2 platformPos = { other->GetTransform().GetPosition().x, other->GetTransform().GetPosition().y };
@@ -124,6 +139,8 @@ void dae::Enemy::OnOverlap(RigidBodyComponent* other)
 				return;
 			}
 
+
+
 			if (m_pPeter1Transform->GetPosition().x >= m_pParent->GetTransform().GetPosition().x && m_CanWalkRight)
 			{
 				if (m_pEnemyState)
@@ -152,7 +169,7 @@ void dae::Enemy::OnOverlap(RigidBodyComponent* other)
 			}
 
 		}
-		if (other->GetParent()->GetComponent<RigidBodyComponent>("LadderRigidBody"))
+		if (other->GetParent()->GetComponent<LadderComponent>("LadderComp"))
 		{
 			m_pWalkedLadder = other->GetParent()->GetComponent<LadderComponent>("Ladder").get();
 			Float2 ladderPos = { other->GetTransform().GetPosition().x, other->GetTransform().GetPosition().y };

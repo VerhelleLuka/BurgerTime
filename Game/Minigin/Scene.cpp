@@ -1,7 +1,7 @@
 #include "MiniginPCH.h"
 #include "Scene.h"
 #include "GameObject.h"
-
+#include "Physics.h"
 using namespace dae;
 
 unsigned int Scene::m_IdCounter = 0;
@@ -10,23 +10,28 @@ Scene::Scene(const std::string& name) : m_Name(name) {}
 
 Scene::~Scene() = default;
 
-void Scene::Add(const std::shared_ptr<SceneObject>& object)
+void Scene::Add(const std::shared_ptr<SceneObject>&object)
 {
 	m_Objects.push_back(object);
 }
 
 void Scene::Update(float deltaTime)
 {
-	for(auto& object : m_Objects)
+	//int i{};
+
+	for (size_t i = 0; i < m_Objects.size(); i++)
 	{
-		object->Update(deltaTime);
-		if (object->GetMarkForDelete())
+
+		m_Objects[i]->Update(deltaTime);
+		if (m_Objects[i]->GetMarkForDelete())
 		{
-			object.reset();
-			m_Objects.erase(std::remove(m_Objects.begin(), m_Objects.end(), object), m_Objects.end());
+			//m_pPhysics->DeleteRigidBody(dynamic_cast<GameObject*>(m_Objects[i].get())->GetComponent<RigidBodyComponent>("RigidBody").get());
+			m_Objects[i] = nullptr;
+			m_Objects.erase(std::remove(m_Objects.begin(), m_Objects.end(), m_Objects[i]), m_Objects.end());
 		}
 	}
-	
+
+
 }
 
 void dae::Scene::FixedUpdate(float deltaTime)
@@ -52,12 +57,12 @@ void Scene::Render() const
 		{
 			object->Render();
 		}
-		
+
 	}
 	for (const auto& remainingObjects : lowerZAxisObjects)
 	{
 		remainingObjects->Render();
-			
+
 	}
 }
 

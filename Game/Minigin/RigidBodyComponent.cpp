@@ -26,6 +26,12 @@ void dae::RigidBodyComponent::Update(float /*elapsedSec*/)
 
 }
 
+dae::RigidBodyComponent::~RigidBodyComponent()
+{
+	 m_pTransform = nullptr; 
+	 delete m_pTransform; 
+}
+
 
 void dae::RigidBodyComponent::FixedUpdate(float elapsedSec)
 {

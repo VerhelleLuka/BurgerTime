@@ -51,3 +51,9 @@ void dae::Dying::Update()
 		m_pRigidBody->GetParent()->MarkForDelete();
 	}
 }
+
+void dae::Falling::Update()
+{
+	m_pRigidBody->SetDirection(Float2{ 0.f, 100.f });
+
+}

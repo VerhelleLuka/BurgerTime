@@ -24,7 +24,8 @@ namespace dae
 			m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetOnOverlapEvent(binding);
 		}
 		void ForceFall();
-
+		bool GetCaught() const { return m_Caught; }
+		void SetCaught(bool caught) { m_Caught = caught; }
 		void SetPeterPepper(PeterPepperComponent* peterPepper) { m_pPeterPepper = peterPepper; }
 		PeterPepperComponent* GetPeterPepper()const { return m_pPeterPepper; }
 
@@ -32,10 +33,14 @@ namespace dae
 		static const int m_NrParts = 4;
 		bool m_WalkedOver[m_NrParts] = { false };
 		bool m_Fall;
+		bool m_StartFall;
+		bool m_Caught;
 		float m_xPositions[m_NrParts];
 		std::shared_ptr<PlatformComponent> m_pPlatformComp;
 		void OnOverlap(RigidBodyComponent* other);
 		PeterPepperComponent* m_pPeterPepper;
+
+		int m_LevelsToFall;
 
 	};
 }

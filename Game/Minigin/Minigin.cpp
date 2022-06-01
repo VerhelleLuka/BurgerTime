@@ -48,7 +48,7 @@ void dae::Minigin::Initialize()
 	}
 	//AUDIO INITIALIZATION
 
-	// Set up the audio stream
+	 //Set up the audio stream
 	int result = Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 512);
 	if (result < 0)
 	{
@@ -80,6 +80,7 @@ void dae::Minigin::Initialize()
 
 	m_pPhysics = new Physics();
 	m_IsInitialized = true;
+
 }
 
 void dae::Minigin::Run()

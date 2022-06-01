@@ -57,5 +57,10 @@ namespace dae
 	public: 
 		virtual void Update() override;
 	};
+
+	class Falling final : public EnemyState
+	{
+		virtual void Update() override;
+	};
 }
 

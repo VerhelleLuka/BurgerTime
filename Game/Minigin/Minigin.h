@@ -23,7 +23,6 @@ namespace dae
 		//void MakeLaddersAndPlatforms(Scene& scene, const std::vector<Ladder>& ladders, const std::vector<Platform>& platforms)const;
 		//void MakeBurgers(Scene& scene, const std::vector<Burger>& burgers) const;
 		bool m_SteamApi;
-
 		Physics* m_pPhysics;
 		bool m_IsInitialized = false;
 

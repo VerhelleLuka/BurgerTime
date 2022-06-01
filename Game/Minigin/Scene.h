@@ -4,6 +4,7 @@
 namespace dae
 {
 	class SceneObject;
+	class Physics;
 	class Scene
 	{
 		friend Scene& SceneManager::CreateScene(const std::string& name);
@@ -24,6 +25,8 @@ namespace dae
 		Scene& operator=(const Scene& other) = delete;
 		Scene& operator=(Scene&& other) = delete;
 
+		void SetPhysics(Physics* physics) { m_pPhysics = physics; }
+
 	private: 
 		explicit Scene(const std::string& name);
 
@@ -32,6 +35,8 @@ namespace dae
 		int m_Index;
 
 		static unsigned int m_IdCounter; 
+
+		Physics* m_pPhysics;
 	};
 
 }
