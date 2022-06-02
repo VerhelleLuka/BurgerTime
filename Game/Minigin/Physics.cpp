@@ -3,20 +3,6 @@
 #include "SceneManager.h"
 #include "Scene.h"
 
-//void dae::Physics::DeleteRigidBody(RigidBodyComponent* rB)
-//{
-//	//for (size_t i{}; i < m_pRigidBodies.size(); ++i)
-//	//{
-//	//	for (size_t j{}; i < m_pRigidBodies[i].size(); ++j)
-//	//	{
-//	//		if (m_pRigidBodies[i][j].get() == rB)
-//	//		{
-//	//			m_pRigidBodies[i].erase(std::remove(m_pRigidBodies[i].begin(), m_pRigidBodies[i].end(), m_pRigidBodies[i][j]), m_pRigidBodies[i].end());
-//	//		}
-//	//	}
-//	//}
-//
-//}
 void dae::Physics::FixedUpdate(float /*deltaTime*/)
 {
 	m_SceneNr = SceneManager::GetInstance().GetActiveScene().GetIndex();

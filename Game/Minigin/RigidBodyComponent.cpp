@@ -3,6 +3,7 @@
 #include "Structs.h"
 #include <algorithm>
 #include "Physics.h"
+#include "Scene.h"
 dae::RigidBodyComponent::RigidBodyComponent(float width, float height, bool isTrigger)
 	:m_Width(width),
 	m_Height(height),
@@ -13,8 +14,9 @@ dae::RigidBodyComponent::RigidBodyComponent(float width, float height, bool isTr
 	,m_LastDirection(Float2{0.f, 0.f})
 {
 }
-void dae::RigidBodyComponent::Initialize(Scene&)
+void dae::RigidBodyComponent::Initialize(Scene& scene)
 {
+	Physics::GetInstance().SetSceneNr(scene.GetIndex());
 	Physics::GetInstance().AddRigidBodyComponent(this);
 
 }

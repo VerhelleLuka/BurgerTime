@@ -26,7 +26,7 @@ void dae::BurgerTime::Initialize()
 void dae::BurgerTime::LoadGame()
 {
 	auto& levelScene = SceneManager::GetInstance().CreateScene("Level");
-	//auto& menuScene = SceneManager::GetInstance().CreateScene("MainMenu");
+	auto& menuScene = SceneManager::GetInstance().CreateScene("MainMenu");
 
 	Transform peterPepperSpawnPos = ParseLevel(levelScene, 0);
 
@@ -35,9 +35,9 @@ void dae::BurgerTime::LoadGame()
 	CreateEnemyTemplate(levelScene, 0, Float2{400,70});
 	//CreateEnemyTemplate(levelScene, 0, Float2{300,70});
 	//CreateEnemy(levelScene, 0, Float2{100,86});
-	//CreatePeterPepperAndHUD(peterPepperSpawnPos, menuScene, 0, false, 1);
-	//CreateMenu(menuScene);
-	SceneManager::GetInstance().SetActiveScene(&levelScene);
+	CreatePeterPepperAndHUD(peterPepperSpawnPos, menuScene, 0, false, 1);
+	CreateMenu(menuScene);
+	SceneManager::GetInstance().SetActiveScene(&menuScene);
 }
 void dae::BurgerTime::CreateMenu(Scene& scene) const
 {
