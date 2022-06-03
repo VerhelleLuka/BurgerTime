@@ -24,6 +24,6 @@ namespace dae
 
 	private:
 		std::vector<std::vector<RigidBodyComponent*>> m_pRigidBodies;
-		int m_SceneNr;
+		int m_SceneNr{0};
 	};
 }

@@ -17,7 +17,12 @@ dae::Enemy::Enemy(EnemyType type)
 	m_EnemyType(type),
 	m_IsFalling(false),
 	m_PrevPos(Float2{ 0,0 }),
-	m_JustSpawned(true)
+	m_JustSpawned(true),
+	m_IsDead(false),
+	m_OverlappingLadder(false),
+	m_OverlappingPlatform(false),
+	m_pPeter1Transform(nullptr),
+	m_pPeter2Transform(nullptr)
 {
 }
 

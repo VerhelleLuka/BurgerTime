@@ -91,7 +91,21 @@ namespace dae
 	public:
 		void Execute() override
 		{
+			auto pepperGo = std::make_shared<GameObject>();
+
+			auto pepperSprite = std::make_shared<SpriteComponent>();
+			auto pepperAnimation = std::make_shared<Animation>(4,4);
+			pepperSprite->AddAnimation(pepperAnimation, "Pepper");
+			pepperSprite->SetActiveAnimation("Pepper");
+
+			pepperGo->AddComponent(pepperSprite, "Sprite");
+			auto pRigidBody = std::make_shared<RigidBodyComponent>(pepperSprite->GetAnimation().GetScaledWidth(),
+				pepperSprite->GetAnimation().GetScaledHeight(),
+				true);
+
+			pepperGo->AddComponent(pRigidBody, "Pepper");
 
 		}
 	};
+
 }

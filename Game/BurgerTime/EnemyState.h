@@ -26,8 +26,8 @@ namespace dae
 	 SpriteComponent* m_pSprite;
 	 Enemy* m_pEnemy;
 
-		bool m_ClimbingLadder;
-		bool m_WalkingPlatform;
+		bool m_ClimbingLadder = false;
+		bool m_WalkingPlatform = false;
 	};
 
 	class MovingLeft final : public EnemyState

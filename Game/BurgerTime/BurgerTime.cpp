@@ -533,7 +533,6 @@ void dae::BurgerTime::MakeBurgers(Scene& scene, const std::vector<Burger>& burge
 			pBurger->Initialize();
 			pBurger->SetOverlapEvent();
 
-
 			scene.Add(burger);
 		}
 	}

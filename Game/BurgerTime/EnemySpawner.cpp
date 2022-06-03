@@ -19,8 +19,8 @@ void dae::EnemySpawner::Initialize(Scene&)
 	switch (m_Difficulty)
 	{
 	case Difficulty::EASY:
-		m_MaxEnemies = 20;
-		m_EnemyRespawnTimer = .5f;
+		m_MaxEnemies = 5;
+		m_EnemyRespawnTimer = 7.5f;
 		break;
 	case Difficulty::NORMAL:
 		m_MaxEnemies = 7;
@@ -113,7 +113,6 @@ void dae::EnemySpawner::SpawnEnemy()
 	enemyGo->AddComponent(pRigidBody, "RigidBody");
 	//Get random number between one and 6 -- one, two and three for sausage, four and five for pickle, and six for egg (if there isn't any present)
 	int enemyToMake = 1 + (std::rand() % (6));
-	std::cout << enemyToMake << "\n";
 	EnemyType enemyType;
 	if (m_EggPresent)
 	{
