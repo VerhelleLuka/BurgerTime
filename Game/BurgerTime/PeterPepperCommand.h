@@ -1,4 +1,4 @@
-#pragma once
+//#pragma once
 #include "GameObject.h"
 #include "Command.h"
 #include "PeterPepper.h"
@@ -86,28 +86,11 @@ namespace dae
 			}
 		}
 	};
-	class ChangeScene final : public Command
+	class Pepper final : public Command
 	{
 	public:
 		void Execute() override
 		{
-			//if (SceneManager::GetInstance().GetActiveSceneName() == "Level")
-			//{
-			//	SceneManager::GetInstance().SetActiveSceneByName("MainMenu");
-			//}
-			//else
-			//{
-			//	SceneManager::GetInstance().SetActiveSceneByName("Level");
-			//}
-			//auto sceneObjects = SceneManager::GetInstance().GetActiveScene().GetSceneObjects();
-			//for (int i = 0; i < sceneObjects.size(); ++i)
-			//{
-			//	if (dynamic_cast<GameObject*>(sceneObjects[i].get())->GetComponent<PeterPepperComponent>("PeterPepper").get())
-			//	{
-
-			//		InputManager::GetInstance().SetPlayer(dynamic_cast<GameObject*>(sceneObjects[i].get()), 0);
-			//	}
-			//}
 
 		}
 	};

@@ -8,6 +8,7 @@ namespace dae
 	class EnemyState
 	{
 	public:
+		
 		virtual ~EnemyState() = default;
 		virtual void Update() {};
 		void SetRigidBody(RigidBodyComponent* rigidBody) { m_pRigidBody = rigidBody; }
@@ -32,6 +33,7 @@ namespace dae
 	class MovingLeft final : public EnemyState
 	{
 	public:
+
 		virtual void Update() override;
 	};
 
@@ -59,6 +61,10 @@ namespace dae
 	};
 
 	class Falling final : public EnemyState
+	{
+		virtual void Update() override;
+	};
+	class Peppered final : public EnemyState
 	{
 		virtual void Update() override;
 	};

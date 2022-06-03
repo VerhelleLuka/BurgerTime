@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -24,6 +24,7 @@
     <ClInclude Include="BurgerTimeStructs.h" />
     <ClInclude Include="ButtonComponent.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemySpawner.h" />
     <ClInclude Include="LevelParser.h" />
     <ClInclude Include="LivesDisplayComponent.h" />
     <ClInclude Include="PeterPepper.h" />
@@ -39,6 +40,7 @@
     <ClCompile Include="BurgerTime.cpp" />
     <ClCompile Include="ButtonComponent.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemySpawner.cpp" />
     <ClCompile Include="LivesDisplayComponent.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PeterPepper.cpp" />

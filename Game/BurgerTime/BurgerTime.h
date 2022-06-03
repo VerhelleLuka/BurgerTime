@@ -21,7 +21,7 @@ namespace dae
 		void MakeLaddersAndPlatforms(Scene& scene, const std::vector<Ladder>& ladders, const std::vector<Platform>& platforms, int sceneNr)const;
 		void MakeBurgers(Scene& scene, const std::vector<Burger>& burgers, int sceneNr) const;
 		void MakeCommands(int playerNr, GameObject* go, bool andHUD) const;
-		void CloneEnemy(GameObject* enemyToClone, EnemyType enemyType, Float2 position);
+		void MakeEnemySpawner(std::vector<Float2> spawnPositions);
 		Minigin m_Minigin;
 
 		GameObject* m_pEnemyTemplate;

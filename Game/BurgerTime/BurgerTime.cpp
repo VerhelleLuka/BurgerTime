@@ -19,6 +19,7 @@
 #include "BurgerComponent.h"
 #include "Enemy.h"
 #include "TrayComponent.h"
+#include "EnemySpawner.h"
 void dae::BurgerTime::Initialize()
 {
 }
@@ -26,18 +27,23 @@ void dae::BurgerTime::Initialize()
 void dae::BurgerTime::LoadGame()
 {
 	auto& levelScene = SceneManager::GetInstance().CreateScene("Level");
-	auto& menuScene = SceneManager::GetInstance().CreateScene("MainMenu");
+	//auto& menuScene = SceneManager::GetInstance().CreateScene("MainMenu");
 
 	Transform peterPepperSpawnPos = ParseLevel(levelScene, 0);
 
 	CreatePeterPepperAndHUD(Transform(), levelScene, 0, true, 0);
 	///*m_pEnemyTemplate = */CreateEnemyTemplate(levelScene, 0, Float2{ 150,70 });
-	CreateEnemyTemplate(levelScene, 0, Float2{400,70});
+	//CreateEnemyTemplate(levelScene, 0, Float2{400,70});
+	//
 	//CreateEnemyTemplate(levelScene, 0, Float2{300,70});
 	//CreateEnemy(levelScene, 0, Float2{100,86});
-	CreatePeterPepperAndHUD(peterPepperSpawnPos, menuScene, 0, false, 1);
-	CreateMenu(menuScene);
-	SceneManager::GetInstance().SetActiveScene(&menuScene);
+	//CreatePeterPepperAndHUD(peterPepperSpawnPos, menuScene, 0, false, 1);
+	//CreateMenu(menuScene);
+	
+	SceneManager::GetInstance().SetActiveScene(&levelScene);
+
+	std::vector<Float2> fuckYou;
+	MakeEnemySpawner(fuckYou);
 }
 void dae::BurgerTime::CreateMenu(Scene& scene) const
 {
@@ -251,7 +257,6 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 	input.AddCommand(ControllerButton::DPadDown, new MoveDown, KeyState::DOWN, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::DPadUp, new MoveUp, KeyState::DOWN, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::Nothing, new Idle, KeyState::NOTHING, peterPepperGo.get(), playerNr);
-	input.AddCommand(ControllerButton::ButtonX, new ChangeScene, KeyState::PRESSED, peterPepperGo.get(), playerNr);
 
 	if (!andHUD)
 	{
@@ -269,6 +274,19 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 	}
 }
 
+void dae::BurgerTime::MakeEnemySpawner(std::vector<Float2> /*spawnPositions*/)
+{
+	auto spawnerGo = std::make_shared<GameObject>();
+
+	auto spawner = std::make_shared<EnemySpawner>(Difficulty::EASY);
+	std::vector<Float2> spawnPos;
+	spawnPos.push_back(Float2{ 0,8 });
+	spawnPos.push_back(Float2{ 608,8 });
+	spawner->SetSpawnPositions(spawnPos);
+	spawnerGo->AddComponent(spawner, "Spawner");
+
+	SceneManager::GetInstance().GetActiveScene().Add(spawnerGo);
+}
 void dae::BurgerTime::MakeCommands(int playerNr, GameObject* go, bool andHUD) const
 {
 	auto& input = InputManager::GetInstance();

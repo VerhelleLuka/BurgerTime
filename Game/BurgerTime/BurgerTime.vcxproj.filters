@@ -66,11 +66,14 @@
     <ClInclude Include="Enemy.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="EnemyState.h">
-      <Filter>Header Files\Patterns</Filter>
-    </ClInclude>
     <ClInclude Include="TrayComponent.h">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemySpawner.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyState.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -105,6 +108,9 @@
       <Filter>Source Files\Patterns</Filter>
     </ClCompile>
     <ClCompile Include="TrayComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemySpawner.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>

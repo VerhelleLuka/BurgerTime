@@ -13,7 +13,7 @@ namespace dae
 		SAUSAGE,
 		PICKLE
 	};
-	class Enemy final : public BaseComponent
+	class Enemy final : public BaseComponent, public Subject
 	{
 	public:
 		virtual void Update(float /*deltaTime*/) override;
@@ -35,6 +35,8 @@ namespace dae
 		bool GetCanDescend() const { return m_CanDescend; }
 		bool GetCanWalkLeft() const { return m_CanWalkLeft; }
 		bool GetCanWalkRight() const { return m_CanWalkRight; }
+		void SetCanWalkLeft(bool canWalkLeft)  { m_CanWalkLeft = canWalkLeft; }
+		void SetCanWalkRight(bool canWalkRight)  { m_CanWalkRight = canWalkRight; }
 		EnemyType GetEnemyType() const { return m_EnemyType; }
 
 		void SetOverlapEvent();
@@ -74,8 +76,10 @@ namespace dae
 		bool m_IsFalling;
 
 
-		const float m_StuckTimer{ 10.f };
+		const float m_StuckTimer{ 3.f };
 		float m_StuckTime;
 		Float2 m_PrevPos;
+
+		bool m_JustSpawned;
 	};
 }

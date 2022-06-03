@@ -4,6 +4,7 @@
 #include <algorithm>
 #include "Physics.h"
 #include "Scene.h"
+#include "SceneManager.h"
 dae::RigidBodyComponent::RigidBodyComponent(float width, float height, bool isTrigger)
 	:m_Width(width),
 	m_Height(height),
@@ -13,6 +14,13 @@ dae::RigidBodyComponent::RigidBodyComponent(float width, float height, bool isTr
 	, m_Direction(Float2{0.f, 0.f})
 	,m_LastDirection(Float2{0.f, 0.f})
 {
+	if (&SceneManager::GetInstance().GetActiveScene())
+	{
+		Physics::GetInstance().SetSceneNr(SceneManager::GetInstance().GetActiveScene().GetIndex());
+		Physics::GetInstance().AddRigidBodyComponent(this);
+	}
+
+
 }
 void dae::RigidBodyComponent::Initialize(Scene& scene)
 {

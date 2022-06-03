@@ -59,3 +59,8 @@ void dae::Falling::Update()
 	m_pRigidBody->SetDirection(Float2{ 0.f, 100.f });
 
 }
+void dae::Peppered::Update()
+{
+	m_pSprite->SetActiveAnimation("Peppered");
+
+}
