@@ -78,6 +78,7 @@ void dae::EnemySpawner::SpawnEnemy()
 	auto climbAnim = std::make_shared<Animation>(2, 2);
 	auto walkRightAnim = std::make_shared<Animation>(2, 2);
 	auto deathAnim = std::make_shared<Animation>(4, 4);
+	auto pepperedAnim = std::make_shared<Animation>(2, 2);
 	auto enemySprite = std::make_shared<SpriteComponent>();
 	enemySprite->SetGameObject(enemyGo.get());
 	enemySprite->AddAnimation(climbAnim, "Climb");
@@ -85,6 +86,7 @@ void dae::EnemySpawner::SpawnEnemy()
 	enemySprite->AddAnimation(walkRightAnim, "WalkRight");
 	enemySprite->AddAnimation(deathAnim, "Death");
 	enemySprite->AddAnimation(walkLeftAnim, "WalkLeft");
+	enemySprite->AddAnimation(pepperedAnim, "Peppered");
 	enemyGo->AddComponent(enemySprite, "EnemySprite");
 
 	climbAnim->SetScale(animationScale);
@@ -92,7 +94,7 @@ void dae::EnemySpawner::SpawnEnemy()
 	walkLeftAnim->SetScale(animationScale);
 	walkRightAnim->SetReversed(true);
 	walkRightAnim->SetScale(animationScale);
-
+	pepperedAnim->SetScale(animationScale);
 	deathAnim->SetScale(animationScale);
 	//Set all animation to ensure RigidBodyComponent can get the scaled width and the update performed in setactive animation 
 	//is'nt weird
@@ -101,6 +103,8 @@ void dae::EnemySpawner::SpawnEnemy()
 	walkLeftAnim->SetTexture("Enemies/Sausage_Walk.png");
 	walkRightAnim->SetTexture("Enemies/Sausage_Walk.png");
 	deathAnim->SetTexture("Enemies/Sausage_Kill.png");
+	pepperedAnim->SetTexture("Enemies/Sausage_Peppered.png");
+
 	enemySprite->SetActiveAnimation("WalkLeft");
 
 	//RigidbodyComponent
@@ -123,6 +127,7 @@ void dae::EnemySpawner::SpawnEnemy()
 			walkLeftAnim->SetTexture("Enemies/Sausage_Walk.png");
 			walkRightAnim->SetTexture("Enemies/Sausage_Walk.png");
 			deathAnim->SetTexture("Enemies/Sausage_Kill.png");
+			pepperedAnim->SetTexture("Enemies/Sausage_Peppered.png");
 			enemyType = EnemyType::SAUSAGE;
 		}
 		else
@@ -132,6 +137,8 @@ void dae::EnemySpawner::SpawnEnemy()
 			walkLeftAnim->SetTexture("Enemies/Pickle_Walk.png");
 			walkRightAnim->SetTexture("Enemies/Pickle_Walk.png");
 			deathAnim->SetTexture("Enemies/Pickle_Kill.png");
+			pepperedAnim->SetTexture("Enemies/Pickle_Peppered.png");
+
 			enemyType = EnemyType::PICKLE;
 
 		}
@@ -146,6 +153,7 @@ void dae::EnemySpawner::SpawnEnemy()
 			descendAnim->SetTexture("Enemies/Sausage_Descend.png");
 			walkLeftAnim->SetTexture("Enemies/Sausage_Walk.png");
 			walkRightAnim->SetTexture("Enemies/Sausage_Walk.png");
+			pepperedAnim->SetTexture("Enemies/Sausage_Peppered.png");
 			deathAnim->SetTexture("Enemies/Sausage_Kill.png");
 			enemyType = EnemyType::SAUSAGE;
 
@@ -157,6 +165,8 @@ void dae::EnemySpawner::SpawnEnemy()
 			walkLeftAnim->SetTexture("Enemies/Pickle_Walk.png");
 			walkRightAnim->SetTexture("Enemies/Pickle_Walk.png");
 			deathAnim->SetTexture("Enemies/Pickle_Kill.png");
+			pepperedAnim->SetTexture("Enemies/Pickle_Peppered.png");
+
 			enemyType = EnemyType::PICKLE;
 		}
 		else
@@ -165,6 +175,8 @@ void dae::EnemySpawner::SpawnEnemy()
 			descendAnim->SetTexture("Enemies/Egg_Descend.png");
 			walkLeftAnim->SetTexture("Enemies/Egg_Walk.png");
 			walkRightAnim->SetTexture("Enemies/Egg_Walk.png");
+			pepperedAnim->SetTexture("Enemies/Egg_Peppered.png");
+
 			deathAnim->SetTexture("Enemies/Egg_Kill.png");
 			m_EggPresent = true;
 			enemyType = EnemyType::EGG;

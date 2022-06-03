@@ -22,7 +22,9 @@ dae::Enemy::Enemy(EnemyType type)
 	m_OverlappingLadder(false),
 	m_OverlappingPlatform(false),
 	m_pPeter1Transform(nullptr),
-	m_pPeter2Transform(nullptr)
+	m_pPeter2Transform(nullptr),
+	m_Stunned(false),
+	m_StunTime(0.f)
 {
 }
 
@@ -102,8 +104,36 @@ void dae::Enemy::Fall()
 	m_SwitchBehavior = true;
 	m_BehaviorSwitchTime = 0.f;
 }
+
+void dae::Enemy::Stun()
+{
+	if (!m_IsFalling && !m_IsDead)
+	{
+		m_Stunned = true;
+		delete m_pEnemyState;
+		m_pEnemyState = new Peppered;
+		Reinitialize();
+		m_SwitchBehavior = true;
+		m_BehaviorSwitchTime = 0.f;
+	}
+
+}
 void dae::Enemy::Update(float elapsedTime)
 {
+	if (m_IsFalling && !m_SwitchBehavior)
+	{
+		Kill();
+	}
+
+	if (m_Stunned)
+	{
+		m_StunTime += elapsedTime;
+		if (m_StunTime > m_StunTimer)
+		{
+			m_Stunned = false;
+		}
+
+	}
 	if (m_SwitchBehavior)
 	{
 		m_BehaviorSwitchTime += elapsedTime;
@@ -112,10 +142,6 @@ void dae::Enemy::Update(float elapsedTime)
 			m_SwitchBehavior = false;
 			m_BehaviorSwitchTime = 0.f;
 		}
-	}
-	if (m_IsFalling && !m_SwitchBehavior)
-	{
-		Kill();
 	}
 
 	//Stuck check
@@ -132,7 +158,7 @@ void dae::Enemy::Update(float elapsedTime)
 				m_pEnemyState->SetClimbing(false);
 				m_pEnemyState->SetWalking(true);
 			}
-			else if(m_CanWalkRight && m_pParent->GetTransform().GetPosition().x < m_pPeter1Transform->GetPosition().x)
+			else if (m_CanWalkRight && m_pParent->GetTransform().GetPosition().x < m_pPeter1Transform->GetPosition().x)
 			{
 				delete m_pEnemyState;
 				m_pEnemyState = new MovingRight;
@@ -186,9 +212,13 @@ void dae::Enemy::OnOverlap(RigidBodyComponent* other)
 {
 	if (!m_IsDead || !m_IsFalling)
 	{
+		
 		if (other->GetParent()->GetComponent<PlatformComponent>("PlatformComp"))
 		{
-
+			if (m_Stunned)
+			{
+				return;
+			}
 			m_CanWalkLeft = false;
 			m_CanWalkRight = false;
 
@@ -259,6 +289,10 @@ void dae::Enemy::OnOverlap(RigidBodyComponent* other)
 		}
 		if (other->GetParent()->GetComponent<LadderComponent>("LadderComp"))
 		{
+			if (m_Stunned)
+			{
+				return;
+			}
 			m_pWalkedLadder = other->GetParent()->GetComponent<LadderComponent>("Ladder").get();
 			Float2 ladderPos = { other->GetTransform().GetPosition().x, other->GetTransform().GetPosition().y };
 			float ladderHeight = other->GetHeight();
@@ -317,6 +351,14 @@ void dae::Enemy::OnOverlap(RigidBodyComponent* other)
 						}
 					}
 				}
+		}
+		if (other->GetParent()->GetComponent<RigidBodyComponent>("Pepper").get())
+		{
+			if (!m_Stunned)
+			{
+				Stun();
+				m_Stunned = true;
+			}
 		}
 	}
 

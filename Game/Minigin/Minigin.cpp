@@ -103,7 +103,6 @@ void dae::Minigin::Run()
 		float fixedTimeStep = 0.02f;
 
 		ServiceLocator::RegisterSoundSystem(new sound_system());
-
 		//By now all gameobjects and scenes should have been made; intitialize everything
 		sceneManager.Initialize();
 		while (doContinue)

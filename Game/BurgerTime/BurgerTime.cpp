@@ -256,6 +256,8 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 	input.AddCommand(ControllerButton::DPadLeft, new MoveLeft, KeyState::DOWN, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::DPadDown, new MoveDown, KeyState::DOWN, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::DPadUp, new MoveUp, KeyState::DOWN, peterPepperGo.get(), playerNr);
+	input.AddCommand(ControllerButton::ButtonB, new Pepper, KeyState::PRESSED, peterPepperGo.get(), playerNr);
+
 	input.AddCommand(ControllerButton::Nothing, new Idle, KeyState::NOTHING, peterPepperGo.get(), playerNr);
 
 	if (!andHUD)
@@ -295,6 +297,7 @@ void dae::BurgerTime::MakeCommands(int playerNr, GameObject* go, bool andHUD) co
 	input.AddCommand(ControllerButton::DPadLeft, new MoveLeft, KeyState::DOWN, go, playerNr);
 	input.AddCommand(ControllerButton::DPadDown, new MoveDown, KeyState::DOWN, go, playerNr);
 	input.AddCommand(ControllerButton::DPadUp, new MoveUp, KeyState::DOWN, go, playerNr);
+	input.AddCommand(ControllerButton::ButtonB, new Pepper, KeyState::PRESSED, go, playerNr);
 	input.AddCommand(ControllerButton::Nothing, new Idle, KeyState::NOTHING, go, playerNr);
 	if (andHUD)
 	{

@@ -40,7 +40,9 @@ public:
 					ServiceLocator::GetSoundSystem().Play(0, 100);
 				if(e.key.keysym.sym == SDLK_z)
 					ServiceLocator::GetSoundSystem().Play(1, 100);
-				//if (e.key.keysym.sym == SDLK_a)
+				if (e.key.keysym.sym == SDLK_a)
+					ServiceLocator::GetSoundSystem().Play(2, 100);
+
 					
 			}
 			if (e.type == SDL_MOUSEBUTTONDOWN) {

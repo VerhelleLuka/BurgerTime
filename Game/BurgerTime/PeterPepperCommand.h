@@ -91,21 +91,50 @@ namespace dae
 	public:
 		void Execute() override
 		{
+			float animationScale = 1.75f;
+
 			auto pepperGo = std::make_shared<GameObject>();
 
+			auto pepperAnimation = std::make_shared<Animation>(4, 4);
+			pepperAnimation->SetTexture("PeterPepper/Pepper.png");
+			pepperAnimation->SetScale(animationScale);
+
 			auto pepperSprite = std::make_shared<SpriteComponent>();
-			auto pepperAnimation = std::make_shared<Animation>(4,4);
+			pepperGo->AddComponent(pepperSprite, "Sprite");
 			pepperSprite->AddAnimation(pepperAnimation, "Pepper");
 			pepperSprite->SetActiveAnimation("Pepper");
 
-			pepperGo->AddComponent(pepperSprite, "Sprite");
 			auto pRigidBody = std::make_shared<RigidBodyComponent>(pepperSprite->GetAnimation().GetScaledWidth(),
 				pepperSprite->GetAnimation().GetScaledHeight(),
 				true);
 
 			pepperGo->AddComponent(pRigidBody, "Pepper");
 
+			if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() == "Runright")
+			{
+				pepperGo->SetTransform(m_pGameObject->GetTransform().GetPosition().x + pepperAnimation->GetScaledWidth(), m_pGameObject->GetTransform().GetPosition().y, 0.f);
+
+			}
+			else if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() == "RunLeft")
+			{
+				pepperGo->SetTransform(m_pGameObject->GetTransform().GetPosition().x - pepperAnimation->GetScaledWidth(), m_pGameObject->GetTransform().GetPosition().y, 0.f);
+
+			}
+			else if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() == "Climb")
+			{
+				pepperGo->SetTransform(m_pGameObject->GetTransform().GetPosition().x, m_pGameObject->GetTransform().GetPosition().y - pepperAnimation->GetScaledHeight(), 0.f);
+
+			}
+			else if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() == "Descend")
+			{
+				pepperGo->SetTransform(m_pGameObject->GetTransform().GetPosition().x, m_pGameObject->GetTransform().GetPosition().y + pepperAnimation->GetScaledHeight(), 0.f);
+			}
+			else if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() == "Idle")
+			{
+				pepperGo->SetTransform(m_pGameObject->GetTransform());
+
+			}
+			SceneManager::GetInstance().GetActiveScene().Add(pepperGo);
 		}
 	};
-
 }

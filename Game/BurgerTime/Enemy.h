@@ -75,7 +75,12 @@ namespace dae
 		bool m_IsDead;
 		bool m_IsFalling;
 
-
+		//Stun
+		bool m_Stunned;
+		void Stun();
+		const float m_StunTimer{ 3.f };
+		float m_StunTime;
+		//Stuck check
 		const float m_StuckTimer{ 3.f };
 		float m_StuckTime;
 		Float2 m_PrevPos;

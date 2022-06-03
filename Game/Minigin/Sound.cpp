@@ -9,6 +9,7 @@ const char* audioClips[] =
 {
 "Bomb_Explode.wav",
 "Hurt.wav",
+"Music.wav"
 };
 dae::null_sound_system dae::ServiceLocator::m_ssDefault;
 dae::sound_system* dae::ServiceLocator::m_ssInstance = &m_ssDefault;
@@ -89,9 +90,11 @@ private:
 
 				while (m_Sounds.size() >= m_SoundChannels)
 				{
+					//Mix_Playing();
 					Mix_FreeChunk(m_Sounds.front());
 					m_Sounds.front() = nullptr;
 					m_Sounds.pop_front();
+					
 				}
 
 			}
