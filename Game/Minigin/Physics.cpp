@@ -13,12 +13,12 @@ void dae::Physics::FixedUpdate(float /*deltaTime*/)
 	{
 		m_SceneNr = 0;
 	}
+
 	//std::cout << m_pRigidBodies[m_SceneNr].size() << "\n";
 	CheckOverlap();
 
 
 }
-
 void dae::Physics::AddRigidBodyComponent(RigidBodyComponent* rigidBody)
 {
 	if (int(m_pRigidBodies.size() - 1) < m_SceneNr)
@@ -28,7 +28,9 @@ void dae::Physics::AddRigidBodyComponent(RigidBodyComponent* rigidBody)
 		m_pRigidBodies.push_back(newSceneVector);
 		return;
 	}
-	m_pRigidBodies[m_SceneNr].push_back(rigidBody);
+	auto it = std::find(m_pRigidBodies[m_SceneNr].begin(), m_pRigidBodies[m_SceneNr].end(), rigidBody);
+	if (it == m_pRigidBodies[m_SceneNr].end())
+		m_pRigidBodies[m_SceneNr].push_back(rigidBody);
 }
 
 void dae::Physics::RemoveRigidBodyComponent(RigidBodyComponent* rigidBody)
@@ -46,6 +48,10 @@ void dae::Physics::RemoveRigidBodyComponent(RigidBodyComponent* rigidBody)
 }
 void dae::Physics::DeleteScene(int index)
 {
+	while (index >= m_pRigidBodies.size())
+	{
+		--index;
+	}
 	m_pRigidBodies[index].clear();
 	m_pRigidBodies.erase(std::remove(m_pRigidBodies.begin(), m_pRigidBodies.end(), m_pRigidBodies[index]), m_pRigidBodies.end());
 }
@@ -55,12 +61,17 @@ void dae::Physics::SetSceneNr(int sceneNr)
 }
 void dae::Physics::CheckOverlap()
 {
-
+	while (m_SceneNr >= m_pRigidBodies.size())
+	{
+		--m_SceneNr;
+	}
 	//Overlap check for players/AI on ladders
 	for (size_t i{}; i < m_pRigidBodies[m_SceneNr].size(); ++i)
 	{
 		for (auto& rigidBody : m_pRigidBodies[m_SceneNr])
 		{
+			//if (i >= m_pRigidBodies[m_SceneNr].size())
+			//	break;
 			if (rigidBody != m_pRigidBodies[m_SceneNr][i])
 			{
 				//If at least one of the rigidbodies is a trigger

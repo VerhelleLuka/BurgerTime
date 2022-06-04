@@ -30,7 +30,7 @@ namespace dae
 		virtual void FixedUpdate(float /*deltaTime*/) override;
 		virtual void Render() const {};
 
-		PeterPepperComponent(int lives);
+		PeterPepperComponent(int lives, Float2 m_SpawnPos);
 		virtual ~PeterPepperComponent();
 
 		void ReduceLife();
@@ -60,6 +60,7 @@ namespace dae
 		void SetInMenu(bool inGameScene)  { m_InMenu = inGameScene; }
 
 		virtual void OnNotify(EventType event_, std::shared_ptr<EventArgs> args) override;
+		Float2 GetSpawnPos() const { return m_SpawnPos; }
 	protected:
 		PeterPepperState m_State;
 	private:
@@ -82,5 +83,8 @@ namespace dae
 		bool m_VictoryDance;
 		const float m_VictoryDanceTimer{ 3.f };
 		float m_VictoryDanceTime;
+		bool m_IsDead;
+
+		Float2 m_SpawnPos;
 	};
 }

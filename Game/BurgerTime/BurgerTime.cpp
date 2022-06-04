@@ -29,13 +29,13 @@ void dae::BurgerTime::Initialize()
 void dae::BurgerTime::LoadGame()
 {
 	auto& menuScene = SceneManager::GetInstance().CreateScene("MainMenu");
+	SceneManager::GetInstance().SetActiveScene(&menuScene);
 	Physics::GetInstance().SetSceneNr(0);
 	//auto& levelScene2 = SceneManager::GetInstance().CreateScene("Level2");
 	//auto& levelScene = SceneManager::GetInstance().CreateScene("Level1");
 
 	CreateMenu(menuScene);
 
-	SceneManager::GetInstance().SetActiveScene(&menuScene);
 
 
 }
@@ -167,10 +167,25 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 
 	//Create gameobject and components
 	auto peterPepperGo = std::make_shared<GameObject>();
-	//Transform transform{};
-	//transform.SetPosition(50.f, 50.f, 0.f);
+	Float2 level1Pos = { 100,8 };
+	Float2 level2Pos = { 100,40 };
+
+	peterPepperGo->SetTransform(100, 8, 0);
+	std::shared_ptr<PeterPepperComponent> peterPepper = nullptr;
+	if (SceneManager::GetInstance().GetActiveSceneName() == "Level2")
+	{
+		peterPepperGo->SetTransform(100, 40, 0);
+		peterPepper = std::make_shared<PeterPepperComponent>(3, level2Pos);
+	}
+	else
+	{
+		peterPepper = std::make_shared<PeterPepperComponent>(3, level1Pos);
+
+	}
+
+
 	peterPepperGo->SetTransform(spawnPos);
-	auto peterPepper = std::make_shared<PeterPepperComponent>(3);
+
 	auto peterPSprite = std::make_shared<SpriteComponent>();
 
 	float animationScale = 1.75f;
@@ -200,6 +215,10 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 	auto peterPAnimationVictory = std::make_shared<Animation>(2, 2);
 	peterPAnimationVictory->SetTexture("PeterPepper/VictorySprite.png");
 	peterPAnimationVictory->SetScale(animationScale);
+	//Death
+	auto peterPAnimationDeath = std::make_shared<Animation>(5, 5);
+	peterPAnimationDeath->SetTexture("PeterPepper/DeathSprite.png");
+	peterPAnimationDeath->SetScale(animationScale);
 	//Add animation to sprite
 	peterPSprite->AddAnimation(peterPAnimationRight, "RunRight");
 	peterPAnimationRight->SetReversed(true);
@@ -208,6 +227,7 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 	peterPSprite->AddAnimation(peterPAnimationDown, "Descend");
 	peterPSprite->AddAnimation(peterPAnimationIdle, "Idle");
 	peterPSprite->AddAnimation(peterPAnimationVictory, "Victory");
+	peterPSprite->AddAnimation(peterPAnimationDeath, "Death");
 
 	peterPSprite->SetGameObject(peterPepperGo.get());
 	peterPSprite->SetActiveAnimation("RunRight");
@@ -278,16 +298,19 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 		input.AddCommand(ControllerButton::ButtonB, new Pepper, KeyState::PRESSED, peterPepperGo.get(), playerNr);
 		peterPepper->SetInMenu(false);
 	}
-	//input.SetPlayer(peterPepperGo.get(), playerNr);
-	peterPepperGo->SetTransform(100, 8, 0);
-	if (!andHUD)
+	
+
+
+	if (SceneManager::GetInstance().GetActiveSceneName() == "Level2")
 	{
-		peterPepperGo->SetTransform(150, 20, 0);
+		peterPepperGo->SetTransform(level2Pos.x, level2Pos.y, 0);
 	}
-	else if (SceneManager::GetInstance().GetActiveSceneName() == "Level2")
+	else
 	{
-		peterPepperGo->SetTransform(100, 40, 0);
+		peterPepperGo->SetTransform(level1Pos.x, level1Pos.y, 0);
+
 	}
+
 }
 
 void dae::BurgerTime::MakeEnemySpawner(std::vector<Float2> spawnPositions) const
@@ -608,8 +631,8 @@ void dae::BurgerTime::LoadLevel1(GameMode gameMode, const std::string& levelName
 	if (gameMode == GameMode::COOP)
 	{
 		CreatePeterPepperAndHUD(Transform(), levelScene, 1, true);
-
 	}
+	GameManager::GetInstance().SetEnemySpawns(enemySpawnPositions);
 	MakeEnemySpawner(enemySpawnPositions);
 
 }

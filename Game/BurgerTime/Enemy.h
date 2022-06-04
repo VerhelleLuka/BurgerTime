@@ -46,6 +46,8 @@ namespace dae
 		void Kill();
 		void Fall();
 		bool GetFalling() const { return m_IsFalling; }
+		bool GetDead() const { return m_IsDead; }
+		bool GetStunned() const { return m_Stunned; }
 		//Enemy* clone(Float2 pos)
 		//{
 		//	retu

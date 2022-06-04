@@ -4,6 +4,7 @@
 #include "BurgerTimeStructs.h"
 #include <vector>
 #include "Subject.h"
+#include "Structs.h"
 namespace dae
 {
 
@@ -31,6 +32,8 @@ namespace dae
 		int GetPoints() const { return m_Points; }
 
 		void SetGameMode(GameMode gameMode) { m_GameMode = gameMode; }
+		void SetEnemySpawns(std::vector<Float2> enemySpawns) { m_EnemySpawnPositions = enemySpawns; }
+		void ResetScene();
 
 	private:
 		int m_Points;
@@ -40,7 +43,10 @@ namespace dae
 		int m_CompletedBurgers;
 
 		std::vector<std::string> m_LevelNames;
+		std::vector<Float2> m_EnemySpawnPositions;
 		int m_CurrentLevelIndex;
+
+		bool m_LevelComplete;
 		
 	};
 }

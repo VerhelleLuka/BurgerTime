@@ -9,7 +9,8 @@
 #include "SceneManager.h"
 #include "Scene.h"
 #include "InputManager.h"
-dae::PeterPepperComponent::PeterPepperComponent(int lives)
+#include "Enemy.h"
+dae::PeterPepperComponent::PeterPepperComponent(int lives, Float2 spawnPos)
 	:m_Lives(lives)
 	, m_Points(0)
 	, m_State(PeterPepperState::Climb)
@@ -22,7 +23,9 @@ dae::PeterPepperComponent::PeterPepperComponent(int lives)
 	, m_InMenu(true)
 	, m_OverlappingButton(false)
 	, m_VictoryDance(false)
-	,m_VictoryDanceTime(0.0f)
+	, m_VictoryDanceTime(0.0f)
+	, m_SpawnPos(spawnPos)
+	,m_IsDead(false)
 {
 	GameManager::GetInstance().AddObserver(this);
 }
@@ -33,14 +36,24 @@ dae::PeterPepperComponent::~PeterPepperComponent()
 
 void dae::PeterPepperComponent::Update(float elapsedSec)
 {
+	if (m_IsDead)
+	{
+		if(m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().GetFrameNr() == m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().GetNrFrames() -1)
+		{
+			m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetStatic(false);
+			GameManager::GetInstance().ResetScene();
+			m_IsDead =  false;
+		}
+	}
 	if (m_VictoryDance)
 	{
 		m_VictoryDanceTime += elapsedSec;
 		if (m_VictoryDanceTime >= m_VictoryDanceTimer)
 		{
+			m_VictoryDance = false;
 			m_VictoryDanceTime = 0.f;
 			GameManager::GetInstance().LoadLevel(false);
-		
+
 		}
 	}
 
@@ -123,6 +136,9 @@ void dae::PeterPepperComponent::ReduceLife()
 		std::shared_ptr<EventArgs> emptyArgs = std::make_shared<EventArgs>();
 		m_Lives--;
 		Notify(EventType::LOSTLIFE, emptyArgs);
+		m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetStatic(true);
+		m_pParent->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Death");
+		m_IsDead = true;
 	}
 }
 void dae::PeterPepperComponent::OnNotify(EventType event_, std::shared_ptr<EventArgs> /*args*/)
@@ -141,7 +157,7 @@ void dae::PeterPepperComponent::ChangeState(int state = 0)
 {
 	m_State = static_cast<PeterPepperState>(state);
 	std::shared_ptr<SpriteEventArgs> args = std::make_shared<SpriteEventArgs>();
-	if (m_VictoryDance)
+	if (m_VictoryDance || m_IsDead)
 	{
 		return;
 	}
@@ -219,7 +235,15 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 			}
 			return;
 		}
-
+		if (other->GetParent()->GetComponent<Enemy>("Enemy"))
+		{
+			if (!other->GetParent()->GetComponent<Enemy>("Enemy")->GetFalling() &&
+				!other->GetParent()->GetComponent<Enemy>("Enemy")->GetDead() &&
+				!other->GetParent()->GetComponent<Enemy>("Enemy")->GetStunned() &&
+				!m_VictoryDance)
+				ReduceLife();
+			return;
+		}
 
 		//if it's a ladder
 		if (other->GetParent()->GetComponent<LadderComponent>("LadderComp"))
@@ -242,6 +266,8 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 			}
 		}
 		return;
+
+
 	}
 	else
 	{

@@ -33,7 +33,7 @@ void dae::EnemySpawner::Initialize(Scene&)
 	switch (m_Difficulty)
 	{
 	case Difficulty::EASY:
-		m_MaxEnemies = 20;
+		m_MaxEnemies = 5;
 		m_EnemyRespawnTimer = 1.5f;
 		break;
 	case Difficulty::NORMAL:
@@ -69,8 +69,9 @@ void dae::EnemySpawner::SetDifficulty(Difficulty difficulty)
 
 void dae::EnemySpawner::Update(float deltaTime)
 {
+	std::cout << m_MaxEnemies << " " << m_NumEnemies << "\n";
 	m_EnemyRespawnTime += deltaTime;
-	if (m_EnemyRespawnTime > m_EnemyRespawnTimer && m_NumEnemies < m_MaxEnemies)
+		if (m_EnemyRespawnTime > m_EnemyRespawnTimer && m_NumEnemies < m_MaxEnemies)
 	{
 		m_EnemyRespawnTime = 0.f;
 		m_NumEnemies++;

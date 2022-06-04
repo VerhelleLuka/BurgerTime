@@ -2,6 +2,7 @@
 #include "SceneManager.h"
 #include "Scene.h"
 #include "Physics.h"
+#include "InputManager.h"
 void dae::SceneManager::Initialize()
 {
 	for (auto& scene : m_Scenes)
@@ -87,12 +88,13 @@ int dae::SceneManager::GetActiveSceneNr() const
 }
 void dae::SceneManager::DestroyScene()
 {
+	InputManager::GetInstance().SetPlayer(nullptr, 0);
+	InputManager::GetInstance().SetPlayer(nullptr, 1);
 	Physics::GetInstance().DeleteScene(m_pActiveScene->GetIndex());
 
 	for (size_t i = 0; i < m_Scenes.size(); i++)
 	{
 		if (m_Scenes[i].get() == m_pActiveScene)
-			m_Scenes[i].reset();
+			m_Scenes[i]->GetSceneObjects().clear();
 	}
-	//m_Scenes.erase(std::remove(m_Scenes.begin(), m_Scenes.end(), m_pActiveScene), m_Scenes.end());
 }

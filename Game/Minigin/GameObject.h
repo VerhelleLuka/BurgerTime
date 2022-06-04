@@ -21,6 +21,8 @@ namespace dae
 		void AddComponent(std::shared_ptr<BaseComponent> pComponent, const std::string& name);
 		template <typename T> std::shared_ptr<T> GetComponent(const std::string& name) const
 		{
+			if (m_pComponents.size() > 100 || m_pComponents.size() < 1)
+				return nullptr;
 			if (m_pComponents.find(name) != m_pComponents.end())
 			{
 				return std::dynamic_pointer_cast<T>(m_pComponents.find(name)->second);

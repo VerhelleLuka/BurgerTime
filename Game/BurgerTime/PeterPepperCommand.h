@@ -14,10 +14,14 @@ namespace dae
 	public:
 		void Execute() override
 		{
+			if (m_pGameObject)
+			{
 			if (m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->GetCanWalkRight())
 			{
 				m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(75.f, 0.f));
 				m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(2);
+
+			}
 
 			}
 		}
@@ -27,11 +31,15 @@ namespace dae
 	public:
 		void Execute() override
 		{
+			if (m_pGameObject)
+			{
 			if (m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->GetCanWalkLeft())
 			{
 
 				m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(-75.f, 0.f));
 				m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(1);
+			}
+
 			}
 		}
 	};
@@ -41,11 +49,15 @@ namespace dae
 	public:
 		void Execute() override
 		{
-			if (m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->GetCanClimb())
+			if (m_pGameObject)
 			{
-				m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(0.f, -75.f));
-				m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(3);
+				if (m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->GetCanClimb())
+				{
+					m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(0.f, -75.f));
+					m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(3);
+				}
 			}
+
 		}
 	};
 	class MoveDown final : public Command
@@ -53,10 +65,14 @@ namespace dae
 	public:
 		void Execute() override
 		{
+			if (m_pGameObject)
+			{
 			if (m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->GetCanDescend())
 			{
 				m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(0.f, 75.f));
 				m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(4);
+			}
+
 			}
 		}
 	};
@@ -65,6 +81,7 @@ namespace dae
 	public:
 		void Execute() override
 		{
+			if(m_pGameObject)
 			m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(0);
 		}
 	};
@@ -109,7 +126,7 @@ namespace dae
 
 			pepperGo->AddComponent(pRigidBody, "Pepper");
 
-			if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() == "Runright")
+			if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() == "RunRight")
 			{
 				pepperGo->SetTransform(m_pGameObject->GetTransform().GetPosition().x + pepperAnimation->GetScaledWidth(), m_pGameObject->GetTransform().GetPosition().y, 0.f);
 
