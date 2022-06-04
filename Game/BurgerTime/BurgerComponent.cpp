@@ -121,7 +121,12 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 	{
 		if (other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->GetCaught())
 		{
+			if (m_pParent->GetComponent<SpriteComponent>("BurgerSprite")->GetAnimationName() == "Top_bun" && !m_Caught)
+			{
+				GameManager::GetInstance().BurgerCompleted();
+			}
 			m_Caught = true;
+
 		}
 		else if (other->GetParent()->GetTransform().GetPosition().y < m_pParent->GetTransform().GetPosition().y)
 		{

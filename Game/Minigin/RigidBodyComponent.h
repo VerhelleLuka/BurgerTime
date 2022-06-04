@@ -27,11 +27,6 @@ namespace dae
 		float GetHeight()const { return m_Height; }
 		GameObject* GetParent() const { return m_pParent; }
 
-		//template <typename T>
-		//void SetOnOverlapEvent(void (*function)(RigidBodyComponent*), T* functionObj)
-		//{
-		//	m_OverlapEvent = std::bind(function, functionObj, std::placeholders::_1);
-		//}
 		void SetOnOverlapEvent(const std::function<void(RigidBodyComponent*)>& function)
 		{
 			m_OverlapEvent = function;
@@ -51,6 +46,9 @@ namespace dae
 		void RemoveOverlappingBody(RigidBodyComponent* overlappingBody);
 
 		std::vector<RigidBodyComponent*> GetOverlappingBodies() const;
+
+		void SetStatic(bool isStatic) { m_IsStatic = isStatic;}
+		bool GetStatic() const { return m_IsStatic; }
 	protected:
 
 		virtual void Initialize(Scene& scene) override;
@@ -68,5 +66,7 @@ namespace dae
 		std::function<void(RigidBodyComponent*)> m_OverlapEvent;
 		std::function<void(RigidBodyComponent*)> m_OnTriggerExit;
 		std::vector<RigidBodyComponent*> m_OverlappingBodies;
+
+		bool m_IsStatic;
 	};
 }

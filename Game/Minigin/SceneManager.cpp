@@ -24,6 +24,12 @@ void dae::SceneManager::FixedUpdate(float deltaTime)
 {
 	if (m_pActiveScene)
 		m_pActiveScene->FixedUpdate(deltaTime);
+	for (auto& scene : m_Scenes)
+	{
+		if (scene)
+			if (scene->GetMarkedForDestroy())
+				DestroyScene();
+	}
 
 }
 
@@ -63,7 +69,7 @@ const std::string& dae::SceneManager::GetActiveSceneName() const
 	return m_pActiveScene->GetName();
 }
 
-dae::Scene& dae::SceneManager::GetActiveScene() const
+dae::Scene& dae::SceneManager::GetActiveScene()
 {
 	return *m_pActiveScene;
 }
@@ -78,4 +84,15 @@ int dae::SceneManager::GetActiveSceneNr() const
 		}
 	}
 	return 0;
+}
+void dae::SceneManager::DestroyScene()
+{
+	Physics::GetInstance().DeleteScene(m_pActiveScene->GetIndex());
+
+	for (size_t i = 0; i < m_Scenes.size(); i++)
+	{
+		if (m_Scenes[i].get() == m_pActiveScene)
+			m_Scenes[i].reset();
+	}
+	//m_Scenes.erase(std::remove(m_Scenes.begin(), m_Scenes.end(), m_pActiveScene), m_Scenes.end());
 }

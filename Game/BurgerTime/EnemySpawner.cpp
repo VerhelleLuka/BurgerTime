@@ -16,15 +16,15 @@ dae::EnemySpawner::EnemySpawner(Difficulty difficulty)
 	{
 	case Difficulty::EASY:
 		m_MaxEnemies = 5;
-		m_EnemyRespawnTimer = 7.5f;
+		m_EnemyRespawnTimer = 3.5f;
 		break;
 	case Difficulty::NORMAL:
 		m_MaxEnemies = 7;
-		m_EnemyRespawnTimer = 6.f;
+		m_EnemyRespawnTimer = 2.f;
 		break;
 	case Difficulty::HARD:
 		m_MaxEnemies = 10;
-		m_EnemyRespawnTimer = 4.f;
+		m_EnemyRespawnTimer = 1.f;
 		break;
 	}
 }
@@ -33,8 +33,8 @@ void dae::EnemySpawner::Initialize(Scene&)
 	switch (m_Difficulty)
 	{
 	case Difficulty::EASY:
-		m_MaxEnemies = 5;
-		m_EnemyRespawnTimer = 7.5f;
+		m_MaxEnemies = 20;
+		m_EnemyRespawnTimer = 1.5f;
 		break;
 	case Difficulty::NORMAL:
 		m_MaxEnemies = 7;

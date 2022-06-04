@@ -23,7 +23,7 @@ namespace dae
 		ACH_WIN_ONE_GAME = 0,
 
 	};
-	class PeterPepperComponent final : public BaseComponent, public Subject
+	class PeterPepperComponent final : public BaseComponent, public Subject, public Observer
 	{
 	public:
 		virtual void Update(float deltaTime);
@@ -59,6 +59,7 @@ namespace dae
 		bool GetInMenu() const { return m_InMenu; }
 		void SetInMenu(bool inGameScene)  { m_InMenu = inGameScene; }
 
+		virtual void OnNotify(EventType event_, std::shared_ptr<EventArgs> args) override;
 	protected:
 		PeterPepperState m_State;
 	private:
@@ -78,6 +79,8 @@ namespace dae
 		void OnTriggerExit(RigidBodyComponent* other);
 
 		bool m_OverlappingButton;
-
+		bool m_VictoryDance;
+		const float m_VictoryDanceTimer{ 3.f };
+		float m_VictoryDanceTime;
 	};
 }

@@ -5,6 +5,10 @@
 #include "Physics.h"
 #include "Scene.h"
 #include "SceneManager.h"
+#include "../BurgerTime/PeterPepper.h"
+#include "../BurgerTime/PlatformComponent.h"
+#include "LadderComponent.h"
+#include "../BurgerTime/BurgerComponent.h"
 dae::RigidBodyComponent::RigidBodyComponent(float width, float height, bool isTrigger)
 	:m_Width(width),
 	m_Height(height),
@@ -13,6 +17,7 @@ dae::RigidBodyComponent::RigidBodyComponent(float width, float height, bool isTr
 	m_PositionOffset(Float2{ 0.f,0.f })
 	, m_Direction(Float2{0.f, 0.f})
 	,m_LastDirection(Float2{0.f, 0.f})
+	,m_IsStatic(false)
 {
 	if (&SceneManager::GetInstance().GetActiveScene())
 	{
@@ -51,6 +56,8 @@ dae::RigidBodyComponent::~RigidBodyComponent()
 
 void dae::RigidBodyComponent::FixedUpdate(float elapsedSec)
 {
+	if (m_IsStatic)
+		return;
 	if (abs(m_Direction.x) > 0.01f || abs(m_Direction.y) > 0.01f)
 	{
 		m_pParent->SetTransform(m_pParent->GetTransform().GetPosition().x + m_Direction.x * elapsedSec,
@@ -62,6 +69,8 @@ void dae::RigidBodyComponent::FixedUpdate(float elapsedSec)
 }
 void dae::RigidBodyComponent::Reverse(float elapsedSec)
 {
+	if (m_IsStatic)
+		return;
 	m_pParent->SetTransform(m_pParent->GetTransform().GetPosition().x + m_LastDirection.x * elapsedSec,
 		m_pParent->GetTransform().GetPosition().y + m_LastDirection.y * elapsedSec,
 		m_pParent->GetTransform().GetPosition().z);
@@ -86,6 +95,7 @@ void dae::RigidBodyComponent::OnTriggerExit(RigidBodyComponent* other)
 void dae::RigidBodyComponent::AddOverlappingBody(RigidBodyComponent* overlappingBody)
 {
 	//std::weak_ptr<RigidBodyComponent> weak_RB = overlappingBody;
+
 	auto it = std::find(m_OverlappingBodies.begin(), m_OverlappingBodies.end(), overlappingBody);
 	//it = m_OverlappingBodies.end();
 	if (it != m_OverlappingBodies.end())

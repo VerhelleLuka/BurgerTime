@@ -16,16 +16,22 @@ namespace dae
 		void SetActiveScene(Scene* scene);
 		void SetActiveSceneByName(const std::string& name);
 		const std::string& GetActiveSceneName() const;
-		Scene& GetActiveScene()const;
+		Scene& GetActiveScene();
 		int GetActiveSceneNr() const;
 
 		bool GetSceneChanged() const { return m_SceneChanged; }
 		void SetSceneChanged(bool sceneChanged) { m_SceneChanged = sceneChanged; }
+
+		//void DestroySceneByIndex(int index);
 	private:
 		friend class Singleton<SceneManager>;
 		SceneManager() : m_pActiveScene(nullptr) {};
 		std::vector<std::shared_ptr<Scene>> m_Scenes;
 		Scene* m_pActiveScene = nullptr;
 		bool m_SceneChanged = false;
+
+		void DestroyScene();
+
+
 	};
 }

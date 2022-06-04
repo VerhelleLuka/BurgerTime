@@ -5,7 +5,14 @@
 
 void dae::Physics::FixedUpdate(float /*deltaTime*/)
 {
-	m_SceneNr = SceneManager::GetInstance().GetActiveScene().GetIndex();
+	if (!SceneManager::GetInstance().GetActiveScene().GetMarkedForDestroy())
+	{
+		m_SceneNr = SceneManager::GetInstance().GetActiveScene().GetIndex();
+	}
+	else
+	{
+		m_SceneNr = 0;
+	}
 	//std::cout << m_pRigidBodies[m_SceneNr].size() << "\n";
 	CheckOverlap();
 
@@ -37,7 +44,11 @@ void dae::Physics::RemoveRigidBodyComponent(RigidBodyComponent* rigidBody)
 		}
 	}
 }
-
+void dae::Physics::DeleteScene(int index)
+{
+	m_pRigidBodies[index].clear();
+	m_pRigidBodies.erase(std::remove(m_pRigidBodies.begin(), m_pRigidBodies.end(), m_pRigidBodies[index]), m_pRigidBodies.end());
+}
 void dae::Physics::SetSceneNr(int sceneNr)
 {
 	m_SceneNr = sceneNr;

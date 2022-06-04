@@ -20,7 +20,7 @@ namespace dae
 		void CheckOverlap();
 
 		void SetSceneNr(int sceneNr);
-		//void DeleteRigidBody(RigidBodyComponent* rB);
+		void DeleteScene(int index);
 
 	private:
 		std::vector<std::vector<RigidBodyComponent*>> m_pRigidBodies;

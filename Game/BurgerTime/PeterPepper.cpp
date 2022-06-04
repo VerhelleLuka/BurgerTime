@@ -8,6 +8,7 @@
 #include "LadderComponent.h"
 #include "SceneManager.h"
 #include "Scene.h"
+#include "InputManager.h"
 dae::PeterPepperComponent::PeterPepperComponent(int lives)
 	:m_Lives(lives)
 	, m_Points(0)
@@ -20,8 +21,10 @@ dae::PeterPepperComponent::PeterPepperComponent(int lives)
 	, m_CanWalkRight(false)
 	, m_InMenu(true)
 	, m_OverlappingButton(false)
+	, m_VictoryDance(false)
+	,m_VictoryDanceTime(0.0f)
 {
-
+	GameManager::GetInstance().AddObserver(this);
 }
 
 dae::PeterPepperComponent::~PeterPepperComponent()
@@ -30,6 +33,17 @@ dae::PeterPepperComponent::~PeterPepperComponent()
 
 void dae::PeterPepperComponent::Update(float elapsedSec)
 {
+	if (m_VictoryDance)
+	{
+		m_VictoryDanceTime += elapsedSec;
+		if (m_VictoryDanceTime >= m_VictoryDanceTimer)
+		{
+			m_VictoryDanceTime = 0.f;
+			GameManager::GetInstance().LoadLevel(false);
+		
+		}
+	}
+
 	if (!m_CanClimb && !m_CanDescend && !m_CanWalkLeft && !m_CanWalkRight)
 	{
 		m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->Reverse(elapsedSec);
@@ -73,7 +87,15 @@ void dae::PeterPepperComponent::FixedUpdate(float /*elapsedSec*/)
 	bool isOverlappingPlatform = false;
 	for (int i{}; i < overlappingBodies.size(); ++i)
 	{
-		if (overlappingBodies[i]->GetParent()->GetComponent<PlatformComponent>("PlatformComp"))
+		if (overlappingBodies[i]->GetWidth() < -1000 || overlappingBodies[i]->GetWidth() > 1000)
+		{
+
+		}
+		if (overlappingBodies[i]->GetWidth() > -0.0001f && overlappingBodies[i]->GetWidth() < 0.000001f)
+		{
+
+		}
+		else if (overlappingBodies[i]->GetParent()->GetComponent<PlatformComponent>("PlatformComp"))
 		{
 			isOverlappingPlatform = true;
 		}
@@ -103,13 +125,26 @@ void dae::PeterPepperComponent::ReduceLife()
 		Notify(EventType::LOSTLIFE, emptyArgs);
 	}
 }
-
+void dae::PeterPepperComponent::OnNotify(EventType event_, std::shared_ptr<EventArgs> /*args*/)
+{
+	if (event_ == EventType::WIN)
+	{
+		GameManager::GetInstance().AddPoints(m_Points);
+		m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetStatic(true);
+		m_pParent->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Victory");
+		m_VictoryDance = true;
+	}
+}
 
 
 void dae::PeterPepperComponent::ChangeState(int state = 0)
 {
 	m_State = static_cast<PeterPepperState>(state);
 	std::shared_ptr<SpriteEventArgs> args = std::make_shared<SpriteEventArgs>();
+	if (m_VictoryDance)
+	{
+		return;
+	}
 	switch (m_State)
 	{
 

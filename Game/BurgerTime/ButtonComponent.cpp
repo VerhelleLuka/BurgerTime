@@ -7,7 +7,8 @@ void dae::ButtonComponent::OnNotify(EventType event_, std::shared_ptr<EventArgs>
 	{
 		if (m_OverlappingPeter)
 		{
-			GameManager::GetInstance().LoadLevel(m_SceneName, m_GameMode);
+			GameManager::GetInstance().SetGameMode(m_GameMode);
+			GameManager::GetInstance().LoadLevel( true);
 			SceneManager::GetInstance().SetActiveSceneByName(m_SceneName);
 		}
 	}

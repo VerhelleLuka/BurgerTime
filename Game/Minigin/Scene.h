@@ -25,8 +25,8 @@ namespace dae
 		Scene(Scene&& other) = delete;
 		Scene& operator=(const Scene& other) = delete;
 		Scene& operator=(Scene&& other) = delete;
-
-
+		void MarkForDestroy() { m_MarkedForDestroy = true; }
+		bool GetMarkedForDestroy() const { return m_MarkedForDestroy; }
 	private: 
 		explicit Scene(const std::string& name);
 
@@ -35,6 +35,8 @@ namespace dae
 		int m_Index;
 
 		static unsigned int m_IdCounter; 
+		
+		bool m_MarkedForDestroy;
 	};
 
 }
