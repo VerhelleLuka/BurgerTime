@@ -21,11 +21,11 @@ dae::PeterPepperComponent::PeterPepperComponent(int lives)
 	, m_InMenu(true)
 	, m_OverlappingButton(false)
 {
-	//if(steamApi)
-	//	m_pSteamAchievements = new CSteamAchievements(m_Achieve 
 
-	//m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetOnOverlapEvent<PeterPepperComponent>((&PeterPepperComponent::OnOverlap), this);
+}
 
+dae::PeterPepperComponent::~PeterPepperComponent()
+{
 }
 
 void dae::PeterPepperComponent::Update(float elapsedSec)
@@ -146,6 +146,7 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 	{
 		if (other->GetParent()->GetComponent<ButtonComponent>("ButtonComp"))
 		{
+			other->GetParent()->GetComponent<ButtonComponent>("ButtonComp")->SetOverlapping(true);
 			m_OverlappingButton = true;
 			return;
 		}
@@ -223,6 +224,7 @@ void dae::PeterPepperComponent::OnTriggerExit(RigidBodyComponent* other)
 	}
 	if (other->GetParent()->GetComponent<ButtonComponent>("ButtonComp"))
 	{
+		other->GetParent()->GetComponent<ButtonComponent>("ButtonComp")->SetOverlapping(false);
 		m_OverlappingButton = false;
 	}
 }

@@ -17,7 +17,7 @@ namespace dae
 
 		void SetText(const std::string& text);
 		void SetPosition(float x, float y);
-
+		const std::string& GetText() const { return m_Text; }
 		explicit TextComponent(const std::string& text, const std::shared_ptr<Font>& font);
 		virtual ~TextComponent() = default;
 		TextComponent(const TextComponent& other) = delete;

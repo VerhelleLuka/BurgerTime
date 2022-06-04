@@ -20,50 +20,38 @@
 #include "Enemy.h"
 #include "TrayComponent.h"
 #include "EnemySpawner.h"
+#include "GameManager.h"
 void dae::BurgerTime::Initialize()
 {
+	GameManager::GetInstance().SetBurgerTimeGame(this);
 }
 
 void dae::BurgerTime::LoadGame()
 {
-	auto& levelScene = SceneManager::GetInstance().CreateScene("Level");
-	//auto& menuScene = SceneManager::GetInstance().CreateScene("MainMenu");
+	auto& menuScene = SceneManager::GetInstance().CreateScene("MainMenu");
+	Physics::GetInstance().SetSceneNr(0);
+	//auto& levelScene2 = SceneManager::GetInstance().CreateScene("Level2");
+	//auto& levelScene = SceneManager::GetInstance().CreateScene("Level1");
 
-	Transform peterPepperSpawnPos = ParseLevel(levelScene, 0);
-
-	CreatePeterPepperAndHUD(Transform(), levelScene, 0, true, 0);
-	///*m_pEnemyTemplate = */CreateEnemyTemplate(levelScene, 0, Float2{ 150,70 });
-	//CreateEnemyTemplate(levelScene, 0, Float2{400,70});
-	//
-	//CreateEnemyTemplate(levelScene, 0, Float2{300,70});
-	//CreateEnemy(levelScene, 0, Float2{100,86});
-	//CreatePeterPepperAndHUD(peterPepperSpawnPos, menuScene, 0, false, 1);
-	//CreateMenu(menuScene);
+	CreateMenu(menuScene);
 	
-	SceneManager::GetInstance().SetActiveScene(&levelScene);
+	SceneManager::GetInstance().SetActiveScene(&menuScene);
 
-	std::vector<Float2> fuckYou;
-	MakeEnemySpawner(fuckYou);
+
 }
-void dae::BurgerTime::CreateMenu(Scene& scene) const
+
+void dae::BurgerTime::CreateMenuButton(Scene& scene, Float2 position, GameMode gameMode, const  std::string& text) const
 {
-	auto titleGo = std::make_shared<GameObject>();
-	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-
-	auto textComp = std::make_shared<TextComponent>("BURGER TIME!!!!!!!", font);
-	titleGo->AddComponent(textComp, "TextComp");
-	titleGo->GetTransform().SetPosition(50, 0, 0);
-	scene.Add(titleGo);
-
+	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 16);
 	auto buttonGo = std::make_shared<GameObject>();
 
 	auto buttonAnim = std::make_shared<Animation>(1, 1);
 	buttonAnim->SetTexture("Menu/Button.png");
 
-	auto buttonTextComp = std::make_shared<TextComponent>("PLAY", font);
+	auto buttonTextComp = std::make_shared<TextComponent>(text, font);
 	buttonGo->AddComponent(buttonTextComp, "TextComp");
 	buttonTextComp->SetGameObject(buttonGo.get());
-	buttonTextComp->SetPosition(150, 100);
+	buttonTextComp->SetPosition(position.x, position.y);
 
 	auto buttonSprite = std::make_shared<SpriteComponent>();
 	buttonSprite->SetGameObject(buttonGo.get());
@@ -71,7 +59,7 @@ void dae::BurgerTime::CreateMenu(Scene& scene) const
 	buttonSprite->SetActiveAnimation("button");
 	buttonGo->AddComponent(buttonSprite, "ButtonSprite");
 
-	auto buttonComp = std::make_shared<ButtonComponent>("Level");
+	auto buttonComp = std::make_shared<ButtonComponent>("Level1", gameMode);
 	buttonGo->AddComponent(buttonComp, "ButtonComp");
 
 	auto buttonRigidBody = std::make_shared<RigidBodyComponent>(buttonAnim->GetScaledWidth(), buttonAnim->GetScaledHeight(), false);
@@ -85,9 +73,26 @@ void dae::BurgerTime::CreateMenu(Scene& scene) const
 			dynamic_cast<GameObject*>(sceneObjects[i].get())->GetComponent<PeterPepperComponent>("PeterPepper")->AddObserver(buttonComp.get());
 		}
 	}
-	buttonGo->SetTransform(150, 100, -1);
+	buttonGo->SetTransform(position.x, position.y, -1);
 
 	scene.Add(buttonGo);
+}
+void dae::BurgerTime::CreateMenu(Scene& scene) const
+{
+	auto titleGo = std::make_shared<GameObject>();
+	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+
+	auto textComp = std::make_shared<TextComponent>("BURGER TIME!!!!!!!", font);
+	titleGo->AddComponent(textComp, "TextComp");
+	titleGo->GetTransform().SetPosition(50, 0, 0);
+	scene.Add(titleGo);
+	CreatePeterPepperAndHUD(Transform(), scene, 0, false);
+
+	CreateMenuButton(scene, Float2{150, 100}, GameMode::SINGLE, "SinglePlayer");
+	CreateMenuButton(scene, Float2{300, 150}, GameMode::COOP, "Co-op");
+	CreateMenuButton(scene, Float2{150, 200}, GameMode::VERSUS, "Versus");
+
+
 }
 
 dae::GameObject* dae::BurgerTime::CreateEnemyTemplate(Scene& scene, int /*sceneNr*/, Float2 position) const
@@ -150,7 +155,7 @@ dae::GameObject* dae::BurgerTime::CreateEnemyTemplate(Scene& scene, int /*sceneN
 	return enemyGo.get();
 }
 
-void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int playerNr, bool andHUD, int /*sceneNr*/) const
+void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int playerNr, bool andHUD) const
 {
 	float hudX, hudY;
 	hudX = 0;
@@ -256,7 +261,6 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 	input.AddCommand(ControllerButton::DPadLeft, new MoveLeft, KeyState::DOWN, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::DPadDown, new MoveDown, KeyState::DOWN, peterPepperGo.get(), playerNr);
 	input.AddCommand(ControllerButton::DPadUp, new MoveUp, KeyState::DOWN, peterPepperGo.get(), playerNr);
-	input.AddCommand(ControllerButton::ButtonB, new Pepper, KeyState::PRESSED, peterPepperGo.get(), playerNr);
 
 	input.AddCommand(ControllerButton::Nothing, new Idle, KeyState::NOTHING, peterPepperGo.get(), playerNr);
 
@@ -266,6 +270,7 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 	}
 	else
 	{
+		input.AddCommand(ControllerButton::ButtonB, new Pepper, KeyState::PRESSED, peterPepperGo.get(), playerNr);
 		peterPepper->SetInMenu(false);
 	}
 	//input.SetPlayer(peterPepperGo.get(), playerNr);
@@ -276,7 +281,7 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 	}
 }
 
-void dae::BurgerTime::MakeEnemySpawner(std::vector<Float2> /*spawnPositions*/)
+void dae::BurgerTime::MakeEnemySpawner(std::vector<Float2> /*spawnPositions*/) const
 {
 	auto spawnerGo = std::make_shared<GameObject>();
 
@@ -289,29 +294,17 @@ void dae::BurgerTime::MakeEnemySpawner(std::vector<Float2> /*spawnPositions*/)
 
 	SceneManager::GetInstance().GetActiveScene().Add(spawnerGo);
 }
-void dae::BurgerTime::MakeCommands(int playerNr, GameObject* go, bool andHUD) const
-{
-	auto& input = InputManager::GetInstance();
-
-	input.AddCommand(ControllerButton::DPadRight, new MoveRight, KeyState::DOWN, go, playerNr);
-	input.AddCommand(ControllerButton::DPadLeft, new MoveLeft, KeyState::DOWN, go, playerNr);
-	input.AddCommand(ControllerButton::DPadDown, new MoveDown, KeyState::DOWN, go, playerNr);
-	input.AddCommand(ControllerButton::DPadUp, new MoveUp, KeyState::DOWN, go, playerNr);
-	input.AddCommand(ControllerButton::ButtonB, new Pepper, KeyState::PRESSED, go, playerNr);
-	input.AddCommand(ControllerButton::Nothing, new Idle, KeyState::NOTHING, go, playerNr);
-	if (andHUD)
-	{
-		input.AddCommand((ControllerButton::ButtonA), new Select, KeyState::RELEASED, go, playerNr);
-	}
-}
-dae::Transform dae::BurgerTime::ParseLevel(Scene& scene, int sceneNr) const
+dae::Transform dae::BurgerTime::ParseLevel(Scene& scene, int sceneNr, const std::string& levelName) const
 {
 
 	std::vector<Platform> platforms;
 	std::vector<Ladder> ladders;
 	std::vector<Float2> spawnPositions;
 	std::vector<Burger> burgers;
-	ParseLevelFile("../Data/Level/Level1.txt", platforms, ladders, spawnPositions, burgers);
+	std::string fullName = "../Data/Level/";
+	fullName.append(levelName);
+	fullName.append(".txt");
+	ParseLevelFile(fullName, platforms, ladders, spawnPositions, burgers);
 
 	int levelScale = 2;
 	//Is half 
@@ -473,7 +466,6 @@ void dae::BurgerTime::MakeLaddersAndPlatforms(Scene& scene, const std::vector<La
 			}
 		}
 		ladder->AddComponent(pLadder, "LadderComp");
-		//std::cout << "Does ladder have up: " << pLadder->GetHasUp() << ". Does ladder have down: " << pLadder->GetHasDown() << "\n";
 		scene.Add(ladder);
 	}
 }
@@ -568,6 +560,33 @@ void dae::BurgerTime::CreateTray(Scene& scene, int /*sceneNr*/, Float2 position)
 	trayComp->SetOverlapEvent();
 	trayGo->AddComponent(trayComp, "TrayComp");
 	scene.Add(trayGo);
+}
+
+void dae::BurgerTime::LoadLevel1(GameMode gameMode) const
+{
+
+	auto& levelScene = SceneManager::GetInstance().CreateScene("Level1");
+	Physics::GetInstance().SetSceneNr(1);
+	SceneManager::GetInstance().SetActiveScene(&levelScene);
+
+	ParseLevel(levelScene, 1, "Level1");
+	
+	CreatePeterPepperAndHUD(Transform(), levelScene, 0, true);
+	if (gameMode == GameMode::COOP)
+	{
+		CreatePeterPepperAndHUD(Transform(), levelScene, 1, true);
+
+	}
+	std::vector<Float2> fuckYou;
+	MakeEnemySpawner(fuckYou);
+
+}
+
+void dae::BurgerTime::LoadLevel2(GameMode /*gameMode*/) const
+{
+}
+void dae::BurgerTime::LoadLevel3(GameMode /*gameMode*/) const
+{
 }
 void dae::BurgerTime::Run()
 {

@@ -64,8 +64,8 @@ namespace dae
 
 		EnemyState* m_pEnemyState;
 		EnemyType m_EnemyType;
-		Transform* m_pPeter1Transform;
-		Transform* m_pPeter2Transform;
+		const Transform* m_pPeter1Transform;
+		const Transform* m_pPeter2Transform;
 
 		LadderComponent* m_pWalkedLadder;
 		bool m_Initialized;

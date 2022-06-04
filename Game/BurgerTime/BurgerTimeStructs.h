@@ -1,6 +1,12 @@
 #pragma once
 namespace dae
 {
+	enum class GameMode
+	{
+		SINGLE,
+		COOP,
+		VERSUS
+	};
 	struct Platform
 	{
 		int row, column;

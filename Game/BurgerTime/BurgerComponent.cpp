@@ -28,7 +28,6 @@ void dae::BurgerComponent::FixedUpdate(float /*elapsedSec*/)
 		m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2{ 0, 100 });
 	}
 	m_StartFall = false;
-	//std::cout << m_WalkedOver[0] << " " << m_WalkedOver[1] << " " << m_WalkedOver[2] << " " << m_WalkedOver[3] << "\n";
 }
 
 void dae::BurgerComponent::ForceFall()

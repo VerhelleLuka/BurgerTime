@@ -31,7 +31,7 @@ namespace dae
 		virtual void Render() const {};
 
 		PeterPepperComponent(int lives);
-		virtual ~PeterPepperComponent() {};
+		virtual ~PeterPepperComponent();
 
 		void ReduceLife();
 		int GetLives() { return m_Lives; }
