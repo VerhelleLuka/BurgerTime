@@ -21,6 +21,7 @@
 #include "TrayComponent.h"
 #include "EnemySpawner.h"
 #include "GameManager.h"
+#include "BurgerSpawner.h"
 void dae::BurgerTime::Initialize()
 {
 	GameManager::GetInstance().SetBurgerTimeGame(this);
@@ -154,13 +155,12 @@ void dae::BurgerTime::CreateEnemy(Scene& scene, int /*sceneNr*/, Float2 position
 	scene.Add(enemyGo);
 
 }
-void dae::BurgerTime::CreateEvilPepper(Transform spawnPos, Scene& scene, int playerNr) const
+void dae::BurgerTime::CreateEvilPepper(Transform /*spawnPos*/, Scene& scene, int playerNr) const
 {
 	const float animationScale = 1.75f;
 	auto evilPepper = std::make_shared<GameObject>();
 	evilPepper->SetTag("EvilPeterPepper");
-	std::shared_ptr<PeterPepperComponent> peterPepper = std::make_shared<PeterPepperComponent>(1, Float2{ spawnPos.GetPosition().x, spawnPos.GetPosition().y }, true);
-
+	std::shared_ptr<PeterPepperComponent> peterPepper = std::make_shared<PeterPepperComponent>(1, Float2{ 100,8 }, true);
 	auto climbAnim = std::make_shared<Animation>(2, 2);
 	climbAnim->SetTexture("Enemies/Sausage_Climb.png");
 	climbAnim->SetScale(animationScale);
@@ -182,21 +182,26 @@ void dae::BurgerTime::CreateEvilPepper(Transform spawnPos, Scene& scene, int pla
 	deathAnim->SetTexture("Enemies/Sausage_Kill.png");
 	deathAnim->SetScale(animationScale);
 
+	auto stunAnim = std::make_shared<Animation>(2, 2);
+	stunAnim->SetTexture("Enemies/Sausage_Peppered.png");
+	stunAnim->SetScale(animationScale);
+
 	auto enemySprite = std::make_shared<SpriteComponent>();
 	enemySprite->SetGameObject(evilPepper.get());
 	enemySprite->AddAnimation(climbAnim, "Climb");
 	enemySprite->AddAnimation(descendAnim, "Descend");
-	enemySprite->AddAnimation(walkRightAnim, "WalkRight");
+	enemySprite->AddAnimation(walkRightAnim, "RunRight");
 	enemySprite->AddAnimation(deathAnim, "Death");
-	enemySprite->AddAnimation(walkLeftAnim, "WalkLeft");
-	enemySprite->SetActiveAnimation("WalkLeft");
-	evilPepper->AddComponent(enemySprite, "EnemySprite");
+	enemySprite->AddAnimation(walkLeftAnim, "RunLeft");
+	enemySprite->AddAnimation(stunAnim, "Stunned");
+	enemySprite->SetActiveAnimation("RunLeft");
 
 
 	//RigidbodyComponent
 	auto pRigidBody = std::make_shared<RigidBodyComponent>(enemySprite->GetAnimation().GetScaledWidth(),
 		enemySprite->GetAnimation().GetScaledHeight(),
 		true);
+
 
 
 	//Add everything to scene
@@ -206,12 +211,22 @@ void dae::BurgerTime::CreateEvilPepper(Transform spawnPos, Scene& scene, int pla
 
 	evilPepper->AddComponent(pRigidBody, "RigidBody");
 
+	
+	peterPepper->SetGameObject(evilPepper.get());
+	peterPepper->SetOverlapEvent();
+	peterPepper->SetOnTriggerExitEvent();
+	
+	peterPepper->AddObserver(enemySprite.get());
+	pRigidBody->SetOffset(Float2{ 0.f,-3.f });
+
 	auto& input = InputManager::GetInstance();
 
 	input.AddCommand(ControllerButton::DPadRight, new MoveRight, KeyState::DOWN, evilPepper.get(), playerNr);
 	input.AddCommand(ControllerButton::DPadLeft, new MoveLeft, KeyState::DOWN, evilPepper.get(), playerNr);
 	input.AddCommand(ControllerButton::DPadDown, new MoveDown, KeyState::DOWN, evilPepper.get(), playerNr);
 	input.AddCommand(ControllerButton::DPadUp, new MoveUp, KeyState::DOWN, evilPepper.get(), playerNr);
+	evilPepper->SetTransform(300, 8, 0);
+	peterPepper->SetInMenu(false);
 
 	scene.Add(evilPepper);
 }
@@ -381,6 +396,18 @@ void dae::BurgerTime::MakeEnemySpawner(std::vector<Float2> spawnPositions) const
 	auto spawnerGo = std::make_shared<GameObject>();
 
 	auto spawner = std::make_shared<EnemySpawner>(Difficulty::EASY);
+
+	spawner->SetSpawnPositions(spawnPositions);
+	spawnerGo->AddComponent(spawner, "Spawner");
+
+	SceneManager::GetInstance().GetActiveScene().Add(spawnerGo);
+}
+
+void dae::BurgerTime::MakeBurgerSpawner(std::vector<Float2> spawnPositions) const
+{
+	auto spawnerGo = std::make_shared<GameObject>();
+
+	auto spawner = std::make_shared<BurgerSpawner>();
 
 	spawner->SetSpawnPositions(spawnPositions);
 	spawnerGo->AddComponent(spawner, "Spawner");
@@ -583,6 +610,8 @@ void dae::BurgerTime::MakeBurgers(Scene& scene, const std::vector<Burger>& burge
 	int column;
 	int prevColumn = -1;
 	int nrBurgers = 0;
+
+	std::vector<Float2> burgerSpawnPositions;
 	for (size_t i{}; i < burgers.size(); ++i)
 	{
 		if (burgers[i].partName != "")
@@ -595,61 +624,71 @@ void dae::BurgerTime::MakeBurgers(Scene& scene, const std::vector<Burger>& burge
 			if (column != prevColumn)
 			{
 				CreateTray(scene, sceneNr, Float2((burgers[i].column) * platformWidth + scalingIncrease * (burgers[i].column - 1) + 1, 440));
+				burgerSpawnPositions.push_back( Float2((burgers[i].column) * platformWidth + scalingIncrease * (burgers[i].column - 1) + 1, -50.f));
 			}
-			auto burger = std::make_shared<GameObject>();
-			auto burgerSprite = std::make_shared<SpriteComponent>();
-			auto burgerAnimation = std::make_shared<Animation>(1, 1);
-			burger->SetTag("Burger");
-			burgerSprite->SetGameObject(burger.get());
-			Transform transform{};
-
-			std::string burgerPart = "Hamburger/";
-			burgerPart.append(burgers[i].partName);
-			burgerPart += ".png";
-			burgerAnimation->SetTexture(burgerPart);
-			transform.SetPosition((burgers[i].column) * platformWidth + scalingIncrease * (burgers[i].column - 1) + 1, ((burgers[i].row + 1) * platformWidth) - 7 * levelScale, 0.f);
-			//transform.SetPosition(burgers[i].column * platformWidth + (((platformWidth/2) * burgers[i].column / 2)), ((burgers[i].row + 1) * platformWidth * 1.5f) - 7 * levelScale, 0.f);
-
-			if (burgers[i].partName == "Top_bun")
+			if (GameManager::GetInstance().GetGameMode() != GameMode::VERSUS)
 			{
-				burgerSprite->AddAnimation(burgerAnimation, "Top_bun");
+				auto burger = std::make_shared<GameObject>();
+				auto burgerSprite = std::make_shared<SpriteComponent>();
+				auto burgerAnimation = std::make_shared<Animation>(1, 1);
+				burger->SetTag("Burger");
+				burgerSprite->SetGameObject(burger.get());
+				Transform transform{};
 
-				burgerSprite->SetActiveAnimation("Top_bun");
+				std::string burgerPart = "Hamburger/";
+				burgerPart.append(burgers[i].partName);
+				burgerPart += ".png";
+				burgerAnimation->SetTexture(burgerPart);
+				transform.SetPosition((burgers[i].column) * platformWidth + scalingIncrease * (burgers[i].column - 1) + 1, ((burgers[i].row + 1) * platformWidth) - 7 * levelScale, 0.f);
+				//transform.SetPosition(burgers[i].column * platformWidth + (((platformWidth/2) * burgers[i].column / 2)), ((burgers[i].row + 1) * platformWidth * 1.5f) - 7 * levelScale, 0.f);
+
+				if (burgers[i].partName == "Top_bun")
+				{
+					burgerSprite->AddAnimation(burgerAnimation, "Top_bun");
+
+					burgerSprite->SetActiveAnimation("Top_bun");
+				}
+				else
+				{
+
+					burgerSprite->AddAnimation(burgerAnimation, "Burger");
+					burgerSprite->SetActiveAnimation("Burger");
+				}
+				burgerAnimation->SetScale((float)levelScale);
+
+				burger->SetTransform(transform);
+
+				//RigidbodyComponent
+				auto pRigidBody = std::make_shared<RigidBodyComponent>(burgerSprite->GetAnimation().GetScaledWidth(),
+					burgerSprite->GetAnimation().GetScaledHeight(),
+					true);
+				pRigidBody->SetGameObject(burger.get());
+				//Burger component
+				auto pBurger = std::make_shared<BurgerComponent>();
+
+				burger->AddComponent(burgerSprite, "BurgerSprite");
+				burger->AddComponent(pRigidBody, "RigidBody");
+				burger->AddComponent(pBurger, "BurgerComp");
+				pBurger->SetGameObject(burger.get());
+				pBurger->Initialize();
+				pBurger->SetOverlapEvent();
+
+				scene.Add(burger);
+
+				if (burgers[i].partName == "Top_bun")
+				{
+					++nrBurgers;
+				}
 			}
-			else
-			{
 
-				burgerSprite->AddAnimation(burgerAnimation, "Burger");
-				burgerSprite->SetActiveAnimation("Burger");
-			}
-			burgerAnimation->SetScale((float)levelScale);
-
-			burger->SetTransform(transform);
-
-			//RigidbodyComponent
-			auto pRigidBody = std::make_shared<RigidBodyComponent>(burgerSprite->GetAnimation().GetScaledWidth(),
-				burgerSprite->GetAnimation().GetScaledHeight(),
-				true);
-			pRigidBody->SetGameObject(burger.get());
-			//Burger component
-			auto pBurger = std::make_shared<BurgerComponent>();
-
-			burger->AddComponent(burgerSprite, "BurgerSprite");
-			burger->AddComponent(pRigidBody, "RigidBody");
-			burger->AddComponent(pBurger, "BurgerComp");
-			pBurger->SetGameObject(burger.get());
-			pBurger->Initialize();
-			pBurger->SetOverlapEvent();
-
-			scene.Add(burger);
-
-			if (burgers[i].partName == "Top_bun")
-			{
-				++nrBurgers;
-			}
 		}
 	}
 	GameManager::GetInstance().SetNrOfBurgers(nrBurgers);
+
+	if (GameManager::GetInstance().GetGameMode() == GameMode::VERSUS)
+	{
+		MakeBurgerSpawner(burgerSpawnPositions);
+	}
 }
 
 void dae::BurgerTime::CreateTray(Scene& scene, int /*sceneNr*/, Float2 position) const
@@ -683,9 +722,10 @@ void dae::BurgerTime::CreateTray(Scene& scene, int /*sceneNr*/, Float2 position)
 
 void dae::BurgerTime::LoadLevel1(GameMode gameMode, const std::string& levelName) const
 {
-	//Always destroy the scene with index one, it'll be replaced by the next one
-	//if (SceneManager::GetInstance().GetActiveSceneName() != "MainMenu")
-	//	SceneManager::GetInstance().GetActiveScene().MarkForDestroy();
+	if (gameMode == GameMode::VERSUS && levelName != "Level1")
+	{
+
+	}
 	auto& levelScene = SceneManager::GetInstance().CreateScene(levelName);
 	SceneManager::GetInstance().SetActiveScene(&levelScene);
 	std::vector<Float2> enemySpawnPositions = ParseLevel(levelScene, GameManager::GetInstance().GetLevelIndex(), levelName);
@@ -695,17 +735,16 @@ void dae::BurgerTime::LoadLevel1(GameMode gameMode, const std::string& levelName
 	{
 		CreatePeterPepperAndHUD(Transform(), levelScene, 1, true);
 	}
+	else if (gameMode == GameMode::VERSUS)
+	{
+		CreateEvilPepper(Transform(), levelScene, 1);
+	}
 	GameManager::GetInstance().SetEnemySpawns(enemySpawnPositions);
 	MakeEnemySpawner(enemySpawnPositions);
 
 }
 
-//void dae::BurgerTime::LoadLevel2(GameMode /*gameMode*/) const
-//{
-//}
-//void dae::BurgerTime::LoadLevel3(GameMode /*gameMode*/) const
-//{
-//}
+
 void dae::BurgerTime::Run()
 {
 

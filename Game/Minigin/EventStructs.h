@@ -8,5 +8,6 @@ enum class EventType
 	LOADLEVEL,
 	ENEMYKILLED,
 	WIN,
-	SHOOT
+	SHOOT,
+	BURGERDROPPED
 };

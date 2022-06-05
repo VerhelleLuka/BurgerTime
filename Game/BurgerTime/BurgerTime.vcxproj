@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BurgerComponent.h" />
+    <ClInclude Include="BurgerSpawner.h" />
     <ClInclude Include="BurgerTime.h" />
     <ClInclude Include="BurgerTimeStructs.h" />
     <ClInclude Include="ButtonComponent.h" />
@@ -39,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BurgerComponent.cpp" />
+    <ClCompile Include="BurgerSpawner.cpp" />
     <ClCompile Include="BurgerTime.cpp" />
     <ClCompile Include="ButtonComponent.cpp" />
     <ClCompile Include="Enemy.cpp" />

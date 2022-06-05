@@ -63,6 +63,8 @@ namespace dae
 
 		virtual void OnNotify(EventType event_, std::shared_ptr<EventArgs> args) override;
 		Float2 GetSpawnPos() const { return m_SpawnPos; }
+
+		bool GetIsDead() const { return m_IsDead; }
 	protected:
 		PeterPepperState m_State;
 	private:
@@ -91,5 +93,14 @@ namespace dae
 		bool m_IsEvil;
 
 		Float2 m_SpawnPos;
+
+		bool m_IsInvincible;
+		const float m_InivincibilityTimer{3.f};
+		float m_InvincibilityTime;
+
+		bool m_Stunned;		
+		void Stun();
+		const float m_StunTimer{ 3.f };
+		float m_StunTime;
 	};
 }

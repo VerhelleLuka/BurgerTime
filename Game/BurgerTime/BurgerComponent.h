@@ -7,7 +7,7 @@
 #include "PeterPepper.h"
 namespace dae
 {
-	class BurgerComponent final : public BaseComponent
+	class BurgerComponent final : public BaseComponent, public Subject
 	{
 	public:
 		virtual void Update(float /*deltaTime*/) override {};
@@ -25,7 +25,7 @@ namespace dae
 		}
 		void ForceFall();
 		bool GetCaught() const { return m_Caught; }
-		void SetCaught(bool caught) { m_Caught = caught; }
+		void SetCaught(bool caught);
 		void SetPeterPepper(PeterPepperComponent* peterPepper) { m_pPeterPepper = peterPepper; }
 		PeterPepperComponent* GetPeterPepper()const { return m_pPeterPepper; }
 

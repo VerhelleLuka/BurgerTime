@@ -31,6 +31,7 @@ namespace dae
 		//bool GetIsDirty() { return m_IsDirty; }
 
 		int GetFrameNr() const { return m_CurrentFrame; }
+		void SetFrameNr(int frame) { m_CurrentFrame = frame; }
 		int GetNrFrames() const { return m_NrFrames; }
 	private:
 

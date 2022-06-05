@@ -4,45 +4,37 @@
 #include "BaseComponent.h"
 #include <Structs.h>
 #include "Observer.h"
-#include "Enemy.h"
 namespace dae
 {
-	struct EnemyKilledArgs : EventArgs{
-		EnemyType enemyType;
-	};
+	//struct BurgerRemovedArgs : EventArgs {
+	//	EnemyType enemyType;
+	//};
 	class Scene;
-	enum class Difficulty
-	{
-		EASY,
-		NORMAL,
-		HARD
-	};
-	class EnemySpawner final : public BaseComponent, public Observer
+	class BurgerSpawner final : public BaseComponent, public Observer
 	{
 	public:
 		virtual void Update(float deltaTime) override;
 		virtual void FixedUpdate(float /*deltaTime*/) override {};
 		virtual void Render() const override {};
 
-		EnemySpawner(Difficulty difficulty);
-		virtual ~EnemySpawner() {};
+		BurgerSpawner();
+		virtual ~BurgerSpawner() {};
 
-		virtual void Initialize(Scene& /*scene*/) override;
+		virtual void Initialize(Scene& /*scene*/) override {};
 
-		void SetDifficulty(Difficulty difficulty);
 		void SetSpawnPositions(std::vector<Float2> spawnPositions) { m_SpawnPositions = spawnPositions; }
 		virtual void OnNotify(EventType /*event_*/, std::shared_ptr<EventArgs> /*args*/) override;
 
-		void SpawnEnemy();
+		void SpawnBurger();
 	protected:
 
-		Difficulty m_Difficulty;
-		int m_MaxEnemies;
-		int m_NumEnemies;
-		float m_EnemyRespawnTimer;
-		float m_EnemyRespawnTime;
+		int m_MaxBurgers;
+		int m_NumBurgers;
+		const float m_BurgerRespawnTimer {5.f};
+		float m_BurgerRespawnTime;
 
 		std::vector<Float2> m_SpawnPositions;
-		bool m_EggPresent;
+		std::vector<std::string> m_BurgerSpriteNames;
+
 	};
 }

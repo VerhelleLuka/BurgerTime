@@ -17,13 +17,17 @@ namespace dae
 		{
 			if (m_pGameObject)
 			{
-				if (m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->GetCanWalkRight())
+				if (m_pGameObject->GetTag() != "PeterPepper")
+				{ }
+				else if (m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->GetCanWalkRight())
 				{
 					m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(75.f, 0.f));
 					m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(2);
 
 				}
-				else if (GameManager::GetInstance().GetGameMode() == GameMode::VERSUS&&m_pGameObject->GetComponent<PeterPepperComponent>("EvilPeterPepper")->GetCanWalkRight())
+				if (m_pGameObject->GetTag() != "EvilPeterPepper")
+					return;
+				else if (GameManager::GetInstance().GetGameMode() == GameMode::VERSUS && m_pGameObject->GetComponent<PeterPepperComponent>("EvilPeterPepper")->GetCanWalkRight())
 				{
 					m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(50.f, 0.f));
 					m_pGameObject->GetComponent<PeterPepperComponent>("EvilPeterPepper")->ChangeState(2);
@@ -38,12 +42,17 @@ namespace dae
 		{
 			if (m_pGameObject)
 			{
-				if (m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->GetCanWalkLeft())
+				if (m_pGameObject->GetTag() != "PeterPepper")
+				{
+				}
+				else if (m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->GetCanWalkLeft())
 				{
 
 					m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(-75.f, 0.f));
 					m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(1);
 				}
+				if (m_pGameObject->GetTag() != "EvilPeterPepper")
+					return;
 				else if (GameManager::GetInstance().GetGameMode() == GameMode::VERSUS && m_pGameObject->GetComponent<PeterPepperComponent>("EvilPeterPepper")->GetCanWalkLeft())
 				{
 
@@ -61,17 +70,23 @@ namespace dae
 		{
 			if (m_pGameObject)
 			{
-				if (m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->GetCanClimb())
+				if (m_pGameObject->GetTag() != "PeterPepper")
+				{
+				}
+				else if (m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->GetCanClimb())
 				{
 					m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(0.f, -75.f));
 					m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(3);
 				}
-
-				if (GameManager::GetInstance().GetGameMode() == GameMode::VERSUS && m_pGameObject->GetComponent<PeterPepperComponent>("EvilPeterPepper")->GetCanClimb())
+				if (m_pGameObject->GetTag() != "EvilPeterPepper")
+					return;
+				else if (GameManager::GetInstance().GetGameMode() == GameMode::VERSUS && m_pGameObject->GetComponent<PeterPepperComponent>("EvilPeterPepper")->GetCanClimb())
 				{
 					m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(0.f, -50.f));
 					m_pGameObject->GetComponent<PeterPepperComponent>("EvilPeterPepper")->ChangeState(3);
 				}
+
+
 			}
 
 		}
@@ -83,13 +98,19 @@ namespace dae
 		{
 			if (m_pGameObject)
 			{
-				if (m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->GetCanDescend())
+				if (m_pGameObject->GetTag() != "PeterPepper")
+				{
+				}
+				else if (m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->GetCanDescend())
 				{
 					m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(0.f, 75.f));
 					m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(4);
 				}
+				if (m_pGameObject->GetTag() != "EvilPeterPepper")
+					return;
 				else if (GameManager::GetInstance().GetGameMode() == GameMode::VERSUS && m_pGameObject->GetComponent<PeterPepperComponent>("EvilPeterPepper")->GetCanDescend())
 				{
+				
 					m_pGameObject->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2(0.f, 50.f));
 					m_pGameObject->GetComponent<PeterPepperComponent>("EvilPeterPepper")->ChangeState(4);
 				}
@@ -104,10 +125,10 @@ namespace dae
 			if (m_pGameObject)
 			{
 				m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ChangeState(0);
-				if (GameManager::GetInstance().GetGameMode() == GameMode::VERSUS)
+				if (GameManager::GetInstance().GetGameMode() == GameMode::VERSUS && m_pGameObject->GetTag() == "EvilPeterPepper")
 				{
 
-				m_pGameObject->GetComponent<PeterPepperComponent>("EvilPeterPepper")->ChangeState(4);
+					m_pGameObject->GetComponent<PeterPepperComponent>("EvilPeterPepper")->ChangeState(4);
 				}
 
 			}
@@ -118,8 +139,8 @@ namespace dae
 	public:
 		void Execute() override
 		{
-			if(SceneManager::GetInstance().GetActiveSceneNr() == 0)
-			m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ButtonPress();
+			if (SceneManager::GetInstance().GetActiveSceneNr() == 0)
+				m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ButtonPress();
 		}
 	};
 	class Pepper final : public Command

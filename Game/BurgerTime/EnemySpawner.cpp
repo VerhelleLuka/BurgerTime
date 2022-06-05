@@ -6,9 +6,9 @@
 #include "Scene.h"
 #include "Enemy.h"
 #include "Physics.h"
-dae::EnemySpawner::EnemySpawner(Difficulty difficulty) 
+dae::EnemySpawner::EnemySpawner(Difficulty difficulty)
 	: m_Difficulty(difficulty),
-	m_NumEnemies(0) ,
+	m_NumEnemies(0),
 	m_EnemyRespawnTime(0.f),
 	m_EggPresent(false)
 {
@@ -70,7 +70,7 @@ void dae::EnemySpawner::SetDifficulty(Difficulty difficulty)
 void dae::EnemySpawner::Update(float deltaTime)
 {
 	m_EnemyRespawnTime += deltaTime;
-		if (m_EnemyRespawnTime > m_EnemyRespawnTimer && m_NumEnemies < m_MaxEnemies)
+	if (m_EnemyRespawnTime > m_EnemyRespawnTimer && m_NumEnemies < m_MaxEnemies)
 	{
 		m_EnemyRespawnTime = 0.f;
 		m_NumEnemies++;
@@ -130,72 +130,77 @@ void dae::EnemySpawner::SpawnEnemy()
 
 	enemyGo->AddComponent(pRigidBody, "RigidBody");
 	//Get random number between one and 6 -- one, two and three for sausage, four and five for pickle, and six for egg (if there isn't any present)
-	int enemyToMake = 1 + (std::rand() % (6));
-	EnemyType enemyType;
-	if (m_EggPresent)
+	EnemyType enemyType = EnemyType::SAUSAGE;
+
+	if (GameManager::GetInstance().GetGameMode() != GameMode::VERSUS)
 	{
-		if (enemyToMake < 4)
+		int enemyToMake = 1 + (std::rand() % (6));
+		if (m_EggPresent)
 		{
-			climbAnim->SetTexture("Enemies/Sausage_Climb.png");
-			descendAnim->SetTexture("Enemies/Sausage_Descend.png");
-			walkLeftAnim->SetTexture("Enemies/Sausage_Walk.png");
-			walkRightAnim->SetTexture("Enemies/Sausage_Walk.png");
-			deathAnim->SetTexture("Enemies/Sausage_Kill.png");
-			pepperedAnim->SetTexture("Enemies/Sausage_Peppered.png");
-			enemyType = EnemyType::SAUSAGE;
+			if (enemyToMake < 4)
+			{
+				climbAnim->SetTexture("Enemies/Sausage_Climb.png");
+				descendAnim->SetTexture("Enemies/Sausage_Descend.png");
+				walkLeftAnim->SetTexture("Enemies/Sausage_Walk.png");
+				walkRightAnim->SetTexture("Enemies/Sausage_Walk.png");
+				deathAnim->SetTexture("Enemies/Sausage_Kill.png");
+				pepperedAnim->SetTexture("Enemies/Sausage_Peppered.png");
+				enemyType = EnemyType::SAUSAGE;
+			}
+			else
+			{
+				climbAnim->SetTexture("Enemies/Pickle_Climb.png");
+				descendAnim->SetTexture("Enemies/Pickle_Descend.png");
+				walkLeftAnim->SetTexture("Enemies/Pickle_Walk.png");
+				walkRightAnim->SetTexture("Enemies/Pickle_Walk.png");
+				deathAnim->SetTexture("Enemies/Pickle_Kill.png");
+				pepperedAnim->SetTexture("Enemies/Pickle_Peppered.png");
+
+				enemyType = EnemyType::PICKLE;
+
+			}
+
+
 		}
 		else
 		{
-			climbAnim->SetTexture("Enemies/Pickle_Climb.png");
-			descendAnim->SetTexture("Enemies/Pickle_Descend.png");
-			walkLeftAnim->SetTexture("Enemies/Pickle_Walk.png");
-			walkRightAnim->SetTexture("Enemies/Pickle_Walk.png");
-			deathAnim->SetTexture("Enemies/Pickle_Kill.png");
-			pepperedAnim->SetTexture("Enemies/Pickle_Peppered.png");
+			if (enemyToMake < 4)
+			{
+				climbAnim->SetTexture("Enemies/Sausage_Climb.png");
+				descendAnim->SetTexture("Enemies/Sausage_Descend.png");
+				walkLeftAnim->SetTexture("Enemies/Sausage_Walk.png");
+				walkRightAnim->SetTexture("Enemies/Sausage_Walk.png");
+				pepperedAnim->SetTexture("Enemies/Sausage_Peppered.png");
+				deathAnim->SetTexture("Enemies/Sausage_Kill.png");
+				enemyType = EnemyType::SAUSAGE;
 
-			enemyType = EnemyType::PICKLE;
+			}
+			else if (enemyToMake > 3 && enemyToMake < 6)
+			{
+				climbAnim->SetTexture("Enemies/Pickle_Climb.png");
+				descendAnim->SetTexture("Enemies/Pickle_Descend.png");
+				walkLeftAnim->SetTexture("Enemies/Pickle_Walk.png");
+				walkRightAnim->SetTexture("Enemies/Pickle_Walk.png");
+				deathAnim->SetTexture("Enemies/Pickle_Kill.png");
+				pepperedAnim->SetTexture("Enemies/Pickle_Peppered.png");
 
-		}
+				enemyType = EnemyType::PICKLE;
+			}
+			else
+			{
+				climbAnim->SetTexture("Enemies/Egg_Climb.png");
+				descendAnim->SetTexture("Enemies/Egg_Descend.png");
+				walkLeftAnim->SetTexture("Enemies/Egg_Walk.png");
+				walkRightAnim->SetTexture("Enemies/Egg_Walk.png");
+				pepperedAnim->SetTexture("Enemies/Egg_Peppered.png");
 
-
-	}
-	else
-	{
-		if (enemyToMake < 4)
-		{
-			climbAnim->SetTexture("Enemies/Sausage_Climb.png");
-			descendAnim->SetTexture("Enemies/Sausage_Descend.png");
-			walkLeftAnim->SetTexture("Enemies/Sausage_Walk.png");
-			walkRightAnim->SetTexture("Enemies/Sausage_Walk.png");
-			pepperedAnim->SetTexture("Enemies/Sausage_Peppered.png");
-			deathAnim->SetTexture("Enemies/Sausage_Kill.png");
-			enemyType = EnemyType::SAUSAGE;
-
-		}
-		else if (enemyToMake > 3 && enemyToMake < 6)
-		{
-			climbAnim->SetTexture("Enemies/Pickle_Climb.png");
-			descendAnim->SetTexture("Enemies/Pickle_Descend.png");
-			walkLeftAnim->SetTexture("Enemies/Pickle_Walk.png");
-			walkRightAnim->SetTexture("Enemies/Pickle_Walk.png");
-			deathAnim->SetTexture("Enemies/Pickle_Kill.png");
-			pepperedAnim->SetTexture("Enemies/Pickle_Peppered.png");
-
-			enemyType = EnemyType::PICKLE;
-		}
-		else
-		{
-			climbAnim->SetTexture("Enemies/Egg_Climb.png");
-			descendAnim->SetTexture("Enemies/Egg_Descend.png");
-			walkLeftAnim->SetTexture("Enemies/Egg_Walk.png");
-			walkRightAnim->SetTexture("Enemies/Egg_Walk.png");
-			pepperedAnim->SetTexture("Enemies/Egg_Peppered.png");
-
-			deathAnim->SetTexture("Enemies/Egg_Kill.png");
-			m_EggPresent = true;
-			enemyType = EnemyType::EGG;
+				deathAnim->SetTexture("Enemies/Egg_Kill.png");
+				m_EggPresent = true;
+				enemyType = EnemyType::EGG;
+			}
 		}
 	}
+
 	auto enemy = std::make_shared<Enemy>(enemyType);
 	enemy->SetGameObject(enemyGo.get());
 	enemy->SetOverlapEvent();

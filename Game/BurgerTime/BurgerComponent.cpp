@@ -9,7 +9,8 @@ dae::BurgerComponent::BurgerComponent()
 	:m_Fall(false),
 	m_Caught(false),
 	m_LevelsToFall(0),
-	m_StartFall(false)
+	m_StartFall(false),
+	m_pPeterPepper(nullptr)
 {
 
 }
@@ -28,6 +29,11 @@ void dae::BurgerComponent::FixedUpdate(float /*elapsedSec*/)
 		m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetDirection(Float2{ 0, 100 });
 	}
 	m_StartFall = false;
+
+	if (m_Caught && GameManager::GetInstance().GetGameMode() == GameMode::VERSUS)
+	{
+		m_pParent->MarkForDelete();
+	}
 }
 
 void dae::BurgerComponent::ForceFall()
@@ -38,6 +44,16 @@ void dae::BurgerComponent::ForceFall()
 	}
 	m_Fall = true;
 	m_StartFall = true;
+}
+
+void dae::BurgerComponent::SetCaught(bool caught)
+{
+	m_Caught = caught;
+	if (caught)
+	{
+		std::shared_ptr<EventArgs> emptyArgs = std::make_shared<EventArgs>();
+		Notify(EventType::BURGERDROPPED, emptyArgs);
+	}
 }
 void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 {
@@ -60,10 +76,6 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 				m_LevelsToFall++;
 			}
 		}
-		//else if ((other->GetTransform().GetPosition().y <= m_pParent->GetTransform().GetPosition().y && m_Fall)
-		//	{
-
-		//	}
 	}
 	if (other->GetParent()->GetTag() == "Platform")
 	{
@@ -116,6 +128,16 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 
 		}
 
+	}
+	if (other->GetParent()->GetTag() == "EvilPeterPepper")
+	{
+		if (other->GetTransform().GetPosition().y > m_pParent->GetTransform().GetPosition().y && m_Fall)
+		{
+			if (!other->GetParent()->GetComponent<PeterPepperComponent>("EvilPeterPepper")->GetIsDead())
+			{
+				other->GetParent()->GetComponent<PeterPepperComponent>("EvilPeterPepper")->ReduceLife();
+			}
+		}
 	}
 	if (other->GetParent()->GetTag() == "Burger")
 	{

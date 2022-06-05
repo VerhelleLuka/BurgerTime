@@ -25,9 +25,11 @@ dae::PeterPepperComponent::PeterPepperComponent(int lives, Float2 spawnPos, bool
 	, m_VictoryDance(false)
 	, m_VictoryDanceTime(0.0f)
 	, m_SpawnPos(spawnPos)
-	,m_IsDead(false)
-	,m_IsEvil(isEvil)
-	,m_PepperShots(10)
+	, m_IsDead(false)
+	, m_IsEvil(isEvil)
+	, m_PepperShots(10)
+	,m_Stunned(false)
+	,m_StunTime(0.f)
 {
 	GameManager::GetInstance().AddObserver(this);
 }
@@ -38,14 +40,39 @@ dae::PeterPepperComponent::~PeterPepperComponent()
 
 void dae::PeterPepperComponent::Update(float elapsedSec)
 {
-	if (m_IsDead)
+	if (m_Stunned)
 	{
-		if(m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().GetFrameNr() == m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().GetNrFrames() -1)
+		m_StunTime += elapsedSec;
+		if (m_StunTime > m_StunTimer)
 		{
 			m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetStatic(false);
-			GameManager::GetInstance().ResetScene();
-			m_IsDead =  false;
+			m_Stunned = false;
+			m_StunTime = 0.f;
 		}
+	}
+
+	if (m_IsDead && !m_IsEvil)
+	{
+		if (m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().GetFrameNr() == m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().GetNrFrames() - 1)
+		{
+			m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().SetFrameNr(0);
+			m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetStatic(false);
+			GameManager::GetInstance().ResetScene();
+			m_IsDead = false;
+		}
+	}
+	else if (m_IsDead && m_IsEvil)
+	{
+		//Reset level logic
+		if (m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().GetFrameNr() == m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().GetNrFrames() - 1)
+		{
+			m_IsDead = false;
+			SceneManager::GetInstance().SetActiveSceneByName("MainMenu");
+			GameManager::GetInstance().ChangePlayer();
+			
+		}
+
+		
 	}
 	if (m_VictoryDance)
 	{
@@ -106,7 +133,7 @@ void dae::PeterPepperComponent::FixedUpdate(float /*elapsedSec*/)
 		{
 
 		}
-		else if (overlappingBodies[i]->GetWidth() > -0.0001f && overlappingBodies[i]->GetWidth() < 0.000001f)
+		else if (overlappingBodies[i]->GetWidth() > -0.1f && overlappingBodies[i]->GetWidth() < 0.1f)
 		{
 
 		}
@@ -169,7 +196,7 @@ void dae::PeterPepperComponent::ChangeState(int state = 0)
 {
 	m_State = static_cast<PeterPepperState>(state);
 	std::shared_ptr<SpriteEventArgs> args = std::make_shared<SpriteEventArgs>();
-	if (m_VictoryDance || m_IsDead)
+	if (m_VictoryDance || m_IsDead ||m_Stunned)
 	{
 		return;
 	}
@@ -203,14 +230,21 @@ void dae::PeterPepperComponent::ButtonPress()
 		Notify(EventType::LOADLEVEL, emptyArgs);
 	}
 }
+void dae::PeterPepperComponent::Stun()
+{
+
+}
 void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 {
 	if (other->GetParent())
 	{
+		//if (m_pParent->GetTag() == "EvilPeterPepper")
+		//{
+		//	std::cout << "YEEEE\n";
+		//}
 		if (other->GetParent()->GetTag() == "Button")
 		{
 			other->GetParent()->GetComponent<ButtonComponent>("ButtonComp")->SetOverlapping(true);
-			std::cout << "Overlap\n";
 			m_OverlappingButton = true;
 			return;
 		}
@@ -248,7 +282,7 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 			}
 			return;
 		}
-		if (other->GetParent()->GetTag() == "Enemy")
+		if (other->GetParent()->GetTag() == "Enemy" && !m_IsEvil && !m_IsDead)
 		{
 			if (!other->GetParent()->GetComponent<Enemy>("Enemy")->GetFalling() &&
 				!other->GetParent()->GetComponent<Enemy>("Enemy")->GetDead() &&
@@ -256,6 +290,10 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 				!m_VictoryDance)
 				ReduceLife();
 			return;
+		}
+		else if (other->GetParent()->GetTag() == "EvilPeterPepper" && !m_IsEvil)
+		{
+			ReduceLife();
 		}
 
 		//if it's a ladder
@@ -271,11 +309,21 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 			{
 				m_CanClimb = true;
 			}
-			//std::cout << other->GetParent()->GetComponent<LadderComponent>("LadderComp")->GetHasUp() << "<-- Has up |Has down -->" << other->GetParent()->GetComponent<LadderComponent>("LadderComp")->GetHasDown() << "\n";
-			if (m_pParent->GetTransform().GetPosition().y + m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->GetHeight() + m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->GetOffset().y <= ladderPos.y + ladderHeight /*||
-				other->GetParent()->GetComponent<LadderComponent>("LadderComp")->GetHasDown()*/)
+			if (m_pParent->GetTransform().GetPosition().y +
+				m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->GetHeight() + 
+				m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->GetOffset().y <= ladderPos.y + ladderHeight)
 			{
 				m_CanDescend = true;
+			}
+		}
+		if (other->GetParent()->GetTag() == "Pepper" && m_IsEvil)
+		{
+			if (!m_Stunned)
+			{
+				m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetStatic(true);
+				Stun();
+				m_Stunned = true;
+				m_pParent->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Stunned");
 			}
 		}
 		return;
@@ -299,7 +347,6 @@ void dae::PeterPepperComponent::OnTriggerExit(RigidBodyComponent* other)
 	if (other->GetParent()->GetTag() == "Button")
 	{
 		other->GetParent()->GetComponent<ButtonComponent>("ButtonComp")->SetOverlapping(false);
-		std::cout << "OverlapExit\n";
 		m_OverlappingButton = false;
 	}
 }

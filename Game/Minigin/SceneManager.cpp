@@ -61,6 +61,7 @@ void dae::SceneManager::SetActiveSceneByName(const std::string& name)
 		{
 			m_SceneChanged = true;
 			m_pActiveScene = scene.get();
+			Physics::GetInstance().SetSceneNr(scene->GetIndex());
 			return;
 		}
 	}

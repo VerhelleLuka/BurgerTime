@@ -8,6 +8,7 @@
 #include "PeterPepper.h"
 #include "Enemy.h"
 #include "BurgerComponent.h"
+#include "InputManager.h"
 dae::GameManager::GameManager()
 	: m_pBurgerTime(nullptr),
 	m_Points(0),
@@ -38,9 +39,9 @@ void dae::GameManager::BurgerCompleted()
 		++m_CurrentLevelIndex;
 		m_LevelComplete = true;
 		std::shared_ptr<EventArgs> emptyArgs = std::make_shared<EventArgs>();
-		Notify(EventType::WIN,emptyArgs);
+		Notify(EventType::WIN, emptyArgs);
 	}
-	
+
 }
 //
 void dae::GameManager::LoadLevel(bool incrementIndex)
@@ -59,7 +60,20 @@ void dae::GameManager::LoadLevel(bool incrementIndex)
 		m_pBurgerTime->LoadLevel1(m_GameMode, m_LevelNames[m_CurrentLevelIndex]);
 	}
 }
+void dae::GameManager::ChangePlayer()
+{
+	auto& scene = SceneManager::GetInstance().GetActiveScene();
 
+	auto& sceneObjects = scene.GetSceneObjects();
+
+	for (auto& object : sceneObjects)
+	{
+		if (dynamic_cast<GameObject*>(object.get())->GetComponent<PeterPepperComponent>("PeterPepper"))
+		{
+			InputManager::GetInstance().SetPlayer(dynamic_cast<GameObject*>(object.get()), 0);
+		}
+	}
+}
 void dae::GameManager::ResetScene()
 {
 	auto& scene = SceneManager::GetInstance().GetActiveScene();
