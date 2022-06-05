@@ -46,11 +46,22 @@ void dae::Enemy::Initialize(Scene& scene)
 	if (!m_Initialized)
 	{
 		auto sceneObjects = scene.GetSceneObjects();
+		bool foundOne = false;
 		for (int i = 0; i < sceneObjects.size(); ++i)
 		{
 			if (dynamic_cast<GameObject*>(sceneObjects[i].get())->GetComponent<PeterPepperComponent>("PeterPepper").get())
 			{
+				if (!foundOne)
+				{
+					foundOne = true;
 				m_pPeter1Transform = &dynamic_cast<GameObject*>(sceneObjects[i].get())->GetTransform();
+
+				}
+				else
+				{
+					m_pPeter2Transform = &dynamic_cast<GameObject*>(sceneObjects[i].get())->GetTransform();
+
+				}
 			}
 		}
 	}
@@ -77,6 +88,7 @@ void dae::Enemy::Initialize(Scene& scene)
 
 void dae::Enemy::FixedUpdate(float /*elapsedTime*/)
 {
+	std::cout << m_pPeter1Transform->GetPosition().x << " " << m_pPeter1Transform->GetPosition().y << "\n";
 	m_pEnemyState->Update();
 }
 
@@ -232,7 +244,7 @@ void dae::Enemy::OnOverlap(RigidBodyComponent* other)
 			if (!other->GetParent()->GetComponent<PlatformComponent>("PlatformComp")->GetHasPrevious())
 			{
 				//And the overlap is at its end
-				if (m_pParent->GetTransform().GetPosition().x < platformPos.x /*&& !m_JustSpawned*/)
+				if (m_pParent->GetTransform().GetPosition().x < platformPos.x)
 				{
 					m_CanWalkLeft = false;
 				}

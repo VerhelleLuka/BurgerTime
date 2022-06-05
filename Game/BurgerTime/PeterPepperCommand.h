@@ -92,14 +92,14 @@ namespace dae
 		{
 			m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ButtonPress();
 			auto sceneObjects = SceneManager::GetInstance().GetActiveScene().GetSceneObjects();
-			for (int i = 0; i < sceneObjects.size(); ++i)
-			{
-				if (dynamic_cast<GameObject*>(sceneObjects[i].get())->GetComponent<PeterPepperComponent>("PeterPepper").get())
-				{
+			//for (int i = 0; i < sceneObjects.size(); ++i)
+			//{
+			//	if (dynamic_cast<GameObject*>(sceneObjects[i].get())->GetComponent<PeterPepperComponent>("PeterPepper").get())
+			//	{
 
-					InputManager::GetInstance().SetPlayer(dynamic_cast<GameObject*>(sceneObjects[i].get()), 0);
-				}
-			}
+			//		InputManager::GetInstance().SetPlayer(dynamic_cast<GameObject*>(sceneObjects[i].get()), 0);
+			//	}
+			//}
 		}
 	};
 	class Pepper final : public Command
