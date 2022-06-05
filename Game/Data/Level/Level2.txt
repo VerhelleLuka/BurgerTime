@@ -93,10 +93,10 @@ ld 8 4
 ld 8 6
 ld 8 7
 ld 8 8
-b 0 5 Top_bun
-b 0 9 Top_bun
-b 1 3 Top_bun
-b 1 7 Top_bun
+#b 0 5 Top_bun
+#b 0 9 Top_bun
+#b 1 3 Top_bun
+#b 1 7 Top_bun
 b 2 5 Cheese
 b 2 9 Lettuce
 b 3 3 Patty
@@ -106,8 +106,8 @@ b 4 9 Tomato
 b 5 3 Lettuce
 b 5 7 Cheese
 b 6 5 Cheese
-b 6 9 Bottom_bun
+b 6 9 Top_bun
 b 7 7 Patty
-b 8 5 Bottom_bun
-b 9 3 Bottom_bun
-b 9 7 Bottom_bun
+#b 8 5 Bottom_bun
+#b 9 3 Bottom_bun
+#b 9 7 Bottom_bun

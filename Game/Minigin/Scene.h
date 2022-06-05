@@ -27,6 +27,8 @@ namespace dae
 		Scene& operator=(Scene&& other) = delete;
 		void MarkForDestroy() { m_MarkedForDestroy = true; }
 		bool GetMarkedForDestroy() const { return m_MarkedForDestroy; }
+		void SetEmpty(bool empty) { m_Empty = empty; }
+		bool GetEmpty() const { return m_Empty; }
 	private: 
 		explicit Scene(const std::string& name);
 
@@ -37,6 +39,7 @@ namespace dae
 		static unsigned int m_IdCounter; 
 		
 		bool m_MarkedForDestroy;
+		bool m_Empty;
 	};
 
 }

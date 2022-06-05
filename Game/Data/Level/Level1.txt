@@ -130,7 +130,8 @@ b 5 7 Patty
 b 6 9 Patty
 #b 7 3 Patty
 b 7 5 Patty
+b 7 7 Top_bun
 #b 9 3 Bottom_bun
 b 9 5 Bottom_bun
 b 9 7 Bottom_bun
-b 9 9 Top_bun
+b 9 9 Bottom_bun

@@ -722,10 +722,6 @@ void dae::BurgerTime::CreateTray(Scene& scene, int /*sceneNr*/, Float2 position)
 
 void dae::BurgerTime::LoadLevel1(GameMode gameMode, const std::string& levelName) const
 {
-	if (gameMode == GameMode::VERSUS && levelName != "Level1")
-	{
-
-	}
 	auto scenes = SceneManager::GetInstance().GetScenes();
 	bool sceneAlreadyExists = false;
 	for (auto& scene : scenes)
@@ -734,6 +730,7 @@ void dae::BurgerTime::LoadLevel1(GameMode gameMode, const std::string& levelName
 		{
 			sceneAlreadyExists = true;
 			scene->GetSceneObjects().clear();
+			scene->SetEmpty(true);
 		}
 	}
 	if (sceneAlreadyExists)

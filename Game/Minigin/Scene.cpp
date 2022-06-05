@@ -7,7 +7,8 @@ using namespace dae;
 unsigned int Scene::m_IdCounter = 0;
 
 Scene::Scene(const std::string& name) : m_Name(name),
-m_MarkedForDestroy(false)
+m_MarkedForDestroy(false),
+m_Empty(false)
 {}
 
 Scene::~Scene() = default;

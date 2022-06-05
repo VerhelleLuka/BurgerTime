@@ -32,6 +32,7 @@ dae::PeterPepperComponent::PeterPepperComponent(int lives, Float2 spawnPos, bool
 	, m_StunTime(0.f)
 	, m_LevelLoaded(false)
 {
+	if(SceneManager::GetInstance().GetActiveSceneName() != "MainMenu")
 	GameManager::GetInstance().AddObserver(this);
 }
 
@@ -51,37 +52,6 @@ void dae::PeterPepperComponent::Update(float elapsedSec)
 			m_StunTime = 0.f;
 		}
 	}
-
-	if (m_IsDead && !m_IsEvil)
-	{
-		if (m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().GetFrameNr() == m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().GetNrFrames() - 1)
-		{
-			m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().SetFrameNr(0);
-			m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetStatic(false);
-			GameManager::GetInstance().ResetScene(false);
-			m_IsDead = false;
-			if (m_Lives == 0)
-			{
-				GameManager::GetInstance().ResetScene(true);
-				SceneManager::GetInstance().SetActiveSceneByName("MainMenu");
-				GameManager::GetInstance().ChangePlayer();
-			}
-		}
-	}
-	else if (m_IsDead && m_IsEvil)
-	{
-		//Reset level logic
-		if (m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().GetFrameNr() == m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().GetNrFrames() - 1)
-		{
-			m_IsDead = false;
-			GameManager::GetInstance().ResetScene(true);
-			SceneManager::GetInstance().SetActiveSceneByName("MainMenu");
-			GameManager::GetInstance().ChangePlayer();
-			
-		}
-
-		
-	}
 	if (m_VictoryDance)
 	{
 		m_VictoryDanceTime += elapsedSec;
@@ -89,10 +59,53 @@ void dae::PeterPepperComponent::Update(float elapsedSec)
 		{
 			m_VictoryDance = false;
 			m_VictoryDanceTime = 0.f;
-			GameManager::GetInstance().LoadLevel(false);
+			if (GameManager::GetInstance().GetGameMode() != GameMode::SINGLE)
+			{
+				GameManager::GetInstance().ResetScene(true);
+				SceneManager::GetInstance().SetActiveSceneByName("MainMenu");
+				GameManager::GetInstance().ChangePlayer();
+			}
+			else
+			{
+				GameManager::GetInstance().ResetScene(true);
+				GameManager::GetInstance().LoadLevel(false);
+
+			}
+			m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetStatic(false);
+
 
 		}
 	}
+	if (m_IsDead)
+	{
+		if (!m_IsEvil)
+		{
+			if (m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().GetFrameNr() == m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().GetNrFrames() - 1)
+			{
+				m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().SetFrameNr(0);
+				m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetStatic(false);
+				GameManager::GetInstance().ResetScene(false);
+				m_IsDead = false;
+				if (m_Lives == 0)
+				{
+				
+					GameManager::GetInstance().ResetScene(true);
+					SceneManager::GetInstance().SetActiveSceneByName("MainMenu");
+					GameManager::GetInstance().ChangePlayer();
+				}
+			}
+		}
+		else if (m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().GetFrameNr() == m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().GetNrFrames() - 1)
+		{
+			m_IsDead = false;
+			GameManager::GetInstance().ResetScene(true);
+			SceneManager::GetInstance().SetActiveSceneByName("MainMenu");
+			GameManager::GetInstance().ChangePlayer();		
+		}
+
+		
+	}
+
 
 	if (!m_CanClimb && !m_CanDescend && !m_CanWalkLeft && !m_CanWalkRight)
 	{
@@ -191,8 +204,9 @@ void dae::PeterPepperComponent::ReduceLife()
 }
 void dae::PeterPepperComponent::OnNotify(EventType event_, std::shared_ptr<EventArgs> /*args*/)
 {
-	if (event_ == EventType::WIN)
+	if (event_ == EventType::WIN && !m_VictoryDance)
 	{
+		if(SceneManager::GetInstance().GetActiveSceneName() != "MainMenu")
 		GameManager::GetInstance().AddPoints(m_Points);
 		m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetStatic(true);
 		m_pParent->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Victory");
