@@ -7,6 +7,7 @@
 #include "SceneObject.h"
 #include "Scene.h"
 #include <string>
+#include "PepperComponent.h"
 namespace dae
 {
 	class MoveRight final : public Command
@@ -148,6 +149,8 @@ namespace dae
 				pepperSprite->GetAnimation().GetScaledHeight(),
 				true);
 
+			auto pepper = std::make_shared<PepperComponent>();
+			pepperGo->AddComponent(pepper, "PepperComp");
 			pepperGo->AddComponent(pRigidBody, "Pepper");
 
 			if (m_pGameObject->GetComponent<SpriteComponent>("Sprite")->GetAnimationName() == "RunRight")

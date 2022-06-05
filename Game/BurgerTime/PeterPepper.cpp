@@ -106,7 +106,11 @@ void dae::PeterPepperComponent::FixedUpdate(float /*elapsedSec*/)
 		{
 
 		}
-		if (overlappingBodies[i]->GetWidth() > -0.0001f && overlappingBodies[i]->GetWidth() < 0.000001f)
+		else if (overlappingBodies[i]->GetWidth() > -0.0001f && overlappingBodies[i]->GetWidth() < 0.000001f)
+		{
+
+		}
+		else if (overlappingBodies[i]->GetParent()->GetMarkForDelete())
 		{
 
 		}

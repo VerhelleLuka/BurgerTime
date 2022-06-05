@@ -28,6 +28,7 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="LevelParser.h" />
     <ClInclude Include="LivesDisplayComponent.h" />
+    <ClInclude Include="PepperComponent.h" />
     <ClInclude Include="PeterPepper.h" />
     <ClInclude Include="PeterPepperCommand.h" />
     <ClInclude Include="PlatformComponent.h" />
@@ -45,6 +46,7 @@
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="LivesDisplayComponent.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="PepperComponent.cpp" />
     <ClCompile Include="PeterPepper.cpp" />
     <ClCompile Include="PlatformComponent.cpp" />
     <ClCompile Include="PointsDisplayComponent.cpp" />
