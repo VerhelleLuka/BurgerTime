@@ -122,8 +122,6 @@ void dae::Enemy::Kill()
 	delete m_pEnemyState;
 	m_pEnemyState = new Dying;
 	Reinitialize();
-
-
 }
 void dae::Enemy::Fall()
 {

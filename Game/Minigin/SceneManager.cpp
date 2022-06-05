@@ -25,19 +25,23 @@ void dae::SceneManager::FixedUpdate(float deltaTime)
 {
 	if (m_pActiveScene)
 		m_pActiveScene->FixedUpdate(deltaTime);
-	for (auto& scene : m_Scenes)
-	{
-		if (scene)
-			if (scene->GetMarkedForDestroy())
-				DestroyScene();
-	}
-
 }
 
 void dae::SceneManager::Render()
 {
 	if (m_pActiveScene)
 		m_pActiveScene->Render();
+
+	for (size_t i = 0; i < m_Scenes.size(); i++)
+	{
+		if (m_Scenes[i]->GetMarkedForDestroy())
+		{
+			auto it = m_Scenes.begin();
+			std::advance(it, i);
+			m_Scenes.erase(it);
+		}
+	}
+
 }
 
 dae::Scene& dae::SceneManager::CreateScene(const std::string& name)
@@ -95,7 +99,7 @@ void dae::SceneManager::DestroyScene()
 
 	for (size_t i = 0; i < m_Scenes.size(); i++)
 	{
-		if (m_Scenes[i].get() == m_pActiveScene)
+		if (m_Scenes[i].get()->GetMarkedForDestroy())
 			m_Scenes[i]->GetSceneObjects().clear();
 	}
 }

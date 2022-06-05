@@ -21,7 +21,7 @@ namespace dae
 		GameManager& operator=(GameManager&& other) = delete;
 
 		void SetBurgerTimeGame(BurgerTime* burgerTime);
-		void LoadLevel( bool incrementIndex) ;
+		void LoadLevel( const std::string& levelName) ;
 
 		void SetNrOfBurgers(int nrBurgers) { m_NrBurgers = nrBurgers; }
 		void ResetCompletedBurgers() { m_CompletedBurgers = 0; }
@@ -37,8 +37,12 @@ namespace dae
 		void ChangePlayer();
 		GameMode GetGameMode() const { return m_GameMode; }
 
+		void ReduceLife() { --m_Lives; }
+		int GetLives() const { return m_Lives; }
+
 	private:
 		int m_Points;
+		int m_Lives;
 		BurgerTime* m_pBurgerTime;
 		GameMode m_GameMode;
 		int m_NrBurgers;

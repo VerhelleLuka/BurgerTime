@@ -32,12 +32,20 @@ dae::PeterPepperComponent::PeterPepperComponent(int lives, Float2 spawnPos, bool
 	, m_StunTime(0.f)
 	, m_LevelLoaded(false)
 {
-	if(SceneManager::GetInstance().GetActiveSceneName() != "MainMenu")
-	GameManager::GetInstance().AddObserver(this);
+	if (SceneManager::GetInstance().GetActiveSceneName() != "MainMenu")
+		GameManager::GetInstance().AddObserver(this);
 }
 
 dae::PeterPepperComponent::~PeterPepperComponent()
 {
+	GameManager::GetInstance().RemoveObserver(this);
+
+}
+
+void dae::PeterPepperComponent::Initialize(Scene& /*scene*/)
+{
+	std::shared_ptr<EventArgs> emptyArgs = std::make_shared<EventArgs>();
+	Notify(EventType::LOSTLIFE, emptyArgs);
 }
 
 void dae::PeterPepperComponent::Update(float elapsedSec)
@@ -59,18 +67,8 @@ void dae::PeterPepperComponent::Update(float elapsedSec)
 		{
 			m_VictoryDance = false;
 			m_VictoryDanceTime = 0.f;
-			if (GameManager::GetInstance().GetGameMode() != GameMode::SINGLE)
-			{
-				GameManager::GetInstance().ResetScene(true);
-				SceneManager::GetInstance().SetActiveSceneByName("MainMenu");
-				GameManager::GetInstance().ChangePlayer();
-			}
-			else
-			{
-				GameManager::GetInstance().ResetScene(true);
-				GameManager::GetInstance().LoadLevel(false);
 
-			}
+			GameManager::GetInstance().LoadLevel("Not Same");
 			m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetStatic(false);
 
 
@@ -84,14 +82,18 @@ void dae::PeterPepperComponent::Update(float elapsedSec)
 			{
 				m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().SetFrameNr(0);
 				m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetStatic(false);
-				GameManager::GetInstance().ResetScene(false);
 				m_IsDead = false;
-				if (m_Lives == 0)
+
+				if (GameManager::GetInstance().GetLives() == 0)
 				{
-				
+
 					GameManager::GetInstance().ResetScene(true);
-					SceneManager::GetInstance().SetActiveSceneByName("MainMenu");
 					GameManager::GetInstance().ChangePlayer();
+				}
+				else
+				{
+					GameManager::GetInstance().ResetScene(false);
+
 				}
 			}
 		}
@@ -99,11 +101,10 @@ void dae::PeterPepperComponent::Update(float elapsedSec)
 		{
 			m_IsDead = false;
 			GameManager::GetInstance().ResetScene(true);
-			SceneManager::GetInstance().SetActiveSceneByName("MainMenu");
-			GameManager::GetInstance().ChangePlayer();		
+			GameManager::GetInstance().ChangePlayer();
 		}
 
-		
+
 	}
 
 
@@ -172,7 +173,6 @@ void dae::PeterPepperComponent::FixedUpdate(float /*elapsedSec*/)
 		m_CanWalkLeft = false;
 		m_CanWalkRight = false;
 	}
-
 }
 void dae::PeterPepperComponent::AddPoints(int points)
 {
@@ -193,8 +193,9 @@ void dae::PeterPepperComponent::ReduceLife()
 {
 	if (m_Lives > 0)
 	{
+		--m_Lives;
+		GameManager::GetInstance().ReduceLife();
 		std::shared_ptr<EventArgs> emptyArgs = std::make_shared<EventArgs>();
-		m_Lives--;
 		Notify(EventType::LOSTLIFE, emptyArgs);
 		m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetStatic(true);
 		m_pParent->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Death");
@@ -206,8 +207,8 @@ void dae::PeterPepperComponent::OnNotify(EventType event_, std::shared_ptr<Event
 {
 	if (event_ == EventType::WIN && !m_VictoryDance)
 	{
-		if(SceneManager::GetInstance().GetActiveSceneName() != "MainMenu")
-		GameManager::GetInstance().AddPoints(m_Points);
+		if (SceneManager::GetInstance().GetActiveSceneName() != "MainMenu")
+			GameManager::GetInstance().AddPoints(m_Points);
 		m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetStatic(true);
 		m_pParent->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Victory");
 		m_VictoryDance = true;
@@ -219,7 +220,7 @@ void dae::PeterPepperComponent::ChangeState(int state = 0)
 {
 	m_State = static_cast<PeterPepperState>(state);
 	std::shared_ptr<SpriteEventArgs> args = std::make_shared<SpriteEventArgs>();
-	if (m_VictoryDance || m_IsDead ||m_Stunned)
+	if (m_VictoryDance || m_IsDead || m_Stunned)
 	{
 		return;
 	}
@@ -335,7 +336,7 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 				m_CanClimb = true;
 			}
 			if (m_pParent->GetTransform().GetPosition().y +
-				m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->GetHeight() + 
+				m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->GetHeight() +
 				m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->GetOffset().y <= ladderPos.y + ladderHeight)
 			{
 				m_CanDescend = true;

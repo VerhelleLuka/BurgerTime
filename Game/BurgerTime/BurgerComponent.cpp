@@ -12,9 +12,8 @@ dae::BurgerComponent::BurgerComponent()
 	m_StartFall(false),
 	m_pPeterPepper(nullptr)
 {
-
 }
-
+//dae::BurgerComponent::~BurgerComponent()}
 void dae::BurgerComponent::Initialize()
 {
 	for (int i{}; i < m_NrParts; ++i)

@@ -388,6 +388,7 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 		peterPepperGo->SetTransform(level1Pos.x, level1Pos.y, 0);
 
 	}
+	peterPepper->Initialize(scene);
 
 }
 
@@ -722,34 +723,26 @@ void dae::BurgerTime::CreateTray(Scene& scene, int /*sceneNr*/, Float2 position)
 
 void dae::BurgerTime::LoadLevel1(GameMode gameMode, const std::string& levelName) const
 {
-	auto scenes = SceneManager::GetInstance().GetScenes();
-	bool sceneAlreadyExists = false;
-	for (auto& scene : scenes)
+	if (levelName == "MainMenu")
 	{
-		if (scene->GetName() == levelName)
-		{
-			sceneAlreadyExists = true;
-			scene->GetSceneObjects().clear();
-			scene->SetEmpty(true);
-		}
+		auto& menuScene = SceneManager::GetInstance().CreateScene("MainMenu");
+		SceneManager::GetInstance().SetActiveScene(&menuScene);
+		CreateMenu(menuScene);
+		return;
 	}
-	if (sceneAlreadyExists)
-		SceneManager::GetInstance().SetActiveSceneByName(levelName);
-	else
-	{
-		 
-		SceneManager::GetInstance().SetActiveScene(&SceneManager::GetInstance().CreateScene(levelName));
-	}
-	std::vector<Float2> enemySpawnPositions = ParseLevel(SceneManager::GetInstance().GetActiveScene(), GameManager::GetInstance().GetLevelIndex(), levelName);
+	auto& levelScene = SceneManager::GetInstance().CreateScene(levelName);
+	SceneManager::GetInstance().SetActiveScene(&levelScene);
 
-	CreatePeterPepperAndHUD(Transform(), SceneManager::GetInstance().GetActiveScene(), 0, true);
+	std::vector<Float2> enemySpawnPositions = ParseLevel(levelScene, 0, levelName);
+
+	CreatePeterPepperAndHUD(Transform(), levelScene, 0, true);
 	if (gameMode == GameMode::COOP)
 	{
-		CreatePeterPepperAndHUD(Transform(), SceneManager::GetInstance().GetActiveScene(), 1, true);
+		CreatePeterPepperAndHUD(Transform(), levelScene, 1, true);
 	}
 	else if (gameMode == GameMode::VERSUS)
 	{
-		CreateEvilPepper(Transform(), SceneManager::GetInstance().GetActiveScene(), 1);
+		CreateEvilPepper(Transform(), levelScene, 1);
 	}
 	GameManager::GetInstance().SetEnemySpawns(enemySpawnPositions);
 	MakeEnemySpawner(enemySpawnPositions);

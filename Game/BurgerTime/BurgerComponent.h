@@ -15,8 +15,8 @@ namespace dae
 		virtual void Render() const override {};
 		void Initialize();
 		BurgerComponent();
-		virtual ~BurgerComponent()
-		{}
+		virtual ~BurgerComponent() {}
+		
 
 		void SetOverlapEvent()
 		{

@@ -34,11 +34,7 @@ void Scene::Update(float deltaTime)
 	{
 		if (!m_MarkedForDestroy)
 			m_Objects[i]->Update(deltaTime);
-		if (m_Objects[i]->GetMarkForDelete())
-		{
-			m_Objects[i] = nullptr;
-			m_Objects.erase(std::remove(m_Objects.begin(), m_Objects.end(), m_Objects[i]), m_Objects.end());
-		}
+
 	}
 
 

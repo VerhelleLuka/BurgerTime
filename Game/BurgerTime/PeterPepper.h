@@ -29,7 +29,7 @@ namespace dae
 		virtual void Update(float deltaTime);
 		virtual void FixedUpdate(float /*deltaTime*/) override;
 		virtual void Render() const {};
-
+		virtual void Initialize(Scene& scene) override;
 		PeterPepperComponent(int lives, Float2 m_SpawnPos, bool isEvil);
 		virtual ~PeterPepperComponent();
 

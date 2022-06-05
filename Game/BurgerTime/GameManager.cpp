@@ -15,7 +15,8 @@ dae::GameManager::GameManager()
 	m_NrBurgers(0),
 	m_CompletedBurgers(0),
 	m_CurrentLevelIndex(0),
-	m_LevelComplete(false)
+	m_LevelComplete(false),
+	m_Lives(3)
 {
 	m_LevelNames.push_back("MainMenu");
 	for (int i{ 0 }; i < 3; ++i)
@@ -33,6 +34,7 @@ void dae::GameManager::SetBurgerTimeGame(BurgerTime* burgerTime)
 void dae::GameManager::BurgerCompleted()
 {
 	m_CompletedBurgers++;
+	std::cout << m_CompletedBurgers << " " << m_NrBurgers << "\n";
 	if (m_CompletedBurgers >= m_NrBurgers && !m_LevelComplete && SceneManager::GetInstance().GetActiveScene().GetName() != "MainMenu")
 	{
 		m_CompletedBurgers = 0;
@@ -45,26 +47,37 @@ void dae::GameManager::BurgerCompleted()
 
 }
 //
-void dae::GameManager::LoadLevel(bool incrementIndex)
+void dae::GameManager::LoadLevel(const std::string& levelName)
 {
-	if (incrementIndex)
+	SceneManager::GetInstance().GetActiveScene().MarkForDestroy();
+	if (levelName == "MainMenu")
 	{
-		++m_CurrentLevelIndex;
+		m_pBurgerTime->LoadLevel1(m_GameMode, "MainMenu");
 	}
-	if (m_pBurgerTime)
+	else if (levelName == "Same")
 	{
-		if (m_LevelComplete)
-		{
-			m_LevelComplete = false;
-			m_CompletedBurgers = 0;
-		}
-		m_pBurgerTime->LoadLevel1(m_GameMode, m_LevelNames[m_CurrentLevelIndex]);
-
+		m_pBurgerTime->LoadLevel1(m_GameMode, SceneManager::GetInstance().GetActiveSceneName());
+	}
+	else if (SceneManager::GetInstance().GetActiveSceneName() == "MainMenu")
+	{
+		m_pBurgerTime->LoadLevel1(m_GameMode, "Level1");
+	}
+	else if (SceneManager::GetInstance().GetActiveSceneName() == "Level1")
+	{
+		m_pBurgerTime->LoadLevel1(m_GameMode, "Level2");
+	}
+	else if (SceneManager::GetInstance().GetActiveSceneName() == "Level2")
+	{
+		m_pBurgerTime->LoadLevel1(m_GameMode, "Level3");
+	}
+	else if (SceneManager::GetInstance().GetActiveSceneName() == "Level3")
+	{
+		m_pBurgerTime->LoadLevel1(m_GameMode, "MainMenu");
 	}
 }
 void dae::GameManager::ChangePlayer()
 {
-	
+
 	auto& scene = SceneManager::GetInstance().GetActiveScene();
 
 	auto& sceneObjects = scene.GetSceneObjects();
@@ -75,7 +88,7 @@ void dae::GameManager::ChangePlayer()
 		{
 			pepperFound = true;
 			InputManager::GetInstance().SetPlayer(dynamic_cast<GameObject*>(object.get()), 0);
-			InputManager::GetInstance().SetPlayer(nullptr,1);
+			InputManager::GetInstance().SetPlayer(nullptr, 1);
 		}
 	}
 
@@ -83,32 +96,15 @@ void dae::GameManager::ChangePlayer()
 void dae::GameManager::ResetScene(bool fullReset)
 {
 	auto& scene = SceneManager::GetInstance().GetActiveScene();
-	scene.SetEmpty(true);
-	auto& sceneObjects = scene.GetSceneObjects();
-
-	for (auto& object : sceneObjects)
+	scene.MarkForDestroy();
+	if (!fullReset)
 	{
-		if (dynamic_cast<GameObject*>(object.get())->GetComponent<PeterPepperComponent>("PeterPepper"))
-		{
-			dynamic_cast<GameObject*>(object.get())->SetTransform(dynamic_cast<GameObject*>(object.get())->GetComponent<PeterPepperComponent>("PeterPepper")->GetSpawnPos().x,
-				dynamic_cast<GameObject*>(object.get())->GetComponent<PeterPepperComponent>("PeterPepper")->GetSpawnPos().y, 0.f);
-		}
-		else if (dynamic_cast<GameObject*>(object.get())->GetComponent<Enemy>("Enemy"))
-		{
-			dynamic_cast<GameObject*>(object.get())->GetComponent<Enemy>("Enemy")->Kill();
-		}
-		else if (dynamic_cast<GameObject*>(object.get())->GetTag() == "Enemy")
-		{
-			dynamic_cast<GameObject*>(object.get())->GetComponent<Enemy>("Enemy")->Kill();
-		}
-
-		if (fullReset)
-		{
-			dynamic_cast<GameObject*>(object.get())->MarkForDelete();
-		}
+		LoadLevel("Same");
 	}
-	if (fullReset)
+	else
 	{
-		m_CompletedBurgers = 0;
+		LoadLevel("MainMenu");
 	}
+	m_CompletedBurgers = 0;
+	m_LevelComplete = false;
 }
