@@ -88,7 +88,25 @@ void dae::Enemy::Initialize(Scene& scene)
 
 void dae::Enemy::FixedUpdate(float /*elapsedTime*/)
 {
-	std::cout << m_pPeter1Transform->GetPosition().x << " " << m_pPeter1Transform->GetPosition().y << "\n";
+	//Calculate closest peter pepper
+	if (m_pPeter2Transform)
+	{
+		Float2 distance1 = { m_pParent->GetTransform().GetPosition().x - m_pPeter1Transform->GetPosition().x,m_pParent->GetTransform().GetPosition().y - m_pPeter1Transform->GetPosition().y };
+		Float2 distance2 = { m_pParent->GetTransform().GetPosition().x - m_pPeter2Transform->GetPosition().x,m_pParent->GetTransform().GetPosition().y - m_pPeter2Transform->GetPosition().y };
+
+
+		float length1 = sqrtf(powf(distance1.x, 2) + powf(distance1.y, 2));
+		float length2 = sqrtf(powf(distance2.x, 2) + powf(distance2.y, 2));
+		if (length1 <= length2)
+			m_PeterPepperToChase.SetPosition(m_pPeter1Transform->GetPosition().x, m_pPeter1Transform->GetPosition().y, 0.f);
+		else
+			m_PeterPepperToChase.SetPosition(m_pPeter2Transform->GetPosition().x, m_pPeter2Transform->GetPosition().y, 0.f);
+	}
+	else
+	{
+		m_PeterPepperToChase.SetPosition(m_pPeter1Transform->GetPosition().x, m_pPeter1Transform->GetPosition().y, 0.f);
+	}
+
 	m_pEnemyState->Update();
 }
 
@@ -132,6 +150,7 @@ void dae::Enemy::Stun()
 }
 void dae::Enemy::Update(float elapsedTime)
 {
+	
 	if (m_IsFalling && !m_SwitchBehavior)
 	{
 		Kill();
@@ -162,7 +181,7 @@ void dae::Enemy::Update(float elapsedTime)
 		m_StuckTime += elapsedTime;
 		if (m_StuckTime >= m_StuckTimer)
 		{
-			if (m_CanWalkLeft && m_pParent->GetTransform().GetPosition().x > m_pPeter1Transform->GetPosition().x)
+			if (m_CanWalkLeft && m_pParent->GetTransform().GetPosition().x > m_PeterPepperToChase.GetPosition().x)
 			{
 				delete m_pEnemyState;
 				m_pEnemyState = new MovingLeft;
@@ -170,7 +189,7 @@ void dae::Enemy::Update(float elapsedTime)
 				m_pEnemyState->SetClimbing(false);
 				m_pEnemyState->SetWalking(true);
 			}
-			else if (m_CanWalkRight && m_pParent->GetTransform().GetPosition().x < m_pPeter1Transform->GetPosition().x)
+			else if (m_CanWalkRight && m_pParent->GetTransform().GetPosition().x < m_PeterPepperToChase.GetPosition().x)
 			{
 				delete m_pEnemyState;
 				m_pEnemyState = new MovingRight;
@@ -179,7 +198,7 @@ void dae::Enemy::Update(float elapsedTime)
 				m_pEnemyState->SetWalking(true);
 			}
 
-			if (m_CanClimb && m_pParent->GetTransform().GetPosition().y > m_pPeter1Transform->GetPosition().y)
+			if (m_CanClimb && m_pParent->GetTransform().GetPosition().y > m_PeterPepperToChase.GetPosition().y)
 			{
 				delete m_pEnemyState;
 				m_pEnemyState = new MovingUp;
@@ -187,7 +206,7 @@ void dae::Enemy::Update(float elapsedTime)
 				m_pEnemyState->SetClimbing(true);
 				m_pEnemyState->SetWalking(false);
 			}
-			else if (m_CanClimb && m_pParent->GetTransform().GetPosition().y < m_pPeter1Transform->GetPosition().y)
+			else if (m_CanDescend && m_pParent->GetTransform().GetPosition().y < m_PeterPepperToChase.GetPosition().y)
 			{
 				delete m_pEnemyState;
 				m_pEnemyState = new MovingDown;
@@ -270,7 +289,7 @@ void dae::Enemy::OnOverlap(RigidBodyComponent* other)
 
 			m_JustSpawned = false;
 
-			if (m_pPeter1Transform->GetPosition().x >= m_pParent->GetTransform().GetPosition().x && m_CanWalkRight)
+			if (m_PeterPepperToChase.GetPosition().x >= m_pParent->GetTransform().GetPosition().x && m_CanWalkRight)
 			{
 				if (m_pEnemyState)
 				{
@@ -336,7 +355,7 @@ void dae::Enemy::OnOverlap(RigidBodyComponent* other)
 					}
 					m_JustSpawned = false;
 
-					if (m_pPeter1Transform->GetPosition().y >= m_pParent->GetTransform().GetPosition().y && m_CanDescend)
+					if (m_PeterPepperToChase.GetPosition().y >= m_pParent->GetTransform().GetPosition().y && m_CanDescend)
 					{
 						if (m_pEnemyState)
 						{

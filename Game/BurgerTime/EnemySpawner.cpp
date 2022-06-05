@@ -69,7 +69,6 @@ void dae::EnemySpawner::SetDifficulty(Difficulty difficulty)
 
 void dae::EnemySpawner::Update(float deltaTime)
 {
-	std::cout << m_MaxEnemies << " " << m_NumEnemies << "\n";
 	m_EnemyRespawnTime += deltaTime;
 		if (m_EnemyRespawnTime > m_EnemyRespawnTimer && m_NumEnemies < m_MaxEnemies)
 	{

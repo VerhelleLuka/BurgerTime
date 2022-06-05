@@ -68,6 +68,7 @@ namespace dae
 		EnemyType m_EnemyType;
 		const Transform* m_pPeter1Transform;
 		const Transform* m_pPeter2Transform;
+		Transform m_PeterPepperToChase;
 
 		LadderComponent* m_pWalkedLadder;
 		bool m_Initialized;

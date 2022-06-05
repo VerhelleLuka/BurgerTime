@@ -21,6 +21,7 @@ namespace dae
 		//void LoadLevel3(GameMode gameMode) const;
 	private:
 		void CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int playerNr, bool andHUD) const;
+		void CreateEvilPepper(Transform spawnPos, Scene& scene, int playerNr);
 		GameObject* CreateEnemyTemplate(Scene& scene, int sceneNr, Float2 position) const;
 		void CreateMenu(Scene& scene) const;
 		void CreateTray(Scene& scene, int sceneNr, Float2 position) const;
