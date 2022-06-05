@@ -44,7 +44,7 @@ void dae::BurgerTime::CreateMenuButton(Scene& scene, Float2 position, GameMode g
 {
 	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 16);
 	auto buttonGo = std::make_shared<GameObject>();
-
+	buttonGo->SetTag("Button");
 	auto buttonAnim = std::make_shared<Animation>(1, 1);
 	buttonAnim->SetTexture("Menu/Button.png");
 
@@ -95,11 +95,12 @@ void dae::BurgerTime::CreateMenu(Scene& scene) const
 
 }
 
-dae::GameObject* dae::BurgerTime::CreateEnemyTemplate(Scene& scene, int /*sceneNr*/, Float2 position) const
+void dae::BurgerTime::CreateEnemy(Scene& scene, int /*sceneNr*/, Float2 position) const
 {
 	const float animationScale = 1.75f;
 	auto enemyGo = std::make_shared<GameObject>();
 
+	enemyGo->SetTag("Enemy");
 	auto climbAnim = std::make_shared<Animation>(2, 2);
 	climbAnim->SetTexture("Enemies/Sausage_Climb.png");
 	climbAnim->SetScale(animationScale);
@@ -152,8 +153,69 @@ dae::GameObject* dae::BurgerTime::CreateEnemyTemplate(Scene& scene, int /*sceneN
 
 	scene.Add(enemyGo);
 
-	return enemyGo.get();
 }
+void dae::BurgerTime::CreateEvilPepper(Transform spawnPos, Scene& scene, int playerNr) const
+{
+	const float animationScale = 1.75f;
+	auto evilPepper = std::make_shared<GameObject>();
+	evilPepper->SetTag("EvilPeterPepper");
+	std::shared_ptr<PeterPepperComponent> peterPepper = std::make_shared<PeterPepperComponent>(1, Float2{ spawnPos.GetPosition().x, spawnPos.GetPosition().y }, true);
+
+	auto climbAnim = std::make_shared<Animation>(2, 2);
+	climbAnim->SetTexture("Enemies/Sausage_Climb.png");
+	climbAnim->SetScale(animationScale);
+
+	auto descendAnim = std::make_shared<Animation>(2, 2);
+	descendAnim->SetTexture("Enemies/Sausage_Descend.png");
+	descendAnim->SetScale(animationScale);
+
+	auto walkLeftAnim = std::make_shared<Animation>(2, 2);
+	walkLeftAnim->SetTexture("Enemies/Sausage_Walk.png");
+	walkLeftAnim->SetScale(animationScale);
+
+	auto walkRightAnim = std::make_shared<Animation>(2, 2);
+	walkRightAnim->SetTexture("Enemies/Sausage_Walk.png");
+	walkRightAnim->SetScale(animationScale);
+	walkRightAnim->SetReversed(true);
+
+	auto deathAnim = std::make_shared<Animation>(4, 4);
+	deathAnim->SetTexture("Enemies/Sausage_Kill.png");
+	deathAnim->SetScale(animationScale);
+
+	auto enemySprite = std::make_shared<SpriteComponent>();
+	enemySprite->SetGameObject(evilPepper.get());
+	enemySprite->AddAnimation(climbAnim, "Climb");
+	enemySprite->AddAnimation(descendAnim, "Descend");
+	enemySprite->AddAnimation(walkRightAnim, "WalkRight");
+	enemySprite->AddAnimation(deathAnim, "Death");
+	enemySprite->AddAnimation(walkLeftAnim, "WalkLeft");
+	enemySprite->SetActiveAnimation("WalkLeft");
+	evilPepper->AddComponent(enemySprite, "EnemySprite");
+
+
+	//RigidbodyComponent
+	auto pRigidBody = std::make_shared<RigidBodyComponent>(enemySprite->GetAnimation().GetScaledWidth(),
+		enemySprite->GetAnimation().GetScaledHeight(),
+		true);
+
+
+	//Add everything to scene
+	evilPepper->AddComponent(enemySprite, "Sprite");
+
+	evilPepper->AddComponent(peterPepper, "EvilPeterPepper");
+
+	evilPepper->AddComponent(pRigidBody, "RigidBody");
+
+	auto& input = InputManager::GetInstance();
+
+	input.AddCommand(ControllerButton::DPadRight, new MoveRight, KeyState::DOWN, evilPepper.get(), playerNr);
+	input.AddCommand(ControllerButton::DPadLeft, new MoveLeft, KeyState::DOWN, evilPepper.get(), playerNr);
+	input.AddCommand(ControllerButton::DPadDown, new MoveDown, KeyState::DOWN, evilPepper.get(), playerNr);
+	input.AddCommand(ControllerButton::DPadUp, new MoveUp, KeyState::DOWN, evilPepper.get(), playerNr);
+
+	scene.Add(evilPepper);
+}
+
 
 void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int playerNr, bool andHUD) const
 {
@@ -167,6 +229,7 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 
 	//Create gameobject and components
 	auto peterPepperGo = std::make_shared<GameObject>();
+	peterPepperGo->SetTag("PeterPepper");
 	Float2 level1Pos = { 100,8 };
 	Float2 level2Pos = { 100,40 };
 
@@ -175,11 +238,11 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 	if (SceneManager::GetInstance().GetActiveSceneName() == "Level2")
 	{
 		peterPepperGo->SetTransform(100, 40, 0);
-		peterPepper = std::make_shared<PeterPepperComponent>(3, level2Pos);
+		peterPepper = std::make_shared<PeterPepperComponent>(3, level2Pos, false);
 	}
 	else
 	{
-		peterPepper = std::make_shared<PeterPepperComponent>(3, level1Pos);
+		peterPepper = std::make_shared<PeterPepperComponent>(3, level1Pos, false);
 
 	}
 
@@ -367,7 +430,7 @@ std::vector<dae::Float2> dae::BurgerTime::MakeLaddersAndPlatforms(Scene& scene, 
 		auto platform = std::make_shared<GameObject>();
 		auto platformSprite = std::make_shared<SpriteComponent>();
 		auto platformAnimation = std::make_shared<Animation>(1, 1);
-
+		platform->SetTag("Platform");
 		platformSprite->SetGameObject(platform.get());
 		Transform transform{};
 		if (platforms[i].column % 2 == 0)
@@ -445,7 +508,7 @@ std::vector<dae::Float2> dae::BurgerTime::MakeLaddersAndPlatforms(Scene& scene, 
 	{
 		auto ladder = std::make_shared<GameObject>();
 		std::shared_ptr<SpriteComponent>ladderSprite = std::make_shared<SpriteComponent>();
-
+		ladder->SetTag("Ladder");
 		auto ladderAnimation = std::make_shared<Animation>(1, 1);
 		ladderAnimation->SetTexture("Level/Ladder.png");
 		ladderAnimation->SetScale((float)levelScale);
@@ -536,7 +599,7 @@ void dae::BurgerTime::MakeBurgers(Scene& scene, const std::vector<Burger>& burge
 			auto burger = std::make_shared<GameObject>();
 			auto burgerSprite = std::make_shared<SpriteComponent>();
 			auto burgerAnimation = std::make_shared<Animation>(1, 1);
-
+			burger->SetTag("Burger");
 			burgerSprite->SetGameObject(burger.get());
 			Transform transform{};
 
@@ -594,7 +657,7 @@ void dae::BurgerTime::CreateTray(Scene& scene, int /*sceneNr*/, Float2 position)
 	float levelScale = 2.f;
 	auto trayGo = std::make_shared<GameObject>();
 	trayGo->SetTransform(position.x, position.y, 0.f);
-
+	trayGo->SetTag("Tray");
 	auto animation = std::make_shared<Animation>(1, 1);
 	animation->SetTexture("Hamburger/Tray.png");
 	animation->SetScale(levelScale);

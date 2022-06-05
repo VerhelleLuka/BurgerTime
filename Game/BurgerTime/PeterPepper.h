@@ -30,7 +30,7 @@ namespace dae
 		virtual void FixedUpdate(float /*deltaTime*/) override;
 		virtual void Render() const {};
 
-		PeterPepperComponent(int lives, Float2 m_SpawnPos);
+		PeterPepperComponent(int lives, Float2 m_SpawnPos, bool isEvil);
 		virtual ~PeterPepperComponent();
 
 		void ReduceLife();
@@ -39,6 +39,8 @@ namespace dae
 		int GetPoints() { return m_Points; }
 		void ButtonPress();
 		void ChangeState(int state);
+		void UsePepper();
+		int GetNrOfPepperShots() const { return m_PepperShots; }
 
 		bool GetCanClimb() const { return m_CanClimb; }
 		bool GetCanDescend() const { return m_CanDescend; }
@@ -84,6 +86,9 @@ namespace dae
 		const float m_VictoryDanceTimer{ 3.f };
 		float m_VictoryDanceTime;
 		bool m_IsDead;
+		int m_PepperShots;
+
+		bool m_IsEvil;
 
 		Float2 m_SpawnPos;
 	};

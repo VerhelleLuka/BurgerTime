@@ -7,6 +7,6 @@ enum class EventType
 	OVERLAPBEGIN,
 	LOADLEVEL,
 	ENEMYKILLED,
-	DEAD,
-	WIN
+	WIN,
+	SHOOT
 };

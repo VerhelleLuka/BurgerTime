@@ -10,7 +10,7 @@
 #include "Scene.h"
 #include "InputManager.h"
 #include "Enemy.h"
-dae::PeterPepperComponent::PeterPepperComponent(int lives, Float2 spawnPos)
+dae::PeterPepperComponent::PeterPepperComponent(int lives, Float2 spawnPos, bool isEvil)
 	:m_Lives(lives)
 	, m_Points(0)
 	, m_State(PeterPepperState::Climb)
@@ -26,6 +26,8 @@ dae::PeterPepperComponent::PeterPepperComponent(int lives, Float2 spawnPos)
 	, m_VictoryDanceTime(0.0f)
 	, m_SpawnPos(spawnPos)
 	,m_IsDead(false)
+	,m_IsEvil(isEvil)
+	,m_PepperShots(10)
 {
 	GameManager::GetInstance().AddObserver(this);
 }
@@ -108,7 +110,7 @@ void dae::PeterPepperComponent::FixedUpdate(float /*elapsedSec*/)
 		{
 
 		}
-		else if (overlappingBodies[i]->GetParent()->GetComponent<PlatformComponent>("PlatformComp"))
+		else if (overlappingBodies[i]->GetParent()->GetTag() == "Platform")
 		{
 			isOverlappingPlatform = true;
 		}
@@ -127,6 +129,12 @@ void dae::PeterPepperComponent::AddPoints(int points)
 
 	args->points = m_Points;
 	Notify(EventType::GAINEDPOINTS, args);
+}
+void dae::PeterPepperComponent::UsePepper()
+{
+	m_PepperShots--;
+	std::shared_ptr<EventArgs> emptyArgs = std::make_shared<EventArgs>();
+	Notify(EventType::SHOOT, emptyArgs);
 }
 
 void dae::PeterPepperComponent::ReduceLife()
@@ -195,14 +203,15 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 {
 	if (other->GetParent())
 	{
-		if (other->GetParent()->GetComponent<ButtonComponent>("ButtonComp"))
+		if (other->GetParent()->GetTag() == "Button")
 		{
 			other->GetParent()->GetComponent<ButtonComponent>("ButtonComp")->SetOverlapping(true);
+			std::cout << "Overlap\n";
 			m_OverlappingButton = true;
 			return;
 		}
 		//if the other overlap is a platform
-		if (other->GetParent()->GetComponent<PlatformComponent>("PlatformComp"))
+		if (other->GetParent()->GetTag() == "Platform")
 		{
 			m_CanWalkLeft = false;
 			m_CanWalkRight = false;
@@ -235,7 +244,7 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 			}
 			return;
 		}
-		if (other->GetParent()->GetComponent<Enemy>("Enemy"))
+		if (other->GetParent()->GetTag() == "Enemy")
 		{
 			if (!other->GetParent()->GetComponent<Enemy>("Enemy")->GetFalling() &&
 				!other->GetParent()->GetComponent<Enemy>("Enemy")->GetDead() &&
@@ -246,7 +255,7 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 		}
 
 		//if it's a ladder
-		if (other->GetParent()->GetComponent<LadderComponent>("LadderComp"))
+		if (other->GetParent()->GetTag() == "Ladder")
 		{
 			m_CanClimb = false;
 			m_CanDescend = false;
@@ -278,14 +287,15 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 
 void dae::PeterPepperComponent::OnTriggerExit(RigidBodyComponent* other)
 {
-	if (other->GetParent()->GetComponent<LadderComponent>("LadderComp"))
+	if (other->GetParent()->GetTag() == "Ladder")
 	{
 		m_CanDescend = false;
 		m_CanClimb = false;
 	}
-	if (other->GetParent()->GetComponent<ButtonComponent>("ButtonComp"))
+	if (other->GetParent()->GetTag() == "Button")
 	{
 		other->GetParent()->GetComponent<ButtonComponent>("ButtonComp")->SetOverlapping(false);
+		std::cout << "OverlapExit\n";
 		m_OverlappingButton = false;
 	}
 }

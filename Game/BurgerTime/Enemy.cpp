@@ -244,7 +244,7 @@ void dae::Enemy::OnOverlap(RigidBodyComponent* other)
 	if (!m_IsDead || !m_IsFalling)
 	{
 		
-		if (other->GetParent()->GetComponent<PlatformComponent>("PlatformComp"))
+		if (other->GetParent()->GetTag() == "Platform")
 		{
 			if (m_Stunned)
 			{
@@ -318,7 +318,7 @@ void dae::Enemy::OnOverlap(RigidBodyComponent* other)
 			}
 
 		}
-		if (other->GetParent()->GetComponent<LadderComponent>("LadderComp"))
+		if (other->GetParent()->GetTag() == "Ladder")
 		{
 			if (m_Stunned)
 			{
@@ -383,7 +383,7 @@ void dae::Enemy::OnOverlap(RigidBodyComponent* other)
 					}
 				}
 		}
-		if (other->GetParent()->GetComponent<RigidBodyComponent>("Pepper").get())
+		if (other->GetParent()->GetTag() == "Pepper")
 		{
 			if (!m_Stunned)
 			{

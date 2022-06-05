@@ -86,7 +86,7 @@ void dae::EnemySpawner::SpawnEnemy()
 {
 	const float animationScale = 1.75f;
 	auto enemyGo = std::make_shared<GameObject>();
-
+	enemyGo->SetTag("Enemy");
 	auto descendAnim = std::make_shared<Animation>(2, 2);
 	auto walkLeftAnim = std::make_shared<Animation>(2, 2);
 	auto climbAnim = std::make_shared<Animation>(2, 2);

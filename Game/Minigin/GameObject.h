@@ -42,12 +42,15 @@ namespace dae
 		Transform& GetTransform() { return m_Transform; }
 		void SetTransform(Transform transform);
 		void SetTransform(float x, float y, float z);
-		GameObject() = default;
+		GameObject() :m_Tag("---") {};
 		virtual ~GameObject();
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
+
+		void SetTag(const std::string& tag) { m_Tag = tag; }
+		std::string GetTag() const { if (m_Tag == "---") return "NULL"; else return m_Tag; }
 
 	private:
 		std::map<std::string, std::shared_ptr<BaseComponent>> m_pComponents;
@@ -55,5 +58,7 @@ namespace dae
 		std::weak_ptr<GameObject> m_pParent;
 
 		Transform m_Transform;
+
+		std::string m_Tag;
 	};
 }

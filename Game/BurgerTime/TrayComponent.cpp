@@ -7,7 +7,7 @@
 
 void dae::TrayComponent::OnOverlap(RigidBodyComponent* other)
 {
-	if (other->GetParent()->GetComponent<BurgerComponent>("BurgerComp"))
+	if (other->GetParent()->GetTag() == "Burger")
 	{
 		other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->SetCaught(true);
 		if (other->GetParent()->GetComponent<SpriteComponent>("BurgerSprite")->GetAnimationName() == "Top_bun")

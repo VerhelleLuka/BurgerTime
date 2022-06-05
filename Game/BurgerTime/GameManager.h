@@ -35,6 +35,8 @@ namespace dae
 		void SetEnemySpawns(std::vector<Float2> enemySpawns) { m_EnemySpawnPositions = enemySpawns; }
 		void ResetScene();
 
+		GameMode GetGameMode() const { return m_GameMode; }
+
 	private:
 		int m_Points;
 		BurgerTime* m_pBurgerTime;

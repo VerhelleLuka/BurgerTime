@@ -41,7 +41,7 @@ void dae::BurgerComponent::ForceFall()
 }
 void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 {
-	if (other->GetParent()->GetComponent<Enemy>("Enemy"))
+	if (other->GetParent()->GetTag() == "Enemy")
 	{
 		if (other->GetTransform().GetPosition().y > m_pParent->GetTransform().GetPosition().y && m_Fall)
 		{
@@ -65,7 +65,7 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 
 		//	}
 	}
-	if (other->GetParent()->GetComponent<PlatformComponent>("PlatformComp"))
+	if (other->GetParent()->GetTag() == "Platform")
 	{
 		if (m_pPlatformComp.get() == nullptr)
 		{
@@ -90,7 +90,7 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 			}
 		}
 	}
-	if (other->GetParent()->GetComponent<PeterPepperComponent>("PeterPepper"))
+	if (other->GetParent()->GetTag() == "PeterPepper")
 	{
 		if (other->GetParent()->GetComponent<PeterPepperComponent>("PeterPepper").get() != m_pPeterPepper)
 			m_pPeterPepper = other->GetParent()->GetComponent<PeterPepperComponent>("PeterPepper").get();
@@ -117,7 +117,7 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 		}
 
 	}
-	if (other->GetParent()->GetComponent<BurgerComponent>("BurgerComp"))
+	if (other->GetParent()->GetTag() == "Burger")
 	{
 		if (other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->GetCaught())
 		{
