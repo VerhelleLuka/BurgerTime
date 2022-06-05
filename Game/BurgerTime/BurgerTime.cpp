@@ -211,11 +211,11 @@ void dae::BurgerTime::CreateEvilPepper(Transform /*spawnPos*/, Scene& scene, int
 
 	evilPepper->AddComponent(pRigidBody, "RigidBody");
 
-	
+
 	peterPepper->SetGameObject(evilPepper.get());
 	peterPepper->SetOverlapEvent();
 	peterPepper->SetOnTriggerExitEvent();
-	
+
 	peterPepper->AddObserver(enemySprite.get());
 	pRigidBody->SetOffset(Float2{ 0.f,-3.f });
 
@@ -376,7 +376,7 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 		input.AddCommand(ControllerButton::ButtonB, new Pepper, KeyState::PRESSED, peterPepperGo.get(), playerNr);
 		peterPepper->SetInMenu(false);
 	}
-	
+
 
 
 	if (SceneManager::GetInstance().GetActiveSceneName() == "Level2")
@@ -394,7 +394,7 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 void dae::BurgerTime::MakeEnemySpawner(std::vector<Float2> spawnPositions) const
 {
 	auto spawnerGo = std::make_shared<GameObject>();
-
+	spawnerGo->SetTag("Spawner");
 	auto spawner = std::make_shared<EnemySpawner>(Difficulty::EASY);
 
 	spawner->SetSpawnPositions(spawnPositions);
@@ -624,7 +624,7 @@ void dae::BurgerTime::MakeBurgers(Scene& scene, const std::vector<Burger>& burge
 			if (column != prevColumn)
 			{
 				CreateTray(scene, sceneNr, Float2((burgers[i].column) * platformWidth + scalingIncrease * (burgers[i].column - 1) + 1, 440));
-				burgerSpawnPositions.push_back( Float2((burgers[i].column) * platformWidth + scalingIncrease * (burgers[i].column - 1) + 1, -50.f));
+				burgerSpawnPositions.push_back(Float2((burgers[i].column) * platformWidth + scalingIncrease * (burgers[i].column - 1) + 1, -50.f));
 			}
 			if (GameManager::GetInstance().GetGameMode() != GameMode::VERSUS)
 			{
@@ -726,18 +726,33 @@ void dae::BurgerTime::LoadLevel1(GameMode gameMode, const std::string& levelName
 	{
 
 	}
-	auto& levelScene = SceneManager::GetInstance().CreateScene(levelName);
-	SceneManager::GetInstance().SetActiveScene(&levelScene);
-	std::vector<Float2> enemySpawnPositions = ParseLevel(levelScene, GameManager::GetInstance().GetLevelIndex(), levelName);
+	auto scenes = SceneManager::GetInstance().GetScenes();
+	bool sceneAlreadyExists = false;
+	for (auto& scene : scenes)
+	{
+		if (scene->GetName() == levelName)
+		{
+			sceneAlreadyExists = true;
+			scene->GetSceneObjects().clear();
+		}
+	}
+	if (sceneAlreadyExists)
+		SceneManager::GetInstance().SetActiveSceneByName(levelName);
+	else
+	{
+		 
+		SceneManager::GetInstance().SetActiveScene(&SceneManager::GetInstance().CreateScene(levelName));
+	}
+	std::vector<Float2> enemySpawnPositions = ParseLevel(SceneManager::GetInstance().GetActiveScene(), GameManager::GetInstance().GetLevelIndex(), levelName);
 
-	CreatePeterPepperAndHUD(Transform(), levelScene, 0, true);
+	CreatePeterPepperAndHUD(Transform(), SceneManager::GetInstance().GetActiveScene(), 0, true);
 	if (gameMode == GameMode::COOP)
 	{
-		CreatePeterPepperAndHUD(Transform(), levelScene, 1, true);
+		CreatePeterPepperAndHUD(Transform(), SceneManager::GetInstance().GetActiveScene(), 1, true);
 	}
 	else if (gameMode == GameMode::VERSUS)
 	{
-		CreateEvilPepper(Transform(), levelScene, 1);
+		CreateEvilPepper(Transform(), SceneManager::GetInstance().GetActiveScene(), 1);
 	}
 	GameManager::GetInstance().SetEnemySpawns(enemySpawnPositions);
 	MakeEnemySpawner(enemySpawnPositions);

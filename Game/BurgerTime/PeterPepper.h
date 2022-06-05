@@ -102,5 +102,8 @@ namespace dae
 		void Stun();
 		const float m_StunTimer{ 3.f };
 		float m_StunTime;
+
+		//Trash because I'm trash
+		bool m_LevelLoaded;
 	};
 }

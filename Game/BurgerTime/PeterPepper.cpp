@@ -28,8 +28,9 @@ dae::PeterPepperComponent::PeterPepperComponent(int lives, Float2 spawnPos, bool
 	, m_IsDead(false)
 	, m_IsEvil(isEvil)
 	, m_PepperShots(10)
-	,m_Stunned(false)
-	,m_StunTime(0.f)
+	, m_Stunned(false)
+	, m_StunTime(0.f)
+	, m_LevelLoaded(false)
 {
 	GameManager::GetInstance().AddObserver(this);
 }
@@ -57,8 +58,14 @@ void dae::PeterPepperComponent::Update(float elapsedSec)
 		{
 			m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().SetFrameNr(0);
 			m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetStatic(false);
-			GameManager::GetInstance().ResetScene();
+			GameManager::GetInstance().ResetScene(false);
 			m_IsDead = false;
+			if (m_Lives == 0)
+			{
+				GameManager::GetInstance().ResetScene(true);
+				SceneManager::GetInstance().SetActiveSceneByName("MainMenu");
+				GameManager::GetInstance().ChangePlayer();
+			}
 		}
 	}
 	else if (m_IsDead && m_IsEvil)
@@ -67,6 +74,7 @@ void dae::PeterPepperComponent::Update(float elapsedSec)
 		if (m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().GetFrameNr() == m_pParent->GetComponent<SpriteComponent>("Sprite")->GetAnimation().GetNrFrames() - 1)
 		{
 			m_IsDead = false;
+			GameManager::GetInstance().ResetScene(true);
 			SceneManager::GetInstance().SetActiveSceneByName("MainMenu");
 			GameManager::GetInstance().ChangePlayer();
 			
@@ -179,6 +187,7 @@ void dae::PeterPepperComponent::ReduceLife()
 		m_pParent->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Death");
 		m_IsDead = true;
 	}
+
 }
 void dae::PeterPepperComponent::OnNotify(EventType event_, std::shared_ptr<EventArgs> /*args*/)
 {
@@ -226,8 +235,10 @@ void dae::PeterPepperComponent::ButtonPress()
 {
 	if (m_OverlappingButton)
 	{
-		std::shared_ptr<EventArgs> emptyArgs = std::make_shared<EventArgs>();
-		Notify(EventType::LOADLEVEL, emptyArgs);
+		std::shared_ptr<ButtonEventArgs> args = std::make_shared<ButtonEventArgs>();
+		args->newLevelIndex = !m_LevelLoaded;
+		m_LevelLoaded = true;
+		Notify(EventType::LOADLEVEL, args);
 	}
 }
 void dae::PeterPepperComponent::Stun()

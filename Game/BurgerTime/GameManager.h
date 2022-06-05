@@ -33,7 +33,7 @@ namespace dae
 
 		void SetGameMode(GameMode gameMode) { m_GameMode = gameMode; }
 		void SetEnemySpawns(std::vector<Float2> enemySpawns) { m_EnemySpawnPositions = enemySpawns; }
-		void ResetScene();
+		void ResetScene(bool fullReset);
 		void ChangePlayer();
 		GameMode GetGameMode() const { return m_GameMode; }
 
