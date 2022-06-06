@@ -10,10 +10,8 @@
 #include "Scene.h"
 #include "InputManager.h"
 #include "Enemy.h"
-dae::PeterPepperComponent::PeterPepperComponent(int lives, Float2 spawnPos, bool isEvil)
-	:m_Lives(lives)
-	, m_Points(0)
-	, m_State(PeterPepperState::Climb)
+dae::PeterPepperComponent::PeterPepperComponent(Float2 spawnPos, bool isEvil)
+	:m_State(PeterPepperState::Climb)
 	, m_OverlappingLadder(false),
 	m_OverlappingPlatform(false)
 	, m_CanClimb(false)
@@ -44,8 +42,6 @@ dae::PeterPepperComponent::~PeterPepperComponent()
 
 void dae::PeterPepperComponent::Initialize(Scene& /*scene*/)
 {
-	std::shared_ptr<EventArgs> emptyArgs = std::make_shared<EventArgs>();
-	Notify(EventType::LOSTLIFE, emptyArgs);
 }
 
 void dae::PeterPepperComponent::Update(float elapsedSec)
@@ -86,7 +82,7 @@ void dae::PeterPepperComponent::Update(float elapsedSec)
 
 				if (GameManager::GetInstance().GetLives() == 0)
 				{
-
+					
 					GameManager::GetInstance().ResetScene(true);
 					GameManager::GetInstance().ChangePlayer();
 				}
@@ -174,14 +170,7 @@ void dae::PeterPepperComponent::FixedUpdate(float /*elapsedSec*/)
 		m_CanWalkRight = false;
 	}
 }
-void dae::PeterPepperComponent::AddPoints(int points)
-{
-	m_Points += points;
-	std::shared_ptr<PointsEventArgs> args = std::make_shared<PointsEventArgs>();
 
-	args->points = m_Points;
-	Notify(EventType::GAINEDPOINTS, args);
-}
 void dae::PeterPepperComponent::UsePepper()
 {
 	m_PepperShots--;
@@ -191,12 +180,9 @@ void dae::PeterPepperComponent::UsePepper()
 
 void dae::PeterPepperComponent::ReduceLife()
 {
-	if (m_Lives > 0)
+	if (GameManager::GetInstance().GetLives() > 0)
 	{
-		--m_Lives;
-		GameManager::GetInstance().ReduceLife();
-		std::shared_ptr<EventArgs> emptyArgs = std::make_shared<EventArgs>();
-		Notify(EventType::LOSTLIFE, emptyArgs);
+		GameManager::GetInstance().ReduceLife(false);
 		m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetStatic(true);
 		m_pParent->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Death");
 		m_IsDead = true;
@@ -208,7 +194,6 @@ void dae::PeterPepperComponent::OnNotify(EventType event_, std::shared_ptr<Event
 	if (event_ == EventType::WIN && !m_VictoryDance)
 	{
 		if (SceneManager::GetInstance().GetActiveSceneName() != "MainMenu")
-			GameManager::GetInstance().AddPoints(m_Points);
 		m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetStatic(true);
 		m_pParent->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Victory");
 		m_VictoryDance = true;
@@ -264,10 +249,6 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 {
 	if (other->GetParent())
 	{
-		//if (m_pParent->GetTag() == "EvilPeterPepper")
-		//{
-		//	std::cout << "YEEEE\n";
-		//}
 		if (other->GetParent()->GetTag() == "Button")
 		{
 			other->GetParent()->GetComponent<ButtonComponent>("ButtonComp")->SetOverlapping(true);
@@ -317,8 +298,9 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 				ReduceLife();
 			return;
 		}
-		else if (other->GetParent()->GetTag() == "EvilPeterPepper" && !m_IsEvil)
+		else if (other->GetParent()->GetTag() == "EvilPeterPepper" && !m_IsEvil && !m_IsDead)
 		{
+			
 			ReduceLife();
 		}
 

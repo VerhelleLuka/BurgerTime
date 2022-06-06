@@ -18,7 +18,7 @@ namespace dae
 
 		std::vector<std::shared_ptr<SceneObject>>& GetSceneObjects() { return m_Objects; }
 		//void DeleteSceneObject(SceneObject& object) { }
-		void Render() const;
+		void Render() ;
 		const std::string& GetName() const { return m_Name; }
 		~Scene();
 		Scene(const Scene& other) = delete;

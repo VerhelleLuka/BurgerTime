@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "GameObject.h"
 #include "Physics.h"
+
 using namespace dae;
 
 unsigned int Scene::m_IdCounter = 0;
@@ -44,16 +45,24 @@ void dae::Scene::FixedUpdate(float deltaTime)
 {
 	if (!m_MarkedForDestroy)
 	{
-	for (auto& object : m_Objects)
+		for (auto& object : m_Objects)
+		{
+			object->FixedUpdate(deltaTime);
+		}
+
+	}
+	for (size_t i = 0; i < m_Objects.size(); i++)
 	{
-		object->FixedUpdate(deltaTime);
+		if (m_Objects[i]->GetMarkForDelete())
+		{
+			auto it = m_Objects.begin();
+			std::advance(it, i);
+			m_Objects.erase(it);
+		}
 	}
-
-	}
-
 }
 
-void Scene::Render() const
+void Scene::Render() 
 {
 	//Render objects with lower z axis first
 	if (!m_MarkedForDestroy)
@@ -73,9 +82,9 @@ void Scene::Render() const
 		for (const auto& remainingObjects : lowerZAxisObjects)
 		{
 			remainingObjects->Render();
-
 		}
 	}
+
 
 }
 

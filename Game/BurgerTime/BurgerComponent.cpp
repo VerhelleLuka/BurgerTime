@@ -62,7 +62,8 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 		{
 			if (other->GetParent()->GetComponent<Enemy>("Enemy")->GetEnemyType() == EnemyType::SAUSAGE && !other->GetParent()->GetComponent<Enemy>("Enemy")->IsDead())
 			{
-				m_pPeterPepper->AddPoints(100);
+					GameManager::GetInstance().AddPoints(100);
+
 			}
 			other->GetParent()->GetComponent<Enemy>("Enemy")->Kill();
 		}
@@ -71,7 +72,7 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 			if (other->GetTransform().GetPosition().y <= m_pParent->GetTransform().GetPosition().y && m_Fall && m_StartFall)
 			{
 				other->GetParent()->GetComponent<Enemy>("Enemy")->Fall();
-				m_pPeterPepper->AddPoints(500);
+				GameManager::GetInstance().AddPoints(500);
 				m_LevelsToFall++;
 			}
 		}
@@ -86,10 +87,10 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 		{
 			m_pPlatformComp = other->GetParent()->GetComponent<PlatformComponent>("PlatformComp");
 			m_Fall = false;
-			if (m_pPeterPepper != nullptr)
-			{
-				m_pPeterPepper->AddPoints(50);
-			}
+
+			GameManager::GetInstance().AddPoints(50);
+
+			
 			for (int i{}; i < m_NrParts - 1; ++i)
 			{
 				m_WalkedOver[i] = false;
@@ -151,14 +152,12 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 		}
 		else if (other->GetParent()->GetTransform().GetPosition().y < m_pParent->GetTransform().GetPosition().y)
 		{
-			m_pPeterPepper = other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->GetPeterPepper();
-
+			//m_pPeterPepper = other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->GetPeterPepper();
 			ForceFall();
 		}
 		else
 		{
-			other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->SetPeterPepper(m_pPeterPepper);
-
+			//other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->SetPeterPepper(m_pPeterPepper);
 			other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->ForceFall();
 		}
 	}

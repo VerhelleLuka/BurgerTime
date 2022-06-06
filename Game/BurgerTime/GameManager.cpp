@@ -9,6 +9,7 @@
 #include "Enemy.h"
 #include "BurgerComponent.h"
 #include "InputManager.h"
+#include "PointsDisplayComponent.h"
 dae::GameManager::GameManager()
 	: m_pBurgerTime(nullptr),
 	m_Points(0),
@@ -35,11 +36,11 @@ void dae::GameManager::BurgerCompleted()
 {
 	m_CompletedBurgers++;
 	std::cout << m_CompletedBurgers << " " << m_NrBurgers << "\n";
-	if (m_CompletedBurgers >= m_NrBurgers && !m_LevelComplete && SceneManager::GetInstance().GetActiveScene().GetName() != "MainMenu")
+	if (m_CompletedBurgers >= m_NrBurgers && /*!m_LevelComplete &&*/ SceneManager::GetInstance().GetActiveScene().GetName() != "MainMenu")
 	{
 		m_CompletedBurgers = 0;
 		++m_CurrentLevelIndex;
-		m_LevelComplete = true;
+		//m_LevelComplete = true;
 		std::shared_ptr<EventArgs> emptyArgs = std::make_shared<EventArgs>();
 		Notify(EventType::WIN, emptyArgs);
 		ClearObservers();
@@ -49,6 +50,8 @@ void dae::GameManager::BurgerCompleted()
 //
 void dae::GameManager::LoadLevel(const std::string& levelName)
 {
+	m_CompletedBurgers = 0;
+	//m_LevelComplete = false;
 	SceneManager::GetInstance().GetActiveScene().MarkForDestroy();
 	if (levelName == "MainMenu")
 	{
@@ -74,6 +77,8 @@ void dae::GameManager::LoadLevel(const std::string& levelName)
 	{
 		m_pBurgerTime->LoadLevel1(m_GameMode, "MainMenu");
 	}
+	ReduceLife(true);
+	AddPoints(0);
 }
 void dae::GameManager::ChangePlayer()
 {
@@ -93,18 +98,39 @@ void dae::GameManager::ChangePlayer()
 	}
 
 }
+
+void dae::GameManager::AddPoints(int points)
+{
+	m_Points += points;
+	std::shared_ptr<PointsEventArgs> args = std::make_shared<PointsEventArgs>();
+	args->points = m_Points;
+	Notify(EventType::GAINEDPOINTS, args);
+}
+
+void dae::GameManager::ReduceLife(bool isToRefresh)
+{
+	if(!isToRefresh)
+	--m_Lives;
+	std::shared_ptr<EventArgs> emptyArgs = std::make_shared<EventArgs>();
+	Notify(EventType::LOSTLIFE, emptyArgs);
+}
 void dae::GameManager::ResetScene(bool fullReset)
 {
 	auto& scene = SceneManager::GetInstance().GetActiveScene();
 	scene.MarkForDestroy();
 	if (!fullReset)
 	{
+
 		LoadLevel("Same");
+		ReduceLife(true);
+		AddPoints(0);
 	}
 	else
 	{
+		m_Lives = 3;
+		m_Points = 0;
 		LoadLevel("MainMenu");
 	}
 	m_CompletedBurgers = 0;
-	m_LevelComplete = false;
+	//m_LevelComplete = false;
 }

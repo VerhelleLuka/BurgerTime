@@ -30,13 +30,10 @@ namespace dae
 		virtual void FixedUpdate(float /*deltaTime*/) override;
 		virtual void Render() const {};
 		virtual void Initialize(Scene& scene) override;
-		PeterPepperComponent(int lives, Float2 m_SpawnPos, bool isEvil);
+		PeterPepperComponent(Float2 m_SpawnPos, bool isEvil);
 		virtual ~PeterPepperComponent();
 
 		void ReduceLife();
-		int GetLives() { return m_Lives; }
-		void AddPoints(int points);
-		int GetPoints() { return m_Points; }
 		void ButtonPress();
 		void ChangeState(int state);
 		void UsePepper();
@@ -68,10 +65,6 @@ namespace dae
 	protected:
 		PeterPepperState m_State;
 	private:
-		int m_Lives;
-		int m_Points;
-
-		//Terrain related
 		bool m_CanClimb;
 		bool m_CanDescend;
 		bool m_CanWalkLeft;

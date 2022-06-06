@@ -1,5 +1,11 @@
 #include "PointsDisplayComponent.h"
 #include "TextComponent.h"
+#include "GameManager.h"
+dae::PointsDisplayComponent::~PointsDisplayComponent()
+{
+	GameManager::GetInstance().RemoveObserver(this);
+
+}
 void dae::PointsDisplayComponent::OnNotify(EventType event_, std::shared_ptr<EventArgs> args)
 {
 	if (event_ == EventType::GAINEDPOINTS)

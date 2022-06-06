@@ -28,8 +28,6 @@ namespace dae
 		void BurgerCompleted();
 
 		int GetLevelIndex() const { return m_CurrentLevelIndex;}
-		void AddPoints(int points) { m_Points += points;}
-		int GetPoints() const { return m_Points; }
 
 		void SetGameMode(GameMode gameMode) { m_GameMode = gameMode; }
 		void SetEnemySpawns(std::vector<Float2> enemySpawns) { m_EnemySpawnPositions = enemySpawns; }
@@ -37,8 +35,11 @@ namespace dae
 		void ChangePlayer();
 		GameMode GetGameMode() const { return m_GameMode; }
 
-		void ReduceLife() { --m_Lives; }
+		void ReduceLife(bool isToRefresh);
 		int GetLives() const { return m_Lives; }
+
+		void AddPoints(int points);
+		int GetPoints() const { return m_Points; }
 
 	private:
 		int m_Points;

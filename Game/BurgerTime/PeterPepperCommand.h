@@ -148,6 +148,10 @@ namespace dae
 	public:
 		void Execute() override
 		{
+			if (SceneManager::GetInstance().GetActiveSceneName() == "MainMenu")
+			{
+				return;
+			}
 			if (m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->GetNrOfPepperShots() <= 0)
 			{
 				return;

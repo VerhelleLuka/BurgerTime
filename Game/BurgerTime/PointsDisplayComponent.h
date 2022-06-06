@@ -18,7 +18,12 @@ namespace dae
 
 		virtual void Render() const override {};
 		PointsDisplayComponent(std::shared_ptr<GameObject> pParent) :m_Points(), m_pParent(pParent.get()) {};
-		virtual ~PointsDisplayComponent() {};
+		virtual ~PointsDisplayComponent() ;
+		PointsDisplayComponent(const PointsDisplayComponent& other) = delete;
+		PointsDisplayComponent(PointsDisplayComponent&& other) = delete;
+		PointsDisplayComponent& operator=(const PointsDisplayComponent& other) = delete;
+		PointsDisplayComponent& operator=(PointsDisplayComponent&& other) = delete;
+
 		virtual void OnNotify(EventType event_, std::shared_ptr<EventArgs> eventArgs) override;
 
 	protected:
