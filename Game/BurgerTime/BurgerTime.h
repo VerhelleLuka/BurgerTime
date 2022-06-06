@@ -27,6 +27,7 @@ namespace dae
 		std::vector<Float2> MakeLaddersAndPlatforms(Scene& scene, const std::vector<Ladder>& ladders, const std::vector<Platform>& platforms, int sceneNr)const;
 		void MakeBurgers(Scene& scene, const std::vector<Burger>& burgers, int sceneNr) const;
 		void MakeBurgerSpawner(std::vector<Float2> spawnPositions) const;
+		void CreateHighScoreDisplay(Scene& scene) const;
 
 
 		Minigin m_Minigin;

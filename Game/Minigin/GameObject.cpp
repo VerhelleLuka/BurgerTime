@@ -19,6 +19,7 @@ void dae::GameObject::Initialize(Scene& scene)
 	{
 		child->Initialize(scene);
 	}
+
 }
 
 void dae::GameObject::Update(float deltaTime)

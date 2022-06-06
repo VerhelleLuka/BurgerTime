@@ -78,8 +78,6 @@ int dae::SceneManager::GetActiveSceneNr() const
 }
 void dae::SceneManager::DestroyScene()
 {
-	InputManager::GetInstance().SetPlayer(nullptr, 0);
-	InputManager::GetInstance().SetPlayer(nullptr, 1);
 	Physics::GetInstance().DeleteScene(m_pActiveScene->GetIndex());
 
 	for (size_t i = 0; i < m_Scenes.size(); i++)

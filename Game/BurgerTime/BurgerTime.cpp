@@ -32,13 +32,7 @@ void dae::BurgerTime::LoadGame()
 	auto& menuScene = SceneManager::GetInstance().CreateScene("MainMenu");
 	SceneManager::GetInstance().SetActiveScene(&menuScene);
 	Physics::GetInstance().SetSceneNr(0);
-	//auto& levelScene2 = SceneManager::GetInstance().CreateScene("Level2");
-	//auto& levelScene = SceneManager::GetInstance().CreateScene("Level1");
-
 	CreateMenu(menuScene);
-
-
-
 }
 
 void dae::BurgerTime::CreateMenuButton(Scene& scene, Float2 position, GameMode gameMode, const  std::string& text) const
@@ -77,6 +71,10 @@ void dae::BurgerTime::CreateMenuButton(Scene& scene, Float2 position, GameMode g
 	buttonGo->SetTransform(position.x, position.y, -1);
 
 	scene.Add(buttonGo);
+}
+void dae::BurgerTime::CreateHighScoreDisplay(Scene& scene) const
+{
+
 }
 void dae::BurgerTime::CreateMenu(Scene& scene) const
 {

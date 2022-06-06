@@ -139,7 +139,7 @@ namespace dae
 	public:
 		void Execute() override
 		{
-			if (SceneManager::GetInstance().GetActiveSceneNr() == 0)
+			if (SceneManager::GetInstance().GetActiveSceneNr() == 0 && SceneManager::GetInstance().GetActiveSceneName() == "MainMenu")
 				m_pGameObject->GetComponent<PeterPepperComponent>("PeterPepper")->ButtonPress();
 		}
 	};

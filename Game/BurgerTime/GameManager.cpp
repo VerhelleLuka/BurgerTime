@@ -10,6 +10,8 @@
 #include "BurgerComponent.h"
 #include "InputManager.h"
 #include "PointsDisplayComponent.h"
+#include <iostream>
+#include <fstream>
 dae::GameManager::GameManager()
 	: m_pBurgerTime(nullptr),
 	m_Points(0),
@@ -98,6 +100,11 @@ void dae::GameManager::ResetScene(bool fullReset)
 	}
 	else
 	{
+		std::string fileName("../Data/Menu/HighScores.txt");
+		std::ofstream  hiscoreFile;
+		hiscoreFile.open(fileName, std::ios_base::app);
+		hiscoreFile << m_Points << "\n";
+		hiscoreFile.close();
 		m_Lives = 3;
 		m_Points = 0;
 		LoadLevel("MainMenu");

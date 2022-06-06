@@ -165,12 +165,12 @@ void dae::InputManager::Update()
 
 }
 
-void dae::InputManager::SetPlayer(GameObject* pGo, int playerIdx)
-{
-	auto it = pImpl->GetButtonCommands(playerIdx).begin();
-	while (it != pImpl->GetButtonCommands(playerIdx).end())
-	{
-		it->second->SetGameObject(pGo);
-		it++;
-	}
-}
+//void dae::InputManager::SetPlayer(GameObject* pGo, int playerIdx)
+//{
+//	auto it = pImpl->GetButtonCommands(playerIdx).begin();
+//	while (it != pImpl->GetButtonCommands(playerIdx).end())
+//	{
+//		it->second->SetGameObject(pGo);
+//		it++;
+//	}
+//}

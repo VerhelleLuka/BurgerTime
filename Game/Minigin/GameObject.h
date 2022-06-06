@@ -1,4 +1,4 @@
-   #pragma once
+#pragma once
 #include "Transform.h"
 #include "SceneObject.h"
 #include <memory>
@@ -9,10 +9,10 @@ namespace dae
 {
 	class Scene;
 	class BaseComponent;
-	class GameObject final: public SceneObject, std::enable_shared_from_this<GameObject>
+	class GameObject final : public SceneObject, std::enable_shared_from_this<GameObject>
 	{
 	public:
-		
+
 		void Update(float deltaTime) override;
 		void FixedUpdate(float deltaTime) override;
 		void Render() const override;
@@ -58,7 +58,6 @@ namespace dae
 		std::weak_ptr<GameObject> m_pParent;
 
 		Transform m_Transform;
-
 		std::string m_Tag;
 	};
 }

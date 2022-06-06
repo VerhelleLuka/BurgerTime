@@ -172,13 +172,13 @@ void dae::PeterPepperComponent::UsePepper()
 
 void dae::PeterPepperComponent::ReduceLife()
 {
-	if (GameManager::GetInstance().GetLives() > 0)
-	{
+	//if (GameManager::GetInstance().GetLives() > 0)
+	//{
 		GameManager::GetInstance().ReduceLife(false);
 		m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetStatic(true);
 		m_pParent->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Death");
 		m_IsDead = true;
-	}
+	//}
 
 }
 void dae::PeterPepperComponent::OnNotify(EventType event_, std::shared_ptr<EventArgs> /*args*/)
