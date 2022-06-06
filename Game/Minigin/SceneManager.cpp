@@ -71,7 +71,7 @@ int dae::SceneManager::GetActiveSceneNr() const
 	{
 		if (m_Scenes[i].get() == m_pActiveScene)
 		{
-			return i;
+			return (int)i;
 		}
 	}
 	return 0;
