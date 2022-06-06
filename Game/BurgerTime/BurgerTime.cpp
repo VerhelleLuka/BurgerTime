@@ -22,6 +22,7 @@
 #include "EnemySpawner.h"
 #include "GameManager.h"
 #include "BurgerSpawner.h"
+#include <algorithm>
 void dae::BurgerTime::Initialize()
 {
 	GameManager::GetInstance().SetBurgerTimeGame(this);
@@ -74,6 +75,34 @@ void dae::BurgerTime::CreateMenuButton(Scene& scene, Float2 position, GameMode g
 }
 void dae::BurgerTime::CreateHighScoreDisplay(Scene& scene) const
 {
+	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 24);
+
+	std::ifstream file("../Data/Menu/HighScores.txt");
+	std::string sCommand;
+	std::vector<int> highScores;
+	if (file)
+	{
+		while (!file.eof())
+		{
+			file >> sCommand;
+			highScores.push_back(std::stoi(sCommand));
+		}
+		std::sort(highScores.begin(), highScores.end(), std::greater<int>());
+	}
+	Float2 position{ 400, 50 };
+	for (int i{}; i < highScores.size(); ++i)
+	{
+		if (i > 4)
+			break;
+		
+		auto highScore = std::make_shared<GameObject>();
+		auto textComp = std::make_shared<TextComponent>(std::to_string(highScores[i]), font);
+		highScore->AddComponent(textComp, "Text");
+		textComp->SetPosition(position.x, position.y);
+		position.y += 30;
+		scene.Add(highScore);
+	}
+
 
 }
 void dae::BurgerTime::CreateMenu(Scene& scene) const
@@ -90,7 +119,7 @@ void dae::BurgerTime::CreateMenu(Scene& scene) const
 	CreateMenuButton(scene, Float2{ 150, 100 }, GameMode::SINGLE, "SinglePlayer");
 	CreateMenuButton(scene, Float2{ 300, 150 }, GameMode::COOP, "Co-op");
 	CreateMenuButton(scene, Float2{ 150, 200 }, GameMode::VERSUS, "Versus");
-
+	CreateHighScoreDisplay(scene);
 
 }
 
@@ -186,7 +215,7 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 	auto peterPepperGo = std::make_shared<GameObject>();
 	peterPepperGo->SetTag("PeterPepper");
 	Float2 level1Pos = { 100,8 };
-	Float2 level2Pos = { 100,40 };
+	Float2 level2Pos = { 200,40 };
 
 	peterPepperGo->SetTransform(100, 8, 0);
 	std::shared_ptr<PeterPepperComponent> peterPepper = nullptr;

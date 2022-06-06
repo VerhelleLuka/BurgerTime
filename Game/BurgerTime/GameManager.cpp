@@ -66,7 +66,8 @@ void dae::GameManager::LoadLevel(const std::string& levelName)
 	}
 	else if (SceneManager::GetInstance().GetActiveSceneName() == "Level3")
 	{
-		m_pBurgerTime->LoadLevel1(m_GameMode, "MainMenu");
+		AddPoints(0);
+		ResetScene(true);
 	}
 	ReduceLife(true);
 	AddPoints(0);
