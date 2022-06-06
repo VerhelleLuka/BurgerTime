@@ -9,11 +9,9 @@ dae::BurgerComponent::BurgerComponent()
 	:m_Fall(false),
 	m_Caught(false),
 	m_LevelsToFall(0),
-	m_StartFall(false),
-	m_pPeterPepper(nullptr)
+	m_StartFall(false)
 {
 }
-//dae::BurgerComponent::~BurgerComponent()}
 void dae::BurgerComponent::Initialize()
 {
 	for (int i{}; i < m_NrParts; ++i)
@@ -107,8 +105,7 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 	}
 	if (other->GetParent()->GetTag() == "PeterPepper")
 	{
-		if (other->GetParent()->GetComponent<PeterPepperComponent>("PeterPepper").get() != m_pPeterPepper)
-			m_pPeterPepper = other->GetParent()->GetComponent<PeterPepperComponent>("PeterPepper").get();
+
 		for (int i{}; i < m_NrParts - 1; ++i)
 		{
 
@@ -154,12 +151,10 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 		}
 		else if (other->GetParent()->GetTransform().GetPosition().y < m_pParent->GetTransform().GetPosition().y)
 		{
-			//m_pPeterPepper = other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->GetPeterPepper();
 			ForceFall();
 		}
 		else if(m_Fall)
 		{
-			//other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->SetPeterPepper(m_pPeterPepper);
 			other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->ForceFall();
 		}
 	}

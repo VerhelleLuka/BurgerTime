@@ -36,8 +36,8 @@ namespace dae
 		void SetSpawnPositions(std::vector<Float2> spawnPositions) { m_SpawnPositions = spawnPositions; }
 		virtual void OnNotify(EventType /*event_*/, std::shared_ptr<EventArgs> /*args*/) override;
 
-		void SpawnEnemy();
 	protected:
+		void SpawnEnemy();
 
 		Difficulty m_Difficulty;
 		int m_MaxEnemies;

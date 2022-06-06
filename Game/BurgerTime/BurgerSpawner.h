@@ -28,9 +28,9 @@ namespace dae
 		void SetSpawnPositions(std::vector<Float2> spawnPositions) { m_SpawnPositions = spawnPositions; }
 		virtual void OnNotify(EventType /*event_*/, std::shared_ptr<EventArgs> /*args*/) override;
 
-		void SpawnBurger();
 	protected:
 
+		void SpawnBurger();
 		int m_MaxBurgers;
 		int m_NumBurgers;
 		const float m_BurgerRespawnTimer {5.f};

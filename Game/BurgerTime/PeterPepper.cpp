@@ -12,8 +12,6 @@
 #include "Enemy.h"
 dae::PeterPepperComponent::PeterPepperComponent(Float2 spawnPos, bool isEvil)
 	:m_State(PeterPepperState::Climb)
-	, m_OverlappingLadder(false),
-	m_OverlappingPlatform(false)
 	, m_CanClimb(false)
 	, m_CanDescend(false)
 	, m_CanWalkLeft(false)

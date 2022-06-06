@@ -29,7 +29,6 @@ namespace dae
 		virtual void OnNotify(EventType event_, std::shared_ptr<EventArgs> args) override;
 
 		void SetOverlapping(bool overlapping) { m_OverlappingPeter = overlapping; }
-		//bool GetOverlapping() const { return m_OverlappingPeter; }
 	private:
 		std::string m_SceneName;
 		GameMode m_GameMode;

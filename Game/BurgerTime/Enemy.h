@@ -32,8 +32,6 @@ namespace dae
 		bool GetCanDescend() const { return m_CanDescend; }
 		bool GetCanWalkLeft() const { return m_CanWalkLeft; }
 		bool GetCanWalkRight() const { return m_CanWalkRight; }
-		void SetCanWalkLeft(bool canWalkLeft)  { m_CanWalkLeft = canWalkLeft; }
-		void SetCanWalkRight(bool canWalkRight)  { m_CanWalkRight = canWalkRight; }
 		EnemyType GetEnemyType() const { return m_EnemyType; }
 
 		void SetOverlapEvent();
@@ -52,8 +50,6 @@ namespace dae
 		bool m_CanWalkLeft;
 		bool m_CanWalkRight;
 
-		bool m_OverlappingLadder;
-		bool m_OverlappingPlatform;
 		void OnOverlap(RigidBodyComponent* /*other*/);
 		void OnTriggerExit(RigidBodyComponent* /*other*/);
 

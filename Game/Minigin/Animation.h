@@ -5,7 +5,7 @@
 #include "Transform.h"
 namespace dae
 {
-	class Animation
+	class Animation final
 	{
 	public:
 		Animation(int rows, int nrFrames);

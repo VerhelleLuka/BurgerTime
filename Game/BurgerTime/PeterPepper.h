@@ -74,8 +74,6 @@ namespace dae
 		bool m_CanWalkRight;
 
 		bool m_InMenu;
-		bool m_OverlappingLadder;
-		bool m_OverlappingPlatform;
 		void OnOverlap(RigidBodyComponent* other);
 		void OnTriggerExit(RigidBodyComponent* other);
 
