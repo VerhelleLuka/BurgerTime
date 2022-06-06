@@ -32,7 +32,10 @@ namespace dae
 		virtual void Initialize(Scene& scene) override;
 		PeterPepperComponent(Float2 m_SpawnPos, bool isEvil);
 		virtual ~PeterPepperComponent();
-
+		PeterPepperComponent(const PeterPepperComponent& other) = delete;
+		PeterPepperComponent(PeterPepperComponent&& other) = delete;
+		PeterPepperComponent& operator=(const PeterPepperComponent& other) = delete;
+		PeterPepperComponent& operator=(PeterPepperComponent&& other) = delete;
 		void ReduceLife();
 		void ButtonPress();
 		void ChangeState(int state);

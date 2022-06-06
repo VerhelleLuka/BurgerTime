@@ -17,14 +17,16 @@ namespace dae
 		BurgerComponent();
 		virtual ~BurgerComponent() {}
 		
-
+		BurgerComponent(const BurgerComponent& other) = delete;
+		BurgerComponent(BurgerComponent&& other) = delete;
+		BurgerComponent& operator=(const BurgerComponent& other) = delete;
+		BurgerComponent& operator=(BurgerComponent&& other) = delete;
 		void SetOverlapEvent()
 		{
 			auto binding = std::bind(&BurgerComponent::OnOverlap, this, std::placeholders::_1);
 			m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetOnOverlapEvent(binding);
 		}
 		void ForceFall();
-		bool GetFalling() const { return m_Fall; }
 		bool GetCaught() const { return m_Caught; }
 		void SetCaught(bool caught);
 		void SetPeterPepper(PeterPepperComponent* peterPepper) { m_pPeterPepper = peterPepper; }
@@ -39,6 +41,7 @@ namespace dae
 		float m_xPositions[m_NrParts];
 		std::shared_ptr<PlatformComponent> m_pPlatformComp;
 		void OnOverlap(RigidBodyComponent* other);
+
 		PeterPepperComponent* m_pPeterPepper;
 
 		int m_LevelsToFall;

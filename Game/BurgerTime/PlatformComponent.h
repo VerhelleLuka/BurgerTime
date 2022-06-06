@@ -13,7 +13,10 @@ namespace dae
 
 		PlatformComponent(): m_HasNext(false), m_HasPrevious(false) {};
 		virtual ~PlatformComponent() {};
-
+		PlatformComponent(const PlatformComponent& other) = delete;
+		PlatformComponent(PlatformComponent&& other) = delete;
+		PlatformComponent& operator=(const PlatformComponent& other) = delete;
+		PlatformComponent& operator=(PlatformComponent&& other) = delete;
 		void SetHasNext(bool hasNext) { m_HasNext = hasNext; }
 		void SetHasPrevious(bool hasPrevious) { m_HasPrevious = hasPrevious; }
 

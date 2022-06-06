@@ -10,6 +10,10 @@ namespace dae
 	public:
 		Animation(int rows, int nrFrames);
 		~Animation() = default;
+		Animation(const Animation& other) = delete;
+		Animation(Animation&& other) = delete;
+		Animation& operator=(const Animation& other) = delete;
+		Animation& operator=(Animation&& other) = delete;
 		void Update(float deltaTime,Transform transform);
 		void Render();
 

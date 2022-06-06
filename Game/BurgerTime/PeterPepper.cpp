@@ -66,8 +66,6 @@ void dae::PeterPepperComponent::Update(float elapsedSec)
 
 			GameManager::GetInstance().LoadLevel("Not Same");
 			m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetStatic(false);
-
-
 		}
 	}
 	if (m_IsDead)

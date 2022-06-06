@@ -16,10 +16,6 @@ namespace dae
 		if (!file)
 			return false;
 
-		//std::vector<FPoint4> positions;
-		//std::vector<FVector3> normals;
-		//std::vector<FVector2> UVs;
-
 		platforms.clear();
 		ladders.clear();
 		spawnPositions.clear();

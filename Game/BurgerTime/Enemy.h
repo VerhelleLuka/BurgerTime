@@ -23,13 +23,10 @@ namespace dae
 		void Reinitialize();
 		Enemy(EnemyType type);
 		virtual ~Enemy();
-
-		//void ReduceLife();
-		//int GetLives() { return m_Lives; }
-		//void AddPoints(int points);
-		//int GetPoints() { return m_Points; }
-		//void ButtonPress();
-		//void ChangeState(int state);
+		Enemy(const Enemy& other) = delete;
+		Enemy(Enemy&& other) = delete;
+		Enemy& operator=(const Enemy& other) = delete;
+		Enemy& operator=(Enemy&& other) = delete;
 
 		bool GetCanClimb() const { return m_CanClimb; }
 		bool GetCanDescend() const { return m_CanDescend; }
@@ -48,10 +45,6 @@ namespace dae
 		bool GetFalling() const { return m_IsFalling; }
 		bool GetDead() const { return m_IsDead; }
 		bool GetStunned() const { return m_Stunned; }
-		//Enemy* clone(Float2 pos)
-		//{
-		//	retu
-		//}
 	private:
 		//Terrain related
 		bool m_CanClimb;

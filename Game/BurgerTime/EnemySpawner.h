@@ -26,7 +26,10 @@ namespace dae
 
 		EnemySpawner(Difficulty difficulty);
 		virtual ~EnemySpawner() {};
-
+		EnemySpawner(const EnemySpawner& other) = delete;
+		EnemySpawner(EnemySpawner&& other) = delete;
+		EnemySpawner& operator=(const EnemySpawner& other) = delete;
+		EnemySpawner& operator=(EnemySpawner&& other) = delete;
 		virtual void Initialize(Scene& /*scene*/) override;
 
 		void SetDifficulty(Difficulty difficulty);

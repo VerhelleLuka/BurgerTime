@@ -157,7 +157,7 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 			//m_pPeterPepper = other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->GetPeterPepper();
 			ForceFall();
 		}
-		else if(GetFalling())
+		else if(m_Fall)
 		{
 			//other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->SetPeterPepper(m_pPeterPepper);
 			other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->ForceFall();

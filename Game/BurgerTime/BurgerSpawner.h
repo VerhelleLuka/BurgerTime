@@ -19,7 +19,10 @@ namespace dae
 
 		BurgerSpawner();
 		virtual ~BurgerSpawner() {};
-
+		BurgerSpawner(const BurgerSpawner& other) = delete;
+		BurgerSpawner(BurgerSpawner&& other) = delete;
+		BurgerSpawner& operator=(const BurgerSpawner& other) = delete;
+		BurgerSpawner& operator=(BurgerSpawner&& other) = delete;
 		virtual void Initialize(Scene& /*scene*/) override {};
 
 		void SetSpawnPositions(std::vector<Float2> spawnPositions) { m_SpawnPositions = spawnPositions; }
