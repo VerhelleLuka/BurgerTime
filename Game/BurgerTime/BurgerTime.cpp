@@ -94,7 +94,7 @@ void dae::BurgerTime::CreateHighScoreDisplay(Scene& scene) const
 	{
 		if (i > 4)
 			break;
-		
+
 		auto highScore = std::make_shared<GameObject>();
 		auto textComp = std::make_shared<TextComponent>(std::to_string(highScores[i]), font);
 		highScore->AddComponent(textComp, "Text");
@@ -215,19 +215,19 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 	auto peterPepperGo = std::make_shared<GameObject>();
 	peterPepperGo->SetTag("PeterPepper");
 	Float2 level1Pos = { 100,8 };
-	Float2 level2Pos = { 200,40 };
+	Float2 level2Pos = { 195,40 };
+	Float2 level3Pos = { 100,360 };
 
 	peterPepperGo->SetTransform(100, 8, 0);
 	std::shared_ptr<PeterPepperComponent> peterPepper = nullptr;
 	if (SceneManager::GetInstance().GetActiveSceneName() == "Level2")
 	{
 		peterPepperGo->SetTransform(100, 40, 0);
-		peterPepper = std::make_shared<PeterPepperComponent>( level2Pos, false);
+		peterPepper = std::make_shared<PeterPepperComponent>(level2Pos, false);
 	}
 	else
 	{
-		peterPepper = std::make_shared<PeterPepperComponent>( level1Pos, false);
-
+		peterPepper = std::make_shared<PeterPepperComponent>(level1Pos, false);
 	}
 
 
@@ -320,7 +320,7 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 		pointsDisplay->AddComponent(textCompPts, "TextComponent");
 		textCompPts->SetPosition(hudX, hudY + 20);
 		scene.Add(pointsDisplay);
-		
+
 		GameManager::GetInstance().AddObserver(lifeComp.get());
 		GameManager::GetInstance().AddObserver(pointComp.get());
 	}
@@ -339,7 +339,7 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 	if (!andHUD)
 	{
 		input.AddCommand((ControllerButton::ButtonA), new Select, KeyState::RELEASED, peterPepperGo.get(), playerNr);
-		
+
 	}
 	else
 	{
@@ -353,9 +353,14 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 	{
 		peterPepperGo->SetTransform(level2Pos.x, level2Pos.y, 0);
 	}
-	else
+	else if (SceneManager::GetInstance().GetActiveSceneName() == "Level1")
 	{
 		peterPepperGo->SetTransform(level1Pos.x, level1Pos.y, 0);
+
+	}
+	else
+	{
+		peterPepperGo->SetTransform(level3Pos.x, level3Pos.y, 0);
 
 	}
 	peterPepper->Initialize(scene);
@@ -366,7 +371,14 @@ void dae::BurgerTime::MakeEnemySpawner(std::vector<Float2> spawnPositions) const
 {
 	auto spawnerGo = std::make_shared<GameObject>();
 	spawnerGo->SetTag("Spawner");
-	auto spawner = std::make_shared<EnemySpawner>(Difficulty::EASY);
+	std::shared_ptr<EnemySpawner> spawner = nullptr;
+	if (SceneManager::GetInstance().GetActiveSceneName() == "Level3")
+	{
+		 spawner = std::make_shared<EnemySpawner>(Difficulty::HARD);
+
+	}
+	else
+		 spawner = std::make_shared<EnemySpawner>(Difficulty::EASY);
 
 	spawner->SetSpawnPositions(spawnPositions);
 	spawnerGo->AddComponent(spawner, "Spawner");
@@ -610,7 +622,7 @@ void dae::BurgerTime::MakeBurgers(Scene& scene, const std::vector<Burger>& burge
 				burgerPart.append(burgers[i].partName);
 				burgerPart += ".png";
 				burgerAnimation->SetTexture(burgerPart);
-				transform.SetPosition((burgers[i].column) * platformWidth + scalingIncrease * (burgers[i].column - 1) + 1, (((burgers[i].row + 1) * platformWidth) - 7 * levelScale) , 0.f);
+				transform.SetPosition((burgers[i].column) * platformWidth + scalingIncrease * (burgers[i].column - 1) + 1, (((burgers[i].row + 1) * platformWidth) - 7 * levelScale), 0.f);
 				//transform.SetPosition(burgers[i].column * platformWidth + (((platformWidth/2) * burgers[i].column / 2)), ((burgers[i].row + 1) * platformWidth * 1.5f) - 7 * levelScale, 0.f);
 
 				if (burgers[i].partName == "Top_bun")

@@ -44,6 +44,7 @@ void dae::GameManager::LoadLevel(const std::string& levelName)
 {
 	m_CompletedBurgers = 0;
 	SceneManager::GetInstance().GetActiveScene().MarkForDestroy();
+
 	if (levelName == "MainMenu")
 	{
 		m_pBurgerTime->LoadLevel1(m_GameMode, "MainMenu");
@@ -69,6 +70,7 @@ void dae::GameManager::LoadLevel(const std::string& levelName)
 		AddPoints(0);
 		ResetScene(true);
 	}
+
 	ReduceLife(true);
 	AddPoints(0);
 }

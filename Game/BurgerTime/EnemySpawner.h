@@ -14,7 +14,6 @@ namespace dae
 	enum class Difficulty
 	{
 		EASY,
-		NORMAL,
 		HARD
 	};
 	class EnemySpawner final : public BaseComponent, public Observer
