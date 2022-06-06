@@ -35,7 +35,6 @@ void Scene::Update(float deltaTime)
 	{
 		if (!m_MarkedForDestroy)
 			m_Objects[i]->Update(deltaTime);
-
 	}
 
 
@@ -43,14 +42,6 @@ void Scene::Update(float deltaTime)
 
 void dae::Scene::FixedUpdate(float deltaTime)
 {
-	if (!m_MarkedForDestroy)
-	{
-		for (auto& object : m_Objects)
-		{
-			object->FixedUpdate(deltaTime);
-		}
-
-	}
 	for (size_t i = 0; i < m_Objects.size(); i++)
 	{
 		if (m_Objects[i]->GetMarkForDelete())
@@ -60,6 +51,15 @@ void dae::Scene::FixedUpdate(float deltaTime)
 			m_Objects.erase(it);
 		}
 	}
+	if (!m_MarkedForDestroy)
+	{
+		for (auto& object : m_Objects)
+		{
+			object->FixedUpdate(deltaTime);
+		}
+
+	}
+
 }
 
 void Scene::Render() 

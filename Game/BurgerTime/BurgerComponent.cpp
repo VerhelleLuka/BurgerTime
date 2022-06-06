@@ -19,7 +19,9 @@ void dae::BurgerComponent::Initialize()
 	for (int i{}; i < m_NrParts; ++i)
 	{
 		m_xPositions[i] = m_pParent->GetTransform().GetPosition().x + (m_pParent->GetComponent<SpriteComponent>("BurgerSprite")->GetAnimation().GetScaledWidth() * i) / 5;
+		m_WalkedOver[i] = false;
 	}
+	
 }
 void dae::BurgerComponent::FixedUpdate(float /*elapsedSec*/)
 {
@@ -97,6 +99,7 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 			}
 			if (m_LevelsToFall > 0)
 			{
+				std::cout << "LevelsToFall > 0\n";
 				ForceFall();
 				m_LevelsToFall--;
 			}
@@ -121,7 +124,6 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 						m_AllTrue = false;
 					}
 				}
-
 				m_Fall = m_AllTrue;
 				m_StartFall = m_AllTrue;
 			}
@@ -155,7 +157,7 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 			//m_pPeterPepper = other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->GetPeterPepper();
 			ForceFall();
 		}
-		else
+		else if(GetFalling())
 		{
 			//other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->SetPeterPepper(m_pPeterPepper);
 			other->GetParent()->GetComponent<BurgerComponent>("BurgerComp")->ForceFall();

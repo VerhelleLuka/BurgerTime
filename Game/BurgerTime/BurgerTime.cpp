@@ -747,6 +747,7 @@ void dae::BurgerTime::LoadLevel1(GameMode gameMode, const std::string& levelName
 	}
 	GameManager::GetInstance().SetEnemySpawns(enemySpawnPositions);
 	MakeEnemySpawner(enemySpawnPositions);
+	levelScene.Initialize();
 
 }
 

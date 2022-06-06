@@ -24,6 +24,7 @@ namespace dae
 			m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetOnOverlapEvent(binding);
 		}
 		void ForceFall();
+		bool GetFalling() const { return m_Fall; }
 		bool GetCaught() const { return m_Caught; }
 		void SetCaught(bool caught);
 		void SetPeterPepper(PeterPepperComponent* peterPepper) { m_pPeterPepper = peterPepper; }
