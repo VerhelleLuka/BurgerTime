@@ -57,7 +57,7 @@ namespace dae
 			auto bindIng = std::bind(&PeterPepperComponent::OnTriggerExit, this, std::placeholders::_1);
 			m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetOnTriggerExit(bindIng);
 		}
-
+		bool GetStunned() const { return m_Stunned; }
 		bool GetInMenu() const { return m_InMenu; }
 		void SetInMenu(bool inGameScene)  { m_InMenu = inGameScene; }
 

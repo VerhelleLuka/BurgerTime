@@ -67,7 +67,7 @@ dae::Scene& dae::SceneManager::GetActiveScene()
 
 int dae::SceneManager::GetActiveSceneNr() const
 {
-	for (int i{}; i < m_Scenes.size(); ++i)
+	for (size_t i{}; i < m_Scenes.size(); ++i)
 	{
 		if (m_Scenes[i].get() == m_pActiveScene)
 		{

@@ -36,7 +36,7 @@ public:
 	{
 		m_IsRunning = false;
 		m_Cv.notify_one();
-		for (int i = 0; i < m_Sounds.size(); ++i)
+		for (size_t i = 0; i < m_Sounds.size(); ++i)
 		{
 			Mix_FreeChunk(m_Sounds[i]);
 		}
@@ -88,7 +88,7 @@ private:
 				lock.lock();
 				m_SoundsToPlay.pop();
 
-				while (m_Sounds.size() >= m_SoundChannels)
+				while (m_Sounds.size() >= (size_t)m_SoundChannels)
 				{
 					//Mix_Playing();
 					Mix_FreeChunk(m_Sounds.front());

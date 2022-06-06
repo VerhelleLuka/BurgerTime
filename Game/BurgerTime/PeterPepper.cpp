@@ -137,7 +137,7 @@ void dae::PeterPepperComponent::FixedUpdate(float /*elapsedSec*/)
 		return;
 	auto overlappingBodies = m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->GetOverlappingBodies();
 	bool isOverlappingPlatform = false;
-	for (int i{}; i < overlappingBodies.size(); ++i)
+	for (size_t i{}; i < overlappingBodies.size(); ++i)
 	{
 		if (overlappingBodies[i]->GetWidth() < -1000 || overlappingBodies[i]->GetWidth() > 1000)
 		{
@@ -286,7 +286,7 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 		}
 		else if (other->GetParent()->GetTag() == "EvilPeterPepper" && !m_IsEvil && !m_IsDead)
 		{
-			
+			if(!other->GetParent()->GetComponent<PeterPepperComponent>("EvilPeterPepper")->GetStunned())
 			ReduceLife();
 		}
 

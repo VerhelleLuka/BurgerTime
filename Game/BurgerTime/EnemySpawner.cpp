@@ -113,7 +113,7 @@ void dae::EnemySpawner::SpawnEnemy()
 		int enemyToMake = 1 + (std::rand() % (6));
 		if (m_EggPresent)
 		{
-			if (enemyToMake < 4)
+			if (enemyToMake < 5)
 			{
 				climbAnim->SetTexture("Enemies/Sausage_Climb.png");
 				descendAnim->SetTexture("Enemies/Sausage_Descend.png");
@@ -140,7 +140,7 @@ void dae::EnemySpawner::SpawnEnemy()
 		}
 		else
 		{
-			if (enemyToMake < 4)
+			if (enemyToMake < 5)
 			{
 				climbAnim->SetTexture("Enemies/Sausage_Climb.png");
 				descendAnim->SetTexture("Enemies/Sausage_Descend.png");
@@ -151,7 +151,7 @@ void dae::EnemySpawner::SpawnEnemy()
 				enemyType = EnemyType::SAUSAGE;
 
 			}
-			else if (enemyToMake > 3 && enemyToMake < 6)
+			else if (enemyToMake ==5)
 			{
 				climbAnim->SetTexture("Enemies/Pickle_Climb.png");
 				descendAnim->SetTexture("Enemies/Pickle_Descend.png");

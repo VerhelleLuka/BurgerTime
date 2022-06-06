@@ -45,7 +45,7 @@ void dae::Enemy::Initialize(Scene& scene)
 	{
 		auto sceneObjects = scene.GetSceneObjects();
 		bool foundOne = false;
-		for (int i = 0; i < sceneObjects.size(); ++i)
+		for (size_t i = 0; i < sceneObjects.size(); ++i)
 		{
 			if (dynamic_cast<GameObject*>(sceneObjects[i].get())->GetComponent<PeterPepperComponent>("PeterPepper").get())
 			{

@@ -44,7 +44,7 @@ void dae::Physics::RemoveRigidBodyComponent(RigidBodyComponent* rigidBody)
 }
 void dae::Physics::DeleteScene(int index)
 {
-	while (index >= m_pRigidBodies.size())
+	while (size_t(index) >= m_pRigidBodies.size())
 	{
 		--index;
 	}
@@ -57,7 +57,7 @@ void dae::Physics::SetSceneNr(int sceneNr)
 }
 void dae::Physics::CheckOverlap()
 {
-	while (m_SceneNr >= m_pRigidBodies.size())
+	while ((size_t)m_SceneNr >= m_pRigidBodies.size())
 	{
 		--m_SceneNr;
 	}

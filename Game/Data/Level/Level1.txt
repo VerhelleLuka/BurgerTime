@@ -116,7 +116,6 @@ ld 8 10
 
 #Hamburger parts, row and column
 #they need the indexes of all the paltforms -> they can only spawn on big platforms, so the ones with uneven columns
-b 0 3 Cheese
 b 0 5 Top_bun
 b 0 7 Top_bun
 b 0 9 Top_bun

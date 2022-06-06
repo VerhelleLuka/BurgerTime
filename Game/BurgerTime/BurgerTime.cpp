@@ -62,7 +62,7 @@ void dae::BurgerTime::CreateMenuButton(Scene& scene, Float2 position, GameMode g
 	buttonGo->AddComponent(buttonRigidBody, "RigidBody");
 	//buttonRigidBody->SetGameObject(buttonGo.get());
 	auto sceneObjects = scene.GetSceneObjects();
-	for (int i = 0; i < sceneObjects.size(); ++i)
+	for (size_t i = 0; i < sceneObjects.size(); ++i)
 	{
 		if (dynamic_cast<GameObject*>(sceneObjects[i].get())->GetComponent<PeterPepperComponent>("PeterPepper").get())
 		{
@@ -90,7 +90,7 @@ void dae::BurgerTime::CreateHighScoreDisplay(Scene& scene) const
 		std::sort(highScores.begin(), highScores.end(), std::greater<int>());
 	}
 	Float2 position{ 400, 50 };
-	for (int i{}; i < highScores.size(); ++i)
+	for (size_t i{}; i < highScores.size(); ++i)
 	{
 		if (i > 4)
 			break;
@@ -546,9 +546,9 @@ std::vector<dae::Float2> dae::BurgerTime::MakeLaddersAndPlatforms(Scene& scene, 
 		//ladder component
 		auto pLadder = std::make_shared<LadderComponent>();
 
-		for (int k{}; k < ladders.size(); ++k)
+		for (size_t k{}; k < ladders.size(); ++k)
 		{
-			for (int j{}; j < ladders.size(); ++j)
+			for (size_t j{}; j < ladders.size(); ++j)
 			{
 				//If they're not the same ladder
 				if (&ladders[j] != &ladders[k])
