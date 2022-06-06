@@ -13,11 +13,7 @@ void dae::Physics::FixedUpdate(float /*deltaTime*/)
 	{
 		m_SceneNr = 0;
 	}
-
-	//std::cout << m_pRigidBodies[m_SceneNr].size() << "\n";
 	CheckOverlap();
-
-
 }
 void dae::Physics::AddRigidBodyComponent(RigidBodyComponent* rigidBody)
 {
