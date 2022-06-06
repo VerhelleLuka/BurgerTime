@@ -44,7 +44,10 @@ namespace dae
 	public:
 		InputManager();
 		~InputManager();
-
+		InputManager(const InputManager& other) = delete;
+		InputManager(InputManager&& other) = delete;
+		InputManager& operator=(const InputManager& other) = delete;
+		InputManager& operator=(InputManager&& other) = delete;
 		bool ProcessInput();
 		bool IsDown(ControllerButton button, int playerIdx) const;
 		bool IsReleased(ControllerButton button, int playerIdx) const;

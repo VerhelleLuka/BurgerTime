@@ -25,6 +25,10 @@ public:
 
 	Impl() {};
 	~Impl() = default;
+	Impl(const Impl& other) = delete;
+	Impl(Impl&& other) = delete;
+	Impl& operator=(const Impl& other) = delete;
+	Impl& operator=(Impl&& other) = delete;
 	std::map<std::pair<ControllerButton, KeyState>, std::unique_ptr<Command>>& GetButtonCommands(int idx) { return m_ButtonCommands[idx]; }
 	bool ProcessInput()
 	{

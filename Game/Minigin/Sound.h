@@ -12,6 +12,10 @@ namespace dae
 	public:
 		sound_system();
 		~sound_system();
+		sound_system(const sound_system& other) = delete;
+		sound_system(sound_system&& other) = delete;
+		sound_system& operator=(const sound_system& other) = delete;
+		sound_system& operator=(sound_system&& other) = delete;
 		virtual void Play(const sound_id id, const float volume);
 
 		virtual void RegisterSound(const sound_id id, const std::string& path);
@@ -30,6 +34,10 @@ namespace dae
 	public:
 		logging_sound_system(sound_system* ss) : m_ssReal(ss) {}
 		~logging_sound_system() { delete m_ssReal; }
+		logging_sound_system(const logging_sound_system& other) = delete;
+		logging_sound_system(logging_sound_system&& other) = delete;
+		logging_sound_system& operator=(const logging_sound_system& other) = delete;
+		logging_sound_system& operator=(logging_sound_system&& other) = delete;
 
 		void RegisterSound(const sound_id id, const std::string& path) override;
 		void Play(const sound_id id, const float volume) override;
