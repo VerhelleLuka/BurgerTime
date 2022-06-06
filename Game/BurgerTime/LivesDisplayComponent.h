@@ -13,16 +13,12 @@ namespace dae
 		virtual void Update(float /*deltaTime*/) override {};
 		virtual void FixedUpdate(float /*deltaTime*/) override{}
 		virtual void Render() const override {};
-		LivesDisplayComponent(std::shared_ptr<GameObject> pParent):m_Lives(3), m_pParent(pParent.get()) {};
+		LivesDisplayComponent() {};
 		virtual ~LivesDisplayComponent();
 		LivesDisplayComponent(const LivesDisplayComponent& other) = delete;
 		LivesDisplayComponent(LivesDisplayComponent&& other) = delete;
 		LivesDisplayComponent& operator=(const LivesDisplayComponent& other) = delete;
 		LivesDisplayComponent& operator=(LivesDisplayComponent&& other) = delete;
 		virtual void OnNotify(EventType event_, std::shared_ptr<EventArgs> args) override;
-
-	protected:
-		GameObject* m_pParent{};
-		int m_Lives;
 	};
 }

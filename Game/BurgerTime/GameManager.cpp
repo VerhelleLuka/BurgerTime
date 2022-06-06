@@ -16,16 +16,8 @@ dae::GameManager::GameManager()
 	m_NrBurgers(0),
 	m_CompletedBurgers(0),
 	m_CurrentLevelIndex(0),
-	m_LevelComplete(false),
 	m_Lives(3)
 {
-	m_LevelNames.push_back("MainMenu");
-	for (int i{ 0 }; i < 3; ++i)
-	{
-		std::string levelName = "Level";
-		levelName.append(std::to_string(i + 1));
-		m_LevelNames.push_back(levelName);
-	}
 }
 void dae::GameManager::SetBurgerTimeGame(BurgerTime* burgerTime)
 {
@@ -35,12 +27,10 @@ void dae::GameManager::SetBurgerTimeGame(BurgerTime* burgerTime)
 void dae::GameManager::BurgerCompleted()
 {
 	m_CompletedBurgers++;
-	std::cout << m_CompletedBurgers << " " << m_NrBurgers << "\n";
-	if (m_CompletedBurgers >= m_NrBurgers && /*!m_LevelComplete &&*/ SceneManager::GetInstance().GetActiveScene().GetName() != "MainMenu")
+	if (m_CompletedBurgers >= m_NrBurgers &&  SceneManager::GetInstance().GetActiveScene().GetName() != "MainMenu")
 	{
 		m_CompletedBurgers = 0;
 		++m_CurrentLevelIndex;
-		//m_LevelComplete = true;
 		std::shared_ptr<EventArgs> emptyArgs = std::make_shared<EventArgs>();
 		Notify(EventType::WIN, emptyArgs);
 		ClearObservers();
@@ -51,7 +41,6 @@ void dae::GameManager::BurgerCompleted()
 void dae::GameManager::LoadLevel(const std::string& levelName)
 {
 	m_CompletedBurgers = 0;
-	//m_LevelComplete = false;
 	SceneManager::GetInstance().GetActiveScene().MarkForDestroy();
 	if (levelName == "MainMenu")
 	{
@@ -79,24 +68,6 @@ void dae::GameManager::LoadLevel(const std::string& levelName)
 	}
 	ReduceLife(true);
 	AddPoints(0);
-}
-void dae::GameManager::ChangePlayer()
-{
-
-	auto& scene = SceneManager::GetInstance().GetActiveScene();
-
-	auto& sceneObjects = scene.GetSceneObjects();
-	bool pepperFound = false;
-	for (auto& object : sceneObjects)
-	{
-		if (dynamic_cast<GameObject*>(object.get())->GetComponent<PeterPepperComponent>("PeterPepper"))
-		{
-			pepperFound = true;
-			InputManager::GetInstance().SetPlayer(dynamic_cast<GameObject*>(object.get()), 0);
-			InputManager::GetInstance().SetPlayer(nullptr, 1);
-		}
-	}
-
 }
 
 void dae::GameManager::AddPoints(int points)
@@ -132,5 +103,4 @@ void dae::GameManager::ResetScene(bool fullReset)
 		LoadLevel("MainMenu");
 	}
 	m_CompletedBurgers = 0;
-	//m_LevelComplete = false;
 }

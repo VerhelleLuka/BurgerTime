@@ -97,7 +97,6 @@ void dae::BurgerComponent::OnOverlap(RigidBodyComponent* other)
 			}
 			if (m_LevelsToFall > 0)
 			{
-				std::cout << "LevelsToFall > 0\n";
 				ForceFall();
 				m_LevelsToFall--;
 			}

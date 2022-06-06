@@ -15,10 +15,7 @@ void dae::SceneManager::Update(float deltaTime)
 {
 	if (m_pActiveScene)
 		m_pActiveScene->Update(deltaTime);
-	//for(auto& scene : m_Scenes)
-	//{
-	//	scene->Update(deltaTime);
-	//}
+
 }
 
 void dae::SceneManager::FixedUpdate(float deltaTime)

@@ -20,6 +20,5 @@ namespace dae
 		PepperComponent& operator=(const PepperComponent& other) = delete;
 		PepperComponent& operator=(PepperComponent&& other) = delete;
 		virtual void Initialize(Scene& /*scene*/) {};
-	protected:
 	};
 }

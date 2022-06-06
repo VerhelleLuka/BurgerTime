@@ -5,7 +5,6 @@ void dae::ButtonComponent::OnNotify(EventType event_, std::shared_ptr<EventArgs>
 {
 	if (event_ == EventType::LOADLEVEL)
 	{
-		//bool incrementLevelIndex = std::static_pointer_cast<ButtonEventArgs>(args)->newLevelIndex;
 		if (m_OverlappingPeter)
 		{
 			GameManager::GetInstance().SetGameMode(m_GameMode);

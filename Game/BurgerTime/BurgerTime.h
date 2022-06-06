@@ -10,17 +10,16 @@ namespace dae
 	class BurgerTime
 	{
 	public:
+		void Run();
+		void LoadLevel1(GameMode gameMode, const std::string& levelName) const;
+
+	private:
 		void Initialize();
 		void LoadGame();
 		void Cleanup();
-		void Run();
-		void LoadLevel1(GameMode gameMode, const std::string& levelName) const;
 		std::vector<Float2> ParseLevel(Scene& scene, int sceneNr, const std::string& levelName)const;
-
-	private:
 		void CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, int playerNr, bool andHUD) const;
 		void CreateEvilPepper(Transform spawnPos, Scene& scene, int playerNr) const;
-		void CreateEnemy(Scene& scene, int sceneNr, Float2 position) const;
 		void MakeEnemySpawner(std::vector<Float2> spawnPositions) const;
 		void CreateMenu(Scene& scene) const;
 		void CreateTray(Scene& scene, int sceneNr, Float2 position) const;

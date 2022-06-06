@@ -62,7 +62,6 @@ namespace dae
 		void SetInMenu(bool inGameScene)  { m_InMenu = inGameScene; }
 
 		virtual void OnNotify(EventType event_, std::shared_ptr<EventArgs> args) override;
-		Float2 GetSpawnPos() const { return m_SpawnPos; }
 
 		bool GetIsDead() const { return m_IsDead; }
 	protected:
@@ -93,11 +92,8 @@ namespace dae
 		float m_InvincibilityTime;
 
 		bool m_Stunned;		
-		void Stun();
 		const float m_StunTimer{ 3.f };
 		float m_StunTime;
 
-		//Trash because I'm trash
-		bool m_LevelLoaded;
 	};
 }

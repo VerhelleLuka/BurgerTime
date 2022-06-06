@@ -26,7 +26,6 @@ dae::PeterPepperComponent::PeterPepperComponent(Float2 spawnPos, bool isEvil)
 	, m_PepperShots(10)
 	, m_Stunned(false)
 	, m_StunTime(0.f)
-	, m_LevelLoaded(false)
 {
 	if (SceneManager::GetInstance().GetActiveSceneName() != "MainMenu")
 		GameManager::GetInstance().AddObserver(this);
@@ -80,7 +79,6 @@ void dae::PeterPepperComponent::Update(float elapsedSec)
 				{
 					
 					GameManager::GetInstance().ResetScene(true);
-					GameManager::GetInstance().ChangePlayer();
 				}
 				else
 				{
@@ -93,7 +91,6 @@ void dae::PeterPepperComponent::Update(float elapsedSec)
 		{
 			m_IsDead = false;
 			GameManager::GetInstance().ResetScene(true);
-			GameManager::GetInstance().ChangePlayer();
 		}
 
 
@@ -109,7 +106,6 @@ void dae::PeterPepperComponent::Update(float elapsedSec)
 	{
 		return;
 	}
-	//m_OverlappingButton = false;
 
 	m_CanWalkLeft = true;
 	m_CanWalkRight = true;
@@ -231,15 +227,9 @@ void dae::PeterPepperComponent::ButtonPress()
 {
 	if (m_OverlappingButton)
 	{
-		std::shared_ptr<ButtonEventArgs> args = std::make_shared<ButtonEventArgs>();
-		args->newLevelIndex = !m_LevelLoaded;
-		m_LevelLoaded = true;
-		Notify(EventType::LOADLEVEL, args);
+		std::shared_ptr<EventArgs> emptyArgs = std::make_shared<EventArgs>();
+		Notify(EventType::LOADLEVEL, emptyArgs);
 	}
-}
-void dae::PeterPepperComponent::Stun()
-{
-
 }
 void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 {
@@ -325,7 +315,6 @@ void dae::PeterPepperComponent::OnOverlap(RigidBodyComponent* other)
 			if (!m_Stunned)
 			{
 				m_pParent->GetComponent<RigidBodyComponent>("RigidBody")->SetStatic(true);
-				Stun();
 				m_Stunned = true;
 				m_pParent->GetComponent<SpriteComponent>("Sprite")->SetActiveAnimation("Stunned");
 			}

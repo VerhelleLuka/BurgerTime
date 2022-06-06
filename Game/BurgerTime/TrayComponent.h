@@ -17,7 +17,10 @@ namespace dae
 		TrayComponent() = default;
 		virtual ~TrayComponent()
 		{}
-
+		TrayComponent(const TrayComponent& other) = delete;
+		TrayComponent(TrayComponent&& other) = delete;
+		TrayComponent& operator=(const TrayComponent& other) = delete;
+		TrayComponent& operator=(TrayComponent&& other) = delete;
 		void SetOverlapEvent()
 		{
 			auto binding = std::bind(&TrayComponent::OnOverlap, this, std::placeholders::_1);

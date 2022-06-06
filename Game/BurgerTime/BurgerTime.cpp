@@ -96,65 +96,7 @@ void dae::BurgerTime::CreateMenu(Scene& scene) const
 
 }
 
-void dae::BurgerTime::CreateEnemy(Scene& scene, int /*sceneNr*/, Float2 position) const
-{
-	const float animationScale = 1.75f;
-	auto enemyGo = std::make_shared<GameObject>();
 
-	enemyGo->SetTag("Enemy");
-	auto climbAnim = std::make_shared<Animation>(2, 2);
-	climbAnim->SetTexture("Enemies/Sausage_Climb.png");
-	climbAnim->SetScale(animationScale);
-
-	auto descendAnim = std::make_shared<Animation>(2, 2);
-	descendAnim->SetTexture("Enemies/Sausage_Descend.png");
-	descendAnim->SetScale(animationScale);
-
-	auto walkLeftAnim = std::make_shared<Animation>(2, 2);
-	walkLeftAnim->SetTexture("Enemies/Sausage_Walk.png");
-	walkLeftAnim->SetScale(animationScale);
-
-	auto walkRightAnim = std::make_shared<Animation>(2, 2);
-	walkRightAnim->SetTexture("Enemies/Sausage_Walk.png");
-	walkRightAnim->SetScale(animationScale);
-	walkRightAnim->SetReversed(true);
-
-	auto deathAnim = std::make_shared<Animation>(4, 4);
-	deathAnim->SetTexture("Enemies/Sausage_Kill.png");
-	deathAnim->SetScale(animationScale);
-
-	auto enemySprite = std::make_shared<SpriteComponent>();
-	enemySprite->SetGameObject(enemyGo.get());
-	enemySprite->AddAnimation(climbAnim, "Climb");
-	enemySprite->AddAnimation(descendAnim, "Descend");
-	enemySprite->AddAnimation(walkRightAnim, "WalkRight");
-	enemySprite->AddAnimation(deathAnim, "Death");
-	enemySprite->AddAnimation(walkLeftAnim, "WalkLeft");
-
-	enemySprite->SetActiveAnimation("WalkLeft");
-	enemyGo->AddComponent(enemySprite, "EnemySprite");
-
-	//RigidbodyComponent
-	auto pRigidBody = std::make_shared<RigidBodyComponent>(enemySprite->GetAnimation().GetScaledWidth(),
-		enemySprite->GetAnimation().GetScaledHeight(),
-		true);
-	pRigidBody->SetOffset(Float2{ 5,0 });
-	pRigidBody->SetGameObject(enemyGo.get());
-
-	enemyGo->AddComponent(pRigidBody, "RigidBody");
-
-	//Enemy component
-	auto enemy = std::make_shared<Enemy>(EnemyType::SAUSAGE);
-	enemy->SetGameObject(enemyGo.get());
-	enemy->SetOverlapEvent();
-	enemy->SetOnTriggerExitEvent();
-	enemyGo->AddComponent(enemy, "Enemy");
-	enemy->Initialize(scene);
-	enemyGo->SetTransform(position.x, position.y, 0);
-
-	scene.Add(enemyGo);
-
-}
 void dae::BurgerTime::CreateEvilPepper(Transform /*spawnPos*/, Scene& scene, int playerNr) const
 {
 	const float animationScale = 1.75f;
@@ -337,7 +279,7 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 
 		auto livesDisplay = std::make_shared<GameObject>();
 		auto smallFont = ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
-		auto lifeComp = std::make_shared<LivesDisplayComponent>(livesDisplay);
+		auto lifeComp = std::make_shared<LivesDisplayComponent>();
 		auto textComp = std::make_shared<TextComponent>("Lives: 3", smallFont);
 		livesDisplay->AddComponent(lifeComp, "LifeComponent");
 		livesDisplay->AddComponent(textComp, "TextComponent");
@@ -345,7 +287,7 @@ void dae::BurgerTime::CreatePeterPepperAndHUD(Transform spawnPos, Scene& scene, 
 		scene.Add(livesDisplay);
 
 		auto pointsDisplay = std::make_shared<GameObject>();
-		auto pointComp = std::make_shared<PointsDisplayComponent>(pointsDisplay);
+		auto pointComp = std::make_shared<PointsDisplayComponent>();
 		auto textCompPts = std::make_shared<TextComponent>("Points: 0", smallFont);
 		pointsDisplay->AddComponent(pointComp, "PointsComponent");
 		pointsDisplay->AddComponent(textCompPts, "TextComponent");
@@ -745,7 +687,6 @@ void dae::BurgerTime::LoadLevel1(GameMode gameMode, const std::string& levelName
 	{
 		CreateEvilPepper(Transform(), levelScene, 1);
 	}
-	GameManager::GetInstance().SetEnemySpawns(enemySpawnPositions);
 	MakeEnemySpawner(enemySpawnPositions);
 	levelScene.Initialize();
 

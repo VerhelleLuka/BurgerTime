@@ -6,10 +6,8 @@
 dae::Animation::Animation(int rows, int nrFrames)
 	:m_Rows(rows),
 	m_NrFrames(nrFrames),
-	m_CurrentFrame(0),
-	m_Position(Float2{0.f, 0.f})
-	//m_DeltaTime(0.f),
-	//m_IsDirty(false)
+	m_CurrentFrame(0)
+
 {
 
 }
@@ -56,10 +54,4 @@ void dae::Animation::Render()
 void dae::Animation::SetTexture(const std::string& fileName)
 {
 	m_pTexture = ResourceManager::GetInstance().LoadTexture(fileName);
-}
-
-void dae::Animation::SetPos(Float2 pos)
-{
-	m_Position.x += pos.x;
-	m_Position.y += pos.y;
 }

@@ -17,7 +17,7 @@ namespace dae
 		virtual void FixedUpdate(float /*deltaTime*/) override {}
 
 		virtual void Render() const override {};
-		PointsDisplayComponent(std::shared_ptr<GameObject> pParent) :m_Points(), m_pParent(pParent.get()) {};
+		PointsDisplayComponent() :m_Points() {};
 		virtual ~PointsDisplayComponent() ;
 		PointsDisplayComponent(const PointsDisplayComponent& other) = delete;
 		PointsDisplayComponent(PointsDisplayComponent&& other) = delete;
@@ -27,7 +27,6 @@ namespace dae
 		virtual void OnNotify(EventType event_, std::shared_ptr<EventArgs> eventArgs) override;
 
 	protected:
-		GameObject* m_pParent{};
 		int m_Points;
 	};
 }

@@ -12,7 +12,6 @@ void dae::LivesDisplayComponent::OnNotify(EventType event_, std::shared_ptr<Even
 {
 	if (event_ == EventType::LOSTLIFE)
 	{
-		m_Lives--;
 		m_pParent->GetComponent<TextComponent>("TextComponent")->SetText("Lives: " + std::to_string(GameManager::GetInstance().GetLives()));
 	}
 

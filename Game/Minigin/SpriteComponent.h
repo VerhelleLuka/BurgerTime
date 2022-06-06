@@ -41,7 +41,6 @@ namespace dae
 		std::shared_ptr<Animation> m_pActiveAnimation;
 		std::string m_pActiveAnimationName;	
 
-		float m_Width, m_Height;
 	};
 }
 

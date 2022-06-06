@@ -8,11 +8,6 @@
 #include "BurgerTime.h"
 namespace dae
 {
-	struct ButtonEventArgs : EventArgs
-	{
-		bool newLevelIndex;
-
-	};
 	//Had to do this because otherwise in the cpp i get an error for not referencing args
 	class ButtonComponent final : public BaseComponent, public Observer
 	{

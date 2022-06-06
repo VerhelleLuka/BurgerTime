@@ -32,7 +32,6 @@ namespace dae
 		EnemySpawner& operator=(EnemySpawner&& other) = delete;
 		virtual void Initialize(Scene& /*scene*/) override;
 
-		void SetDifficulty(Difficulty difficulty);
 		void SetSpawnPositions(std::vector<Float2> spawnPositions) { m_SpawnPositions = spawnPositions; }
 		virtual void OnNotify(EventType /*event_*/, std::shared_ptr<EventArgs> /*args*/) override;
 
